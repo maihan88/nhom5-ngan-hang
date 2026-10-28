@@ -1,0 +1,19 @@
+{
+  "source_sha256": {
+    "bang1_tai_chinh_quy.csv": "2405938aa202ad6663ab1fb9f1e7b03e682ba6226af8aaa2900c09325753a00f",
+    "bang2a_gia_ngay.csv": "cdcbd01702559ba7043969240a1fa1a156f90b4804a73938358a6af95265ecd7",
+    "bang2b_gia_quy.csv": "50c5d9bfb8fb9c00ba285daee44c317a670bbe7ac6e5e14c7a3d0b3a34375b41",
+    "bang3a_su_kien_chi_tiet.csv": "17d35abd670f108aee51052ca1e4665564646e687cada0c383a71df0591ad178",
+    "bang3b_su_kien_quy.csv": "191a6bf08e6ba959ba6c41583410cd57ded8c45d08b6f6b485f07c77043686cc",
+    "bang4_tong_hop.csv": "88fccaf3b53933f414ee0022ea1ec34839abd29c2faba82499b96d44d5c36b6d"
+  },
+  "python": "3.14.1",
+  "packages": {
+    "pandas": "3.0.5",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  },
+  "random_state": 42,
+  "csv_unchanged": true
+}

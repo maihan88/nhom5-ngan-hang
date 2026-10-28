@@ -1,0 +1,26 @@
+﻿Model,feature,coefficient,abs_coefficient,direction,unit
+Financial + Event Categories,sk_tang_von,-0.7146468646180981,0.7146468646180981,ngược chiều,1 đơn vị sự kiện
+Financial + Event Categories,roa,0.637617189173694,0.637617189173694,cùng chiều,1 SD Train
+Financial + Event Categories,sk_chuyen_doi_so,0.5401666235940659,0.5401666235940659,cùng chiều,1 đơn vị sự kiện
+Financial + Event Categories,sk_hop_tac_trung_thau,0.5032412194686736,0.5032412194686736,cùng chiều,1 đơn vị sự kiện
+Financial + Event Categories,sk_khac,-0.47192874374950466,0.47192874374950466,ngược chiều,1 đơn vị sự kiện
+Financial + Event Categories,sk_chinh_sach_nhnn,0.43685029023397,0.43685029023397,cùng chiều,1 đơn vị sự kiện
+Financial + Event Categories,car,-0.43421829405643136,0.43421829405643136,ngược chiều,1 SD Train
+Financial + Event Categories,roe,-0.38956224912502163,0.38956224912502163,ngược chiều,1 SD Train
+Financial + Event Categories,sk_doi_lanh_dao,-0.3867737726586523,0.3867737726586523,ngược chiều,1 đơn vị sự kiện
+Financial + Event Categories,ldr,0.09323294613923788,0.09323294613923788,cùng chiều,1 SD Train
+Financial + Event Categories,npl,-0.07093671466467612,0.07093671466467612,ngược chiều,1 SD Train
+Financial + Event Categories,nim,0.015535746699560416,0.015535746699560416,cùng chiều,1 SD Train
+Financial + General Event,co_su_kien,-0.712416040856578,0.712416040856578,ngược chiều,1 đơn vị sự kiện
+Financial + General Event,roa,0.5488066551404616,0.5488066551404616,cùng chiều,1 SD Train
+Financial + General Event,roe,-0.35538086678899683,0.35538086678899683,ngược chiều,1 SD Train
+Financial + General Event,car,-0.35135470401653507,0.35135470401653507,ngược chiều,1 SD Train
+Financial + General Event,ldr,0.14219881353518668,0.14219881353518668,cùng chiều,1 SD Train
+Financial + General Event,npl,-0.11243927551991041,0.11243927551991041,ngược chiều,1 SD Train
+Financial + General Event,nim,0.017020520915051806,0.017020520915051806,cùng chiều,1 SD Train
+Financial Only,roa,0.49222469019282006,0.49222469019282006,cùng chiều,1 SD Train
+Financial Only,roe,-0.32683606800821224,0.32683606800821224,ngược chiều,1 SD Train
+Financial Only,car,-0.2759525999185936,0.2759525999185936,ngược chiều,1 SD Train
+Financial Only,npl,-0.1071188276999058,0.1071188276999058,ngược chiều,1 SD Train
+Financial Only,nim,0.03880653724238533,0.03880653724238533,cùng chiều,1 SD Train
+Financial Only,ldr,0.007322348307662112,0.007322348307662112,cùng chiều,1 SD Train

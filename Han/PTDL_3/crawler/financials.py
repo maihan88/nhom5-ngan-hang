@@ -1,0 +1,203 @@
+"""Bảng 1 – Dữ liệu tài chính theo quý (nguồn: API công khai dstock/VNDirect).
+
+- Số liệu gốc (tổng tài sản, VCSH, LNST, dư nợ, thu nhập lãi thuần...) lấy từ BCTC quý
+  theo mẫu ngân hàng (TT49/2014/TT-NHNN), đơn vị gốc VND -> quy đổi sang tỷ đồng.
+- ROA, ROE, NIM: nhóm TỰ TÍNH từ số liệu gốc (công thức minh bạch, ghi trong Data Dictionary).
+- NPL, CAR: BCTC không có bảng phân loại nợ / vốn tự có ở dạng cấu trúc, nên lấy chỉ số
+  VNDirect đã tổng hợp từ thuyết minh BCTC. CAR thường chỉ công bố cuối năm.
+"""
+from __future__ import annotations
+
+import logging
+
+import numpy as np
+import pandas as pd
+
+from . import config
+from .http_client import HttpClient
+
+log = logging.getLogger(__name__)
+
+QUARTER_END = {"03-31": "Q1", "06-30": "Q2", "09-30": "Q3", "12-31": "Q4"}
+
+
+def quarter_end_dates(start: str, end: str) -> list[str]:
+    return [d.strftime("%Y-%m-%d") for d in pd.date_range(start, end, freq="QE")]
+
+
+def _add_quarter_keys(df: pd.DataFrame, date_col: str) -> pd.DataFrame:
+    md = df[date_col].str[5:10]
+    df = df[md.isin(QUARTER_END)].copy()
+    df["quy"] = df[date_col].str[5:10].map(QUARTER_END)
+    df["nam"] = df[date_col].str[:4].astype(int)
+    return df
+
+
+# ---------------------------------------------------------------------------
+def fetch_statements(client: HttpClient, code: str, report_type: str = "QUARTER",
+                     model_types: str = "101,102") -> pd.DataFrame:
+    if report_type == "QUARTER":
+        dates = quarter_end_dates(config.FIN_FROM, config.FIN_TO)
+    else:
+        dates = [f"{y}-12-31" for y in range(config.START_YEAR, config.END_YEAR + 1)]
+    q = (f"code:{code}~reportType:{report_type}~modelType:{model_types}"
+         f"~fiscalDate:{','.join(dates)}")
+    rows = client.vnd_paged("financial_statements", q, namespace="vnd_financial_statements",
+                            key=f"{code}_{report_type}_{model_types}")
+    df = pd.DataFrame(rows)
+    if df.empty:
+        log.warning("Không có BCTC %s cho %s", report_type, code)
+        return df
+    df["itemCode"] = df["itemCode"].astype(int)
+    df["modelType"] = df["modelType"].astype(int)
+    # Nếu một chỉ tiêu bị cập nhật (BCTC điều chỉnh/kiểm toán lại) -> giữ bản sửa sau cùng
+    df = (df.sort_values("modifiedDate")
+            .drop_duplicates(["code", "fiscalDate", "modelType", "itemCode"], keep="last"))
+    return df
+
+
+def _pivot_items(df: pd.DataFrame) -> pd.DataFrame:
+    wanted = {**{(101, k): v for k, v in config.BS_ITEMS.items()},
+              **{(102, k): v for k, v in config.IS_ITEMS.items()}}
+    df = df[[(m, i) in wanted for m, i in zip(df["modelType"], df["itemCode"])]].copy()
+    df["col"] = [wanted[(m, i)] for m, i in zip(df["modelType"], df["itemCode"])]
+    wide = df.pivot_table(index=["code", "fiscalDate"], columns="col",
+                          values="numericValue", aggfunc="last").reset_index()
+    for col in list(config.BS_ITEMS.values()) + list(config.IS_ITEMS.values()):
+        if col not in wide:
+            wide[col] = np.nan
+    return wide
+
+
+def fetch_ratios(client: HttpClient, code: str) -> pd.DataFrame:
+    q = (f"code:{code}~ratioCode:{','.join(config.RATIO_CODES)}"
+         f"~reportDate:gte:{config.FIN_FROM}~reportDate:lte:{config.FIN_TO}")
+    rows = client.vnd_paged("ratios", q, namespace="vnd_ratios", key=f"{code}_bank_ratios",
+                            sort="reportDate:asc")
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return pd.DataFrame(columns=["code", "fiscalDate", *config.RATIO_CODES.values()])
+    df = df[df["reportDate"].str[5:10].isin(QUARTER_END)]
+    wide = df.pivot_table(index=["code", "reportDate"], columns="ratioCode",
+                          values="value", aggfunc="last").reset_index()
+    wide = wide.rename(columns={"reportDate": "fiscalDate", **config.RATIO_CODES})
+    for col in config.RATIO_CODES.values():
+        if col not in wide:
+            wide[col] = np.nan
+    return wide
+
+
+# ---------------------------------------------------------------------------
+def _avg_with_prev(s: pd.Series) -> pd.Series:
+    """Bình quân số dư đầu kỳ & cuối kỳ (đầu kỳ = cuối quý trước)."""
+    return pd.concat([s, s.shift(1)], axis=1).mean(axis=1, skipna=True)
+
+
+def _apply_car_manual(df: pd.DataFrame) -> pd.DataFrame:
+    """Ghi đè CAR cuối năm bằng số tra thủ công trong data/manual/car_tra_thu_cong.csv.
+
+    Dùng khi số VNDirect không đáng tin: BID và CTG có CAR = 8,00 đúng ba năm 2022-2024 (đúng ngưỡng
+    tối thiểu), trong khi ngân hàng chỉ ghi "tuân thủ" hoặc công bố số khác. Mỗi dòng trong file có link
+    nguồn và lý do. Ô `car` để trống = bỏ số của nguồn (không có số thật) và để bước điền tiếp xử lý.
+    """
+    path = config.MANUAL_DIR / "car_tra_thu_cong.csv"
+    if not path.exists():
+        return df
+    manual = pd.read_csv(path, encoding="utf-8-sig", dtype={"ma_nh": str})
+    df = df.copy()
+    for r in manual.itertuples():
+        hit = (df["ma_nh"] == r.ma_nh.strip()) & (df["nam"] == int(r.nam)) & (df["quy"] == "Q4")
+        if not hit.any():
+            log.warning("car_tra_thu_cong.csv: không có dòng %s Q4/%s trong dữ liệu", r.ma_nh, r.nam)
+            continue
+        if pd.isna(r.car):
+            df.loc[hit, "car"] = np.nan
+            df.loc[hit, "car_nguon"] = None
+        else:
+            df.loc[hit, "car"] = float(r.car)
+            df.loc[hit, "car_nguon"] = "tra_thu_cong"
+    log.info("CAR: áp dụng %d dòng tra thủ công (car_tra_thu_cong.csv)", len(manual))
+    return df
+
+
+def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.sort_values(["ma_nh", "nam", "quy"]).copy()
+    g = df.groupby("ma_nh", group_keys=False)
+
+    df["earning_assets"] = df[config.EARNING_ASSET_COLS].sum(axis=1, min_count=3)
+    df["_ta_avg"] = g["tong_tai_san"].apply(_avg_with_prev)
+    df["_eq_avg"] = g["von_chu_so_huu"].apply(_avg_with_prev)
+    df["_ea_avg"] = g["earning_assets"].apply(_avg_with_prev)
+
+    # Chỉ số năm hóa (x4) từ số liệu quý, đơn vị %
+    df["roa"] = df["loi_nhuan_sau_thue"] * 4 / df["_ta_avg"] * 100
+    df["roe"] = df["loi_nhuan_sau_thue"] * 4 / df["_eq_avg"] * 100
+    df["nim"] = df["thu_nhap_lai_thuan"] * 4 / df["_ea_avg"] * 100
+    df["ldr"] = df["tong_du_no"] / df["tien_gui_khach_hang"] * 100
+
+    # NPL, CAR từ VNDirect (dạng thập phân -> %)
+    for col in ["npl", "car", "nim_ttm_vnd", "roa_ttm_vnd", "roe_ttm_vnd", "ldr_vnd"]:
+        df[col] = df[col] * 100
+    df["no_xau"] = df["npl"] / 100 * df["tong_du_no"]  # ước tính từ NPL x dư nợ
+
+    # CAR: phần lớn ngân hàng chỉ công bố cuối năm -> điền tiếp giá trị gần nhất ĐÃ công bố
+    # (không dùng giá trị tương lai để tránh rò rỉ thông tin cho mô hình dự báo)
+    df["car_nguon"] = np.where(df["car"].notna(), "cong_bo", None)
+    df = _apply_car_manual(df)  # sửa số CAR sai bằng số tra thủ công, TRƯỚC khi điền tiếp
+    df["car"] = df.groupby("ma_nh")["car"].ffill()
+    df.loc[df["car_nguon"].isna() & df["car"].notna(), "car_nguon"] = "dien_tiep_ky_truoc"
+
+    return df.drop(columns=["_ta_avg", "_eq_avg", "_ea_avg"])
+
+
+def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Trả về (bang1, annual_check, ngay_nhap_bctc) – hai bảng sau chỉ dùng cho báo cáo kiểm tra."""
+    frames, annual_frames, entry_frames = [], [], []
+    for code in config.BANKS:
+        log.info("[Bảng 1] BCTC quý %s", code)
+        st = fetch_statements(client, code)
+        if st.empty:
+            continue
+        # Ngày VNDirect nhập BCTC lần đầu ~ ngày thị trường biết số liệu (kiểm tra mốc dự báo)
+        entry_frames.append(st.groupby(["code", "fiscalDate"], as_index=False)["createdDate"].min())
+        wide = _pivot_items(st)
+        ratios = fetch_ratios(client, code)
+        wide = wide.merge(ratios, on=["code", "fiscalDate"], how="left")
+        frames.append(wide)
+
+        an = fetch_statements(client, code, report_type="ANNUAL", model_types="102")
+        if not an.empty:
+            an = an[(an["modelType"] == 102) & (an["itemCode"] == 23003)]
+            annual_frames.append(an[["code", "fiscalDate", "numericValue"]])
+
+    df = pd.concat(frames, ignore_index=True)
+    df = _add_quarter_keys(df, "fiscalDate").rename(columns={"code": "ma_nh", "fiscalDate": "ngay_bctc"})
+
+    money_cols = list(config.BS_ITEMS.values()) + list(config.IS_ITEMS.values())
+    df[money_cols] = df[money_cols] / 1e9  # VND -> tỷ đồng
+
+    df = compute_indicators(df)
+    df["loai_hinh_so_huu"] = df["ma_nh"].map(config.BANKS)
+    df = df[df["nam"].between(config.START_YEAR, config.END_YEAR)]
+
+    cols = ["ma_nh", "quy", "nam", "ngay_bctc", "loai_hinh_so_huu",
+            "tong_tai_san", "von_chu_so_huu", "loi_nhuan_sau_thue", "tong_du_no", "no_xau",
+            "roa", "roe", "nim", "npl", "car", "car_nguon", "ldr",
+            "lnst_cong_ty_me", "loi_nhuan_truoc_thue", "thu_nhap_lai_thuan",
+            "tong_thu_nhap_hoat_dong", "chi_phi_hoat_dong", "chi_phi_du_phong",
+            "tien_gui_khach_hang", "du_phong_cho_vay", "earning_assets",
+            "roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd", "ldr_vnd"]
+    bang1 = df[cols].sort_values(["ma_nh", "nam", "quy"]).reset_index(drop=True)
+
+    annual = pd.concat(annual_frames, ignore_index=True) if annual_frames else pd.DataFrame()
+    if not annual.empty:
+        annual = annual.rename(columns={"code": "ma_nh", "numericValue": "lnst_nam_bctc"})
+        annual["nam"] = annual["fiscalDate"].str[:4].astype(int)
+        annual["lnst_nam_bctc"] = annual["lnst_nam_bctc"] / 1e9
+        annual = annual[["ma_nh", "nam", "lnst_nam_bctc"]]
+
+    entry = pd.concat(entry_frames, ignore_index=True)
+    entry = _add_quarter_keys(entry, "fiscalDate").rename(columns={"code": "ma_nh"})
+    entry["tre_ngay"] = (pd.to_datetime(entry["createdDate"]) - pd.to_datetime(entry["fiscalDate"])).dt.days
+    entry = entry[entry["nam"].between(config.START_YEAR, config.END_YEAR)]
+    return bang1, annual, entry[["ma_nh", "quy", "nam", "fiscalDate", "createdDate", "tre_ngay"]]

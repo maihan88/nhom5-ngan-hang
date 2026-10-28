@@ -1,0 +1,7 @@
+﻿file,rows,columns,banks,years,quarters,exact_duplicates
+bang1_tai_chinh_quy.csv,160,30,8,"2021,2022,2023,2024,2025","Q1,Q2,Q3,Q4",0
+bang2a_gia_ngay.csv,10851,10,8,,,0
+bang2b_gia_quy.csv,160,17,8,"2021,2022,2023,2024,2025","Q1,Q2,Q3,Q4",0
+bang3a_su_kien_chi_tiet.csv,121,11,8,"2021,2022,2023,2024,2025","Q1,Q2,Q3,Q4",0
+bang3b_su_kien_quy.csv,160,15,8,"2021,2022,2023,2024,2025","Q1,Q2,Q3,Q4",0
+bang4_tong_hop.csv,160,56,8,"2021,2022,2023,2024,2025","Q1,Q2,Q3,Q4",0

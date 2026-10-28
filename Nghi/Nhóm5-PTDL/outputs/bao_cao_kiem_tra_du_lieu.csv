@@ -1,0 +1,38 @@
+﻿nhom_kiem_tra,noi_dung,ket_qua,chi_tiet
+1. Cấu trúc,bang1: đủ 160 dòng,ĐẠT,160 dòng
+1. Cấu trúc,bang1: không trùng khóa ma_nh+quy+nam,ĐẠT,0 dòng trùng
+1. Cấu trúc,bang1: đủ 8 ngân hàng × 20 quý,ĐẠT,"ACB=20, BID=20, CTG=20, MBB=20, STB=20, TCB=20, VCB=20, VPB=20"
+1. Cấu trúc,bang2b: đủ 160 dòng,ĐẠT,160 dòng
+1. Cấu trúc,bang2b: không trùng khóa ma_nh+quy+nam,ĐẠT,0 dòng trùng
+1. Cấu trúc,bang2b: đủ 8 ngân hàng × 20 quý,ĐẠT,"ACB=20, BID=20, CTG=20, MBB=20, STB=20, TCB=20, VCB=20, VPB=20"
+1. Cấu trúc,bang3b: đủ 160 dòng,ĐẠT,160 dòng
+1. Cấu trúc,bang3b: không trùng khóa ma_nh+quy+nam,ĐẠT,0 dòng trùng
+1. Cấu trúc,bang3b: đủ 8 ngân hàng × 20 quý,ĐẠT,"ACB=20, BID=20, CTG=20, MBB=20, STB=20, TCB=20, VCB=20, VPB=20"
+1. Cấu trúc,bang4: đủ 160 dòng,ĐẠT,160 dòng
+1. Cấu trúc,bang4: không trùng khóa ma_nh+quy+nam,ĐẠT,0 dòng trùng
+1. Cấu trúc,bang4: đủ 8 ngân hàng × 20 quý,ĐẠT,"ACB=20, BID=20, CTG=20, MBB=20, STB=20, TCB=20, VCB=20, VPB=20"
+1. Cấu trúc,bang2a: không trùng ma_nh+ngay,ĐẠT,
+2. Thiếu dữ liệu,bang4: các cột chính không có ô trống,ĐẠT,không thiếu
+2. Thiếu dữ liệu,Cột mô tả sự kiện chỉ trống khi co_su_kien = 0,ĐẠT,72 ô trống hợp lệ
+3. CAR,Có đúng 32 giá trị CAR thật (công bố + tra thủ công),ĐẠT,"32 giá trị: cong_bo = 26, tra_thu_cong = 6"
+3. CAR,car_nguon chỉ gồm các giá trị đã biết,ĐẠT,
+3. CAR,CAR công bố chỉ nằm ở Q4,ĐẠT,quý: ['Q4']
+3. CAR,Mỗi ngân hàng có 4 năm công bố (2021–2024),ĐẠT,"năm có số công bố: [2021, 2022, 2023, 2024]"
+3. CAR,6 giá trị CAR tra thủ công (không phải số VNDirect),LƯU Ý,BID 2022: 8.92; BID 2023: 9.18; BID 2024: 9.03; CTG 2022: 8.90; CTG 2023: 9.30; CTG 2024: 9.60 – nguồn trong data/manual/car_tra_thu_cong.csv
+3. CAR,Năm 2025 chưa có CAR công bố,LƯU Ý,CAR cả 4 quý 2025 = số Q4/2024 điền tiếp → không dùng cho so sánh năm 2025
+4. Nhóm sở hữu,"Quốc doanh = VCB, BID, CTG; còn lại Tư nhân",ĐẠT,"{'Quốc doanh': ['BID', 'CTG', 'VCB'], 'Tư nhân': ['ACB', 'MBB', 'STB', 'TCB', 'VPB']}"
+5. Nhất quán,bang4 khớp bang1,ĐẠT,khớp
+5. Nhất quán,bang4 khớp bang2b,ĐẠT,khớp
+5. Nhất quán,bang4 khớp bang3b,ĐẠT,khớp
+5. Nhất quán,Số sự kiện bang3b = số dòng bang3a theo quý,ĐẠT,tổng 121 sự kiện
+6. Công thức,ty_suat_sinh_loi_quy = (giá cuối/giá đầu − 1)×100,ĐẠT,
+6. Công thức,Giá đầu quý t = giá cuối quý t−1,ĐẠT,
+6. Công thức,co_su_kien = 1 khi so_luong_su_kien > 0,ĐẠT,
+6. Công thức,xu_huong_quy_sau = 1 khi ty_suat_sinh_loi_quy_sau > 0,ĐẠT,
+7. Giá ngày,Giá > 0 và cao nhất ≥ thấp nhất,ĐẠT,
+7. Giá ngày,Số phiên không đều giữa các mã,LƯU Ý,"ACB thiếu 5 phiên (02/12/2020 → 08/12/2020) – nằm ngoài giai đoạn, không ảnh hưởng"
+7. Giá ngày,Mọi mã có phiên đầu năm 2021 chung (mốc chuẩn hóa = 100),ĐẠT,phiên gốc: 04/01/2021
+8. Ngoại lai (ngoài 3×IQR),roa,LƯU Ý,VPB Q1/2022 = 6.42
+8. Ngoại lai (ngoài 3×IQR),roe,LƯU Ý,STB Q4/2025 = -17.96
+8. Ngoại lai (ngoài 3×IQR),npl,LƯU Ý,STB Q4/2025 = 6.41; VPB Q4/2021 = 4.57; VPB Q1/2022 = 4.83; VPB Q2/2022 = 5.25; VPB Q3/2022 = 5.01; VPB Q4/2022 = 5.73; VPB Q1/2023 = 6.24; VPB Q2/2023 = 6.52; VPB Q3/2023 = 5.74; VPB Q4/2023 = 5.02; VPB Q1/2024 = 4.84; VPB Q2/2024 = 5.08; VPB Q3/2024 = 4.81; VPB Q4/2024 = 4.17; VPB Q1/2025 = 4.74
+8. Ngoại lai (ngoài 3×IQR),Quý lỗ (LNST < 0),LƯU Ý,"STB Q4/2025: LNST -2,752 tỷ, ROA -1.25%, NPL 6.41%"

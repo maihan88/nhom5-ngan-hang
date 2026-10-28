@@ -1,0 +1,61 @@
+{
+  "mo_ta": "Logistic Regression dự báo giá quý sau tăng/không tăng – thiết kế theo Quan/dataset_nhom5/src/logistic_model.py",
+  "ngay_xuat": "2026-10-28 19:49",
+  "scikit_learn": "1.9.1",
+  "van_tay_du_lieu": "4d5969180d63dbe68c54290f52dfdf9b9b6b57a31acc8b3f146197607c77c093",
+  "nam_test": 2025,
+  "n_train": 128,
+  "n_test": 32,
+  "nhan": "xu_huong_quy_sau",
+  "mo_hinh": {
+    "Financial Only": {
+      "file": "logistic_tai_chinh.pkl",
+      "ten": "Chỉ số tài chính",
+      "bien": [
+        "roa",
+        "roe",
+        "nim",
+        "npl",
+        "car",
+        "ldr"
+      ],
+      "accuracy_test": 0.5,
+      "auc_test": 0.5352
+    },
+    "Financial + General Event": {
+      "file": "logistic_tai_chinh_co_su_kien.pkl",
+      "ten": "Tài chính + có sự kiện",
+      "bien": [
+        "roa",
+        "roe",
+        "nim",
+        "npl",
+        "car",
+        "ldr",
+        "co_su_kien"
+      ],
+      "accuracy_test": 0.625,
+      "auc_test": 0.5703
+    },
+    "Financial + Event Categories": {
+      "file": "logistic_tai_chinh_loai_su_kien.pkl",
+      "ten": "Tài chính + từng loại sự kiện",
+      "bien": [
+        "roa",
+        "roe",
+        "nim",
+        "npl",
+        "car",
+        "ldr",
+        "sk_tang_von",
+        "sk_chuyen_doi_so",
+        "sk_hop_tac_trung_thau",
+        "sk_doi_lanh_dao",
+        "sk_chinh_sach_nhnn",
+        "sk_khac"
+      ],
+      "accuracy_test": 0.5938,
+      "auc_test": 0.5469
+    }
+  }
+}

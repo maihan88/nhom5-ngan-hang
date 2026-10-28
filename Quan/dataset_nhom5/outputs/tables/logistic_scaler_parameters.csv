@@ -1,0 +1,19 @@
+﻿Model,feature,train_mean,train_scale,samples_fit
+Financial Only,roa,1.846628125,0.930484106522102,128
+Financial Only,roe,19.0311078125,6.061504697636571,128
+Financial Only,nim,4.1172203125,1.4347185462965908,128
+Financial Only,npl,1.706725,1.320458558548412,128
+Financial Only,car,11.22875,2.424802504844467,128
+Financial Only,ldr,105.80769765625,14.33384810843542,128
+Financial + General Event,roa,1.846628125,0.930484106522102,128
+Financial + General Event,roe,19.0311078125,6.061504697636571,128
+Financial + General Event,nim,4.1172203125,1.4347185462965908,128
+Financial + General Event,npl,1.706725,1.320458558548412,128
+Financial + General Event,car,11.22875,2.424802504844467,128
+Financial + General Event,ldr,105.80769765625,14.33384810843542,128
+Financial + Event Categories,roa,1.846628125,0.930484106522102,128
+Financial + Event Categories,roe,19.0311078125,6.061504697636571,128
+Financial + Event Categories,nim,4.1172203125,1.4347185462965908,128
+Financial + Event Categories,npl,1.706725,1.320458558548412,128
+Financial + Event Categories,car,11.22875,2.424802504844467,128
+Financial + Event Categories,ldr,105.80769765625,14.33384810843542,128
