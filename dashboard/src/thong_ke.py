@@ -84,6 +84,7 @@ def tinh_chi_so_nam(b1):
     roa_nam = tổng LNST 4 quý / trung bình tổng tài sản cuối 4 quý × 100
     roe_nam = tổng LNST 4 quý / trung bình VCSH cuối 4 quý × 100
     Ưu điểm: không cần số dư cuối 2020, không bị phóng đại như ROA quý × 4.
+    Năm cuối chưa đủ 4 quý (năm đang diễn ra) chưa có chỉ số năm -> bỏ qua; năm đã qua mà thiếu quý vẫn báo lỗi.
     """
     d = _str(b1)
     g = d.groupby(["ma_nh", "nam"]).agg(
@@ -92,6 +93,8 @@ def tinh_chi_so_nam(b1):
         tong_tai_san_tb=("tong_tai_san", "mean"),
         vcsh_tb=("von_chu_so_huu", "mean"),
     ).reset_index()
+    if cf.QUY_CUOI != 4:
+        g = g[g["nam"] != cf.NAM_KET_THUC]
     if (g["so_quy"] != 4).any():
         raise ValueError("Có ngân hàng–năm không đủ 4 quý:\n" + g[g["so_quy"] != 4].to_string())
     g["roa_nam"] = g["lnst_nam"] / g["tong_tai_san_tb"] * 100

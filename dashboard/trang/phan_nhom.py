@@ -22,7 +22,7 @@ tv_nho = thanh_vien[nho["nhom"]]
 tieu = (f"{' và '.join(cf.TEN_DAY_DU[m] for m in tv_nho)} đứng riêng một nhóm: {nho['ten_nhom'].lower()}"
         if tv_nho and len(tv_nho) <= 3 else f"Tám ngân hàng chia thành {pn['k']} nhóm đặc điểm tài chính")
 gd.muc("Phân nhóm theo đặc điểm tài chính", tieu,
-       "Gom 160 ngân hàng–quý theo 6 chỉ số (ROA, ROE, NIM, nợ xấu, CAR, LDR). Trên bản đồ, chấm càng gần nhau thì "
+       f"Gom {len(d)} ngân hàng–quý theo 6 chỉ số (ROA, ROE, NIM, nợ xấu, CAR, LDR). Trên bản đồ, chấm càng gần nhau thì "
        "“dáng” tài chính càng giống nhau; chữ là vị trí trung bình của từng ngân hàng.", dau=True)
 
 c1, c2 = st.columns([3.2, 1], gap="large")
@@ -51,7 +51,7 @@ z = pn["z"]
 lech = z.loc[nho["nhom"]].abs().nlargest(2)
 gd.muc("Khác biệt giữa các nhóm",
        f"Nhóm {nho['nhom']} khác biệt nhất ở {mh.TEN_DE_HIEU[lech.index[0]]} và {mh.TEN_DE_HIEU[lech.index[1]]}",
-       "Mỗi nhóm lệch bao nhiêu so với trung bình 160 ngân hàng–quý, đo bằng độ lệch chuẩn (0 = đúng mức trung bình).")
+       f"Mỗi nhóm lệch bao nhiêu so với trung bình {len(d)} ngân hàng–quý, đo bằng độ lệch chuẩn (0 = đúng mức trung bình).")
 bd.ve(bd.lech_nhom(z), key="pn_lech")
 
 # ---- Theo thời gian --------------------------------------------------------------------------------------------

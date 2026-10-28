@@ -12,7 +12,7 @@ GOC = Path(__file__).resolve().parents[1]
 
 gd.muc("Về bản tin này", "Dữ liệu, phương pháp và giới hạn đằng sau mỗi con số",
        f"{gd.TEN} là sản phẩm của Nhóm 5, môn Phân tích dữ liệu cho môi trường doanh nghiệp: thu thập tự động báo cáo tài chính, "
-       "giá cổ phiếu và tin doanh nghiệp của 8 ngân hàng niêm yết giai đoạn 2021–2025, phân tích và dự báo bằng Python.", dau=True)
+       f"giá cổ phiếu và tin doanh nghiệp của 8 ngân hàng niêm yết giai đoạn {dl.giai_doan()}, phân tích và dự báo bằng Python.", dau=True)
 
 # ---- Năm câu hỏi -----------------------------------------------------------------------------------------
 gd.muc("Câu hỏi nghiên cứu", "Năm câu hỏi và nơi trả lời trong bản tin")
@@ -51,10 +51,15 @@ phân loại tin thành 6 nhóm sự kiện bằng từ khóa, có rà soát.
 **3 · Nhãn dự báo** – giá “tăng” nếu giá tại mốc cuối quý sau + 45 ngày cao hơn mốc cuối quý này + 45 ngày
 (lúc báo cáo tài chính đã công bố).
 """)
-c2.markdown("""
+kq = dl.du_bao()
+nam_test = kq["nam_test"]
+b4 = ds["tong_hop"]
+nam_car = sorted(b4.loc[b4["car_nguon"].isin(["cong_bo", "tra_thu_cong"]), "nam"].unique())
+nam_cuoi = int(b4["nam"].max())
+c2.markdown(f"""
 **4 · Thống kê** – thống kê mô tả, xếp hạng ROA/ROE năm, kiểm định quốc doanh – tư nhân, tương quan có hiệu chỉnh Holm.
 
-**5 · Mô hình** – Logistic Regression học trên 2021–2024, kiểm chứng trên 2025; so sánh có và không có biến sự kiện.
+**5 · Mô hình** – Logistic Regression học trên {b4["nam"].min()}–{nam_test - 1}, kiểm chứng trên {nam_test}; so sánh có và không có biến sự kiện.
 K-Means và PCA để phân nhóm. Ba mô hình dự báo được lưu thành file .pkl kèm danh sách, thứ tự biến đầu vào.
 
 **6 · Bản tin** – Streamlit và Plotly. Bản tin nạp mô hình từ file .pkl; nếu dữ liệu mới hơn file thì tự huấn luyện lại
@@ -68,7 +73,7 @@ if tt_mh.exists():
                    f"{dl.du_bao()['nguon']}.")
         st.dataframe(
             [{"File": m["file"], "Phiên bản": m["ten"], "Biến đầu vào (đúng thứ tự)": ", ".join(m["bien"]),
-              "Tỷ lệ đúng 2025": m["accuracy_test"], "AUC 2025": m["auc_test"]} for m in tt["mo_hinh"].values()],
+              f"Tỷ lệ đúng {tt['nam_test']}": m["accuracy_test"], f"AUC {tt['nam_test']}": m["auc_test"]} for m in tt["mo_hinh"].values()],
             hide_index=True, width="stretch")
 
 # ---- Dữ liệu ----------------------------------------------------------------------------------------------------
@@ -100,11 +105,11 @@ if ds["tu_dien"] is not None:
 
 # ---- Giới hạn -----------------------------------------------------------------------------------------------------
 gd.muc("Giới hạn", "Những điều cần biết khi đọc các con số")
-st.markdown("""
-- **CAR** chỉ có số công bố cuối năm (2021–2024); các quý khác là số gần nhất trước đó. Năm 2025 chưa có số công bố.
+st.markdown(f"""
+- **CAR** chỉ có số công bố cuối năm ({nam_car[0]}–{nam_car[-1]}); các quý khác là số gần nhất trước đó.{f" Năm {nam_car[-1] + 1}–{nam_cuoi} chưa có số công bố." if nam_car[-1] < nam_cuoi else ""}
 - **ROA, ROE, NIM theo quý** được năm hóa (×4) nên dao động hơn số cả năm; phần xếp hạng dùng số cả năm.
 - **Sự kiện doanh nghiệp** được phân loại theo từ khóa trên tiêu đề tin; tin hợp tác, chuyển đổi số 2021–2024 có thể bị thiếu.
-- **Mô hình dự báo** học trên 128 trường hợp và kiểm chứng trên 32 – kết quả chỉ để tham khảo, không phải khuyến nghị đầu tư.
+- **Mô hình dự báo** học trên {kq["n_train"]} trường hợp và kiểm chứng trên {kq["n_test"]} – kết quả chỉ để tham khảo, không phải khuyến nghị đầu tư.
 - Số liệu VNDirect có thể là bản sau kiểm toán; giá điều chỉnh có thể được điều chỉnh hồi tố khi có cổ tức mới.
 """)
 

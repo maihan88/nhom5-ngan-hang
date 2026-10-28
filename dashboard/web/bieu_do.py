@@ -238,7 +238,7 @@ def dong_gop(dg, cao=300):
 
 def lich_su_tin_hieu(ls, ma, nam_test, nhan, cao=280):
     fig = go.Figure()
-    test = [k for k in ls["ky"] if int(k[:4]) >= nam_test]
+    test = [k for k in ls["ky"] if int(k[:4]) == nam_test]
     if test:
         fig.add_vrect(x0=test[0], x1=test[-1], fillcolor="rgba(201,194,180,0.30)", line_width=0, layer="below")
         fig.add_annotation(x=test[0], y=1.0, yref="paper", yanchor="bottom", xanchor="left", showarrow=False,

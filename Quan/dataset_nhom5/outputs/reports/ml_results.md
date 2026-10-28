@@ -2,7 +2,7 @@
 
 ## 1. Data Readiness
 
-READY FOR ML với bản CAR dự báo theo dictionary; 160 quan sát, 8 ngân hàng, 2021–2025. Không thay CSV gốc. Train 128; Test 32. Xem [Data Readiness](data_readiness_report.md).
+READY FOR ML với bản CAR dự báo theo dictionary; 176 quan sát, 8 ngân hàng, 2021–2026. Không thay CSV gốc. Train 128; Test 32. Xem [Data Readiness](data_readiness_report.md).
 
 ## 2. Logistic Regression
 
@@ -32,31 +32,31 @@ Hệ số dương/âm biểu thị liên hệ cùng/ngược chiều với log-o
 
 | K | Inertia | Silhouette | smallest_cluster |
 |---|---|---|---|
-| 2 | 611.8148 | 0.5337 | 21 |
-| 3 | 413.2167 | 0.3738 | 20 |
-| 4 | 340.1623 | 0.3566 | 18 |
-| 5 | 283.0924 | 0.3764 | 3 |
-| 6 | 261.2651 | 0.3105 | 3 |
+| 2 | 672.6384 | 0.4348 | 44 |
+| 3 | 488.8039 | 0.3554 | 22 |
+| 4 | 429.4501 | 0.2497 | 22 |
+| 5 | 379.1779 | 0.2295 | 12 |
+| 6 | 314.8906 | 0.3314 | 6 |
 
-Chọn K=2: silhouette cao nhất trong 2–6, đối chiếu đường inertia và profile dưới đây. Đây là quy tắc có thể tái lập; elbow chỉ mang tính bổ trợ, không khẳng định có điểm gãy rõ. Nhóm không được chọn bằng target hoặc Test performance. Fit scaler toàn bộ 160 mẫu cho mục đích mô tả; không dùng cụm/PCA để dự báo.
+Chọn K=2: silhouette cao nhất trong 2–6, đối chiếu đường inertia và profile dưới đây. Đây là quy tắc có thể tái lập; elbow chỉ mang tính bổ trợ, không khẳng định có điểm gãy rõ. Nhóm không được chọn bằng target hoặc Test performance. Fit scaler toàn bộ 176 mẫu cho mục đích mô tả; không dùng cụm/PCA để dự báo.
 
 | cluster | roa | roe | nim | npl | car | ldr | observations | description |
 |---|---|---|---|---|---|---|---|---|
-| 0 | 1.779 | 19.529 | 3.614 | 1.291 | 10.935 | 103.311 | 139 | NPL thấp tương đối / LDR thấp tương đối |
-| 1 | 1.987 | 12.811 | 6.335 | 4.797 | 14.664 | 134.825 | 21 | NPL cao tương đối / LDR cao tương đối |
+| 0 | 1.562 | 19.378 | 3.386 | 1.465 | 10.273 | 101.879 | 132 | CAR thấp tương đối / LDR thấp tương đối |
+| 1 | 2.478 | 15.992 | 5.473 | 2.769 | 15.059 | 128.971 | 44 | CAR cao tương đối / LDR cao tương đối |
 
 Tên cụm theo hai độ lệch chuẩn lớn nhất so với trung bình toàn mẫu; “cao/thấp” là tương đối trong dataset, không phải xếp hạng chất lượng ngân hàng. Phân cụm các ngân hàng-quý, không phải 8 ngân hàng cố định. Số ngân hàng-quý theo ngân hàng:
 
 | ma_nh | 0 | 1 |
 |---|---|---|
-| ACB | 20 | 0 |
-| BID | 20 | 0 |
-| CTG | 20 | 0 |
-| MBB | 20 | 0 |
-| STB | 19 | 1 |
-| TCB | 20 | 0 |
-| VCB | 20 | 0 |
-| VPB | 0 | 20 |
+| ACB | 22 | 0 |
+| BID | 22 | 0 |
+| CTG | 22 | 0 |
+| MBB | 22 | 0 |
+| STB | 22 | 0 |
+| TCB | 0 | 22 |
+| VCB | 22 | 0 |
+| VPB | 0 | 22 |
 
 Cluster_over_time và cluster_transitions cho thấy thay đổi theo thời gian; số cụm là nhãn tùy ý, không có thứ bậc. CAR phân cụm là CAR gốc đã được nhóm điền theo nguồn.
 
@@ -68,23 +68,23 @@ Cluster_over_time và cluster_transitions cho thấy thay đổi theo thời gia
 
 | PC | explained_variance_ratio | cumulative |
 |---|---|---|
-| PC1 | 0.4991 | 0.4991 |
-| PC2 | 0.3211 | 0.8202 |
+| PC1 | 0.479 | 0.479 |
+| PC2 | 0.3237 | 0.8026 |
 
 | Feature | PC1 | PC2 |
 |---|---|---|
-| roa | 0.346 | 0.559 |
-| roe | -0.0246 | 0.671 |
-| nim | 0.5056 | 0.1221 |
-| npl | 0.3577 | -0.445 |
-| car | 0.4959 | -0.0027 |
-| ldr | 0.5002 | -0.1564 |
+| roa | 0.3822 | 0.5254 |
+| roe | 0.0035 | 0.6663 |
+| nim | 0.5114 | 0.0932 |
+| npl | 0.3002 | -0.4882 |
+| car | 0.5114 | -0.0322 |
+| ldr | 0.4907 | -0.1789 |
 
 PCA dùng chính ma trận standardized của K-Means. Bảng trên là components_ (hệ số vector thành phần); dấu PC tùy quy ước. Hai chiều chỉ là phép chiếu, các cụm có thể chồng lấn và không thể hiện toàn bộ khoảng cách 6 chiều.
 
-PC1: đóng góp mạnh theo trị tuyệt đối: nim (0.506), ldr (0.500), car (0.496). Không gán nhãn kinh tế vượt quá loadings.
+PC1: đóng góp mạnh theo trị tuyệt đối: car (0.511), nim (0.511), ldr (0.491). Không gán nhãn kinh tế vượt quá loadings.
 
-PC2: đóng góp mạnh theo trị tuyệt đối: roe (0.671), roa (0.559), npl (-0.445). Không gán nhãn kinh tế vượt quá loadings.
+PC2: đóng góp mạnh theo trị tuyệt đối: roe (0.666), roa (0.525), npl (-0.488). Không gán nhãn kinh tế vượt quá loadings.
 
 ![PCA](../figures/pca_scatter.png)
 
@@ -94,11 +94,11 @@ PC2: đóng góp mạnh theo trị tuyệt đối: roe (0.671), roa (0.559), npl
 
 **RQ2:** Chênh lệch khi thêm event được tính ở bảng delta phía trên. Các chỉ số không đồng thời cải thiện ở cả hai phiên bản; chưa đủ bằng chứng khẳng định cải thiện ổn định. Với 32 mẫu, một dự đoán khác làm Accuracy thay đổi 3.125 điểm %. Không chọn phiên bản “tốt nhất” dựa trên Test để triển khai.
 
-**RQ3:** 2 cụm tài chính mô tả theo profile thực tế ở trên, gồm NPL thấp tương đối / LDR thấp tương đối; NPL cao tương đối / LDR cao tương đối.
+**RQ3:** 2 cụm tài chính mô tả theo profile thực tế ở trên, gồm CAR thấp tương đối / LDR thấp tương đối; CAR cao tương đối / LDR cao tương đối.
 
 ## 6. Limitations
 
-- Chỉ 160 quan sát, 8 ngân hàng, giai đoạn 2021–2025; các quan sát cùng ngân hàng và cùng quý phụ thuộc nhau.
+- Chỉ 176 quan sát, 8 ngân hàng, giai đoạn 2021–2026; các quan sát cùng ngân hàng và cùng quý phụ thuộc nhau.
 - Test chỉ năm 2025, chưa có validation qua nhiều năm; chưa có khoảng tin cậy hay kết luận ý nghĩa thống kê về cải thiện.
 - Event hiếm, nguồn tin và phân loại có thể thiếu; không âm thầm bỏ hoặc gộp loại.
 - CAR công bố theo năm, giá trị điền tiếp tạo nhiều quý lặp lại; chưa có nguồn manual trong project để kiểm chứng độc lập.
@@ -117,8 +117,8 @@ Financial + General Event: các financial có |hệ số| lớn nhất: roa +0.5
 
 Financial Only: các financial có |hệ số| lớn nhất: roa +0.492 (cùng chiều), roe -0.327 (ngược chiều), car -0.276 (ngược chiều). Đây là liên hệ có điều kiện, không phải tác động nhân quả.
 
-Có 1 lần chuyển cụm giữa các quý liên tiếp trong toàn bộ panel. Cụm 0: ACB 20 mẫu, BID 20 mẫu, CTG 20 mẫu, MBB 20 mẫu, TCB 20 mẫu, VCB 20 mẫu, STB 19 mẫu. Cụm 1: VPB 20 mẫu, STB 1 mẫu. Phân cụm chủ yếu phản ánh khác biệt cố hữu giữa ngân hàng, chưa chứng minh trạng thái tài chính biến đổi rộng theo thời gian. Các mẫu STB trong cụm ít quan sát: Q4/2025.
+Có 0 lần chuyển cụm giữa các quý liên tiếp trong toàn bộ panel. Cụm 0: ACB 22 mẫu, BID 22 mẫu, CTG 22 mẫu, MBB 22 mẫu, STB 22 mẫu, VCB 22 mẫu. Cụm 1: TCB 22 mẫu, VPB 22 mẫu. Phân cụm chủ yếu phản ánh khác biệt cố hữu giữa ngân hàng, chưa chứng minh trạng thái tài chính biến đổi rộng theo thời gian. Các mẫu STB trong cụm ít quan sát: .
 
-K=2 có silhouette 0.534; K=5 và 6 tạo cụm nhỏ nhất chỉ 3 mẫu. Đường inertia tiếp tục giảm nhưng tách thêm cụm kém gọn và khó bảo vệ trên dataset nhỏ. K=2 phù hợp hai profile đối lập về NPL/LDR, đồng thời nhóm NPL/LDR cao có NIM và CAR cao hơn, ROE thấp hơn. Chênh lệch ROA nhỏ, không nên gọi nhóm này profitability cao.
+K=2 có silhouette 0.435; K=5 và 6 tạo cụm nhỏ nhất chỉ 3 mẫu. Đường inertia tiếp tục giảm nhưng tách thêm cụm kém gọn và khó bảo vệ trên dataset nhỏ. K=2 phù hợp hai profile đối lập về NPL/LDR, đồng thời nhóm NPL/LDR cao có NIM và CAR cao hơn, ROE thấp hơn. Chênh lệch ROA nhỏ, không nên gọi nhóm này profitability cao.
 
 PC1 có NIM, LDR, CAR cùng dấu và đóng góp mạnh; mô tả trục đồng biến ba tỷ lệ này, không gọi chung là “tốt hơn”. PC2 chủ yếu đối chiếu ROE/ROA dương với NPL âm; hỗ trợ cách đọc lợi nhuận tương đối đối lập nợ xấu trong phép chiếu này. PCA scatter vẫn có một điểm cụm NPL cao lệch xa theo PC2; không xem mọi điểm cùng cụm là đồng nhất.

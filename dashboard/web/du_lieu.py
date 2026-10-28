@@ -107,3 +107,12 @@ def gia_12_thang(gia, den=None):
 def ds_ky():
     """Danh sách kỳ '2021Q1'.. kỳ cuối, đúng thứ tự."""
     return dl.thu_tu_ky()
+
+
+def giai_doan():
+    """Giai đoạn dữ liệu để ghi trong câu chữ: '2021–2025' khi năm cuối đủ 4 quý, ngược lại 'Q1/2021–Q2/2026'."""
+    ky = ds_ky()
+    dau, cuoi = ky[0], ky[-1]
+    if cuoi.endswith("4"):
+        return f"{dau[:4]}–{cuoi[:4]}"
+    return f"Q{dau[-1]}/{dau[:4]}–Q{cuoi[-1]}/{cuoi[:4]}"

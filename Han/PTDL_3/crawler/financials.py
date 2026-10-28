@@ -43,7 +43,7 @@ def fetch_statements(client: HttpClient, code: str, report_type: str = "QUARTER"
     q = (f"code:{code}~reportType:{report_type}~modelType:{model_types}"
          f"~fiscalDate:{','.join(dates)}")
     rows = client.vnd_paged("financial_statements", q, namespace="vnd_financial_statements",
-                            key=f"{code}_{report_type}_{model_types}")
+                            key=f"{code}_{report_type}_{model_types}{config.CACHE_TAG}")
     df = pd.DataFrame(rows)
     if df.empty:
         log.warning("Không có BCTC %s cho %s", report_type, code)
@@ -72,7 +72,7 @@ def _pivot_items(df: pd.DataFrame) -> pd.DataFrame:
 def fetch_ratios(client: HttpClient, code: str) -> pd.DataFrame:
     q = (f"code:{code}~ratioCode:{','.join(config.RATIO_CODES)}"
          f"~reportDate:gte:{config.FIN_FROM}~reportDate:lte:{config.FIN_TO}")
-    rows = client.vnd_paged("ratios", q, namespace="vnd_ratios", key=f"{code}_bank_ratios",
+    rows = client.vnd_paged("ratios", q, namespace="vnd_ratios", key=f"{code}_bank_ratios{config.CACHE_TAG}",
                             sort="reportDate:asc")
     df = pd.DataFrame(rows)
     if df.empty:

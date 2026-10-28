@@ -44,5 +44,15 @@ def prediction_data(df):
     result.loc[rows, 'car'] = [q3.loc[(r.ma_nh, r.nam)] for r in result.loc[rows].itertuples()]
     return result
 
+def test_year(d):
+    """Năm Test = năm cuối mà mọi ngân hàng có nhãn đủ 4 quý; Train = các năm trước đó.
+    Quý sau năm Test (năm đang dở, quý cuối chưa có nhãn) chỉ dùng để dự báo, không huấn luyện/kiểm chứng."""
+    full = d.groupby('nam')[TARGET].agg(lambda s: s.notna().sum() == 4 * d.ma_nh.nunique())
+    return int(full[full].index.max())
+
+def labelled(d):
+    """Dòng có nhãn: mọi năm đến hết năm Test."""
+    return d.nam <= test_year(d)
+
 def hashes():
     return {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in ROOT.glob('*.csv')}

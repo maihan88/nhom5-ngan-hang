@@ -1,7 +1,8 @@
 """
 chay_tat_ca.py – Một lệnh chạy lại toàn bộ dự án Nhóm 5, từ thu thập dữ liệu đến web.
 
-    py chay_tat_ca.py                  # thu thập (dùng cache nếu có) -> thống kê -> ML -> đồng bộ dashboard
+    py chay_tat_ca.py                  # thu thập tới quý mới nhất -> thống kê -> ML -> đồng bộ dashboard
+    py chay_tat_ca.py --den-quy 2025Q4 --offline   # tái lập đúng bộ 2021–2025 của báo cáo, không cần mạng
     py chay_tat_ca.py --refresh        # bỏ cache, tải lại toàn bộ dữ liệu mới từ nguồn
     py chay_tat_ca.py --offline        # chỉ dùng cache (vd sau khi sửa tay data/manual/ của Hân)
     py chay_tat_ca.py --bo-thu-thap    # không crawl, dùng luôn data/output hiện có của Hân
@@ -154,6 +155,7 @@ def main():
     ap.add_argument("--refresh", action="store_true", help="bỏ cache, tải lại toàn bộ dữ liệu từ nguồn")
     ap.add_argument("--offline", action="store_true", help="chỉ dùng cache đã tải, không gửi request")
     ap.add_argument("--bo-thu-thap", action="store_true", help="không chạy crawl, dùng data/output hiện có của Hân")
+    ap.add_argument("--den-quy", help="chốt quý cuối, vd 2025Q4 (mặc định: quý mới nhất đã qua hạn công bố BCTC)")
     ap.add_argument("--mo-web", action="store_true", help="chạy xong thì mở web (streamlit run)")
     ap.add_argument("--chay-notebook", help=argparse.SUPPRESS)
     args = ap.parse_args()
@@ -162,6 +164,8 @@ def main():
     if args.refresh and args.offline:
         ap.error("--refresh và --offline không dùng cùng nhau")
 
+    if args.den_quy:
+        MOI_TRUONG["PTDL_DEN_QUY"] = args.den_quy
     bat_dau = time.time()
     for so, (ten, ham) in enumerate(CAC_BUOC, 1):
         print(f"\n[{so}/{len(CAC_BUOC)}] {ten}", flush=True)

@@ -5,6 +5,9 @@ tập trung ở đây để dễ rà soát / chỉnh sửa mà không cần đ�
 """
 from datetime import date, timedelta
 from pathlib import Path
+import os
+
+import pandas as pd
 
 # ---------------------------------------------------------------------------
 # Phạm vi đề tài
@@ -22,7 +25,6 @@ BANKS = {
 }
 
 START_YEAR = 2021
-END_YEAR = 2025
 
 # Mốc dự báo của mỗi quý = ngày kết thúc quý + LABEL_LAG_DAYS. 45 ngày là hạn chót công bố
 # BCTC quý hợp nhất (Thông tư 96/2020/TT-BTC); dữ liệu VNDirect cho thấy BCTC muộn nhất nhập sau 39 ngày.
@@ -30,14 +32,41 @@ END_YEAR = 2025
 # chỉ dùng thông tin đã công bố tại thời điểm dự báo.
 LABEL_LAG_DAYS = 45
 
+
+def _ky_cuoi() -> pd.Period:
+    """Quý cuối của bộ dữ liệu.
+
+    Mặc định: quý gần nhất đã qua hạn công bố BCTC (cuối quý + LABEL_LAG_DAYS <= hôm nay), nên mỗi lần
+    chạy pipeline tự lấy thêm quý mới. Đặt biến môi trường PTDL_DEN_QUY (vd "2025Q4") để chốt cố định –
+    dùng khi cần tái lập đúng bộ dữ liệu 2021–2025 của báo cáo.
+    """
+    chot = os.environ.get("PTDL_DEN_QUY", "").strip().upper()
+    if chot:
+        return pd.Period(chot, freq="Q")
+    ky = pd.Period(date.today(), freq="Q") - 1
+    while ky.end_time.date() + timedelta(days=LABEL_LAG_DAYS) > date.today():
+        ky -= 1
+    return ky
+
+
+END_PERIOD = _ky_cuoi()
+END_YEAR, END_QUARTER = END_PERIOD.year, END_PERIOD.quarter
+END_DATE = END_PERIOD.end_time.date()
+
 # Lấy thêm 1 quý trước giai đoạn để tính bình quân (ROA/ROE/NIM) cho Q1/2021,
-# và giá đến mốc dự báo của Q1 năm sau để tính nhãn cho Q4/END_YEAR.
+# và giá đến mốc dự báo của quý sau kỳ cuối để tính nhãn cho kỳ cuối (chưa tới mốc đó thì lấy đến
+# hôm nay; nhãn của kỳ cuối khi ấy để trống – xem prices.price_on_or_before).
 FIN_FROM = "2020-12-31"
-FIN_TO = f"{END_YEAR}-12-31"
+FIN_TO = END_DATE.isoformat()
 PRICE_FROM = "2020-12-01"
-PRICE_TO = (date(END_YEAR + 1, 3, 31) + timedelta(days=LABEL_LAG_DAYS)).isoformat()
+PRICE_TO = min((END_PERIOD + 1).end_time.date() + timedelta(days=LABEL_LAG_DAYS), date.today()).isoformat()
 EVENT_FROM = f"{START_YEAR}-01-01"
-EVENT_TO = f"{END_YEAR}-12-31"
+EVENT_TO = END_DATE.isoformat()
+
+# Khóa cache của các nguồn không ghi khoảng ngày trong khóa (BCTC, chỉ số, sự kiện, tin) được gắn thêm kỳ
+# cuối, để khi có quý mới thì tải lại thay vì đọc cache cũ. Bộ cache gốc tải với kỳ cuối Q4/2025 giữ
+# khóa cũ (không hậu tố) để `PTDL_DEN_QUY=2025Q4 python run_pipeline.py --offline` vẫn chạy được.
+CACHE_TAG = "" if END_DATE == date(2025, 12, 31) else f"_den{FIN_TO}"
 
 # ---------------------------------------------------------------------------
 # Thư mục

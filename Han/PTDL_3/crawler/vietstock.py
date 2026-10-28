@@ -86,7 +86,7 @@ def fetch_vietstock_news(client: HttpClient, code: str, token: SessionToken,
             config.VIETSTOCK_NEWS_URL,
             lambda page=page: {"code": code, "type": -1, "page": page, "pageSize": PAGE_SIZE,
                                "__RequestVerificationToken": token.get(code)},
-            namespace="vietstock_news", key=f"{code}_p{page}_s{PAGE_SIZE}", headers=headers)
+            namespace="vietstock_news", key=f"{code}_p{page}_s{PAGE_SIZE}{config.CACHE_TAG}", headers=headers)
         if not isinstance(data, list):
             raise RuntimeError(f"Vietstock trả dữ liệu lạ cho {code} trang {page}: {str(data)[:200]}")
         if not data:

@@ -23,7 +23,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 |---|---|---|---|---|
 | `ma_nh` | Mã cổ phiếu ngân hàng | - | VCB, BID, CTG, TCB, MBB, ACB, STB, VPB | Khóa nối bảng |
 | `quy` | Quý | - | Q1..Q4 | Khóa nối bảng |
-| `nam` | Năm | - | 2021..2025 | Khóa nối bảng |
+| `nam` | Năm | - | 2021..2026 | Khóa nối bảng |
 | `ngay_bctc` | Ngày kết thúc kỳ BCTC | yyyy-mm-dd | VNDirect financial_statements | Mô tả / truy vết |
 | `loai_hinh_so_huu` | Loại hình sở hữu | - | Quốc doanh (VCB, BID, CTG) / Tư nhân (còn lại) | Biến nhóm |
 | `tong_tai_san` | Tổng tài sản cuối quý | tỷ đồng | BCĐKT – TỔNG CỘNG TÀI SẢN (mã 12700) | Số liệu gốc |
@@ -57,7 +57,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | Cột | Mô tả | Đơn vị | Nguồn / Công thức | Vai trò |
 |---|---|---|---|---|
 | `ma_nh` | Mã cổ phiếu ngân hàng | - | VCB, BID, CTG, TCB, MBB, ACB, STB, VPB | Khóa nối bảng |
-| `ngay` | Ngày giao dịch (bảng giá ngày) | yyyy-mm-dd | VNDirect stock_prices, từ 2020-12-01 đến 2026-05-15. Các phiên ngoài 2021–2025 chỉ dùng để tính giá đầu quý Q1/2021 và nhãn quý sau; khi vẽ biểu đồ nên lọc theo giai đoạn nghiên cứu | Khóa nối bảng |
+| `ngay` | Ngày giao dịch (bảng giá ngày) | yyyy-mm-dd | VNDirect stock_prices, từ 2020-12-01 đến 2026-10-28. Các phiên ngoài 2021–2026 chỉ dùng để tính giá đầu quý Q1/2021 và nhãn quý sau; khi vẽ biểu đồ nên lọc theo giai đoạn nghiên cứu | Khóa nối bảng |
 | `gia_dong_cua` | Giá đóng cửa chưa điều chỉnh (bảng giá ngày) | nghìn đồng | close | Chỉ để đối chiếu |
 | `gia_dong_cua_dieu_chinh` | Giá đóng cửa đã điều chỉnh (bảng giá ngày) | nghìn đồng | adClose | Dữ liệu giá |
 | `gia_mo_cua_dieu_chinh` | Giá mở cửa đã điều chỉnh (bảng giá ngày) | nghìn đồng | adOpen | Dữ liệu giá |
@@ -73,7 +73,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 |---|---|---|---|---|
 | `ma_nh` | Mã cổ phiếu ngân hàng | - | VCB, BID, CTG, TCB, MBB, ACB, STB, VPB | Khóa nối bảng |
 | `quy` | Quý | - | Q1..Q4 | Khóa nối bảng |
-| `nam` | Năm | - | 2021..2025 | Khóa nối bảng |
+| `nam` | Năm | - | 2021..2026 | Khóa nối bảng |
 | `ngay_dau` | Phiên giao dịch đầu tiên của quý | yyyy-mm-dd |  | Mô tả / truy vết |
 | `ngay_cuoi` | Phiên giao dịch cuối cùng của quý | yyyy-mm-dd |  | Mô tả / truy vết |
 | `so_phien_gd` | Số phiên giao dịch trong quý | phiên |  | Mô tả / truy vết |
@@ -86,7 +86,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `gia_min` | Giá thấp nhất trong quý (điều chỉnh) | nghìn đồng | min adLow | Biến bổ sung |
 | `kl_gd_tb_phien` | KL khớp lệnh bình quân phiên | cổ phiếu |  | Biến bổ sung |
 | `tong_kl_gd_quy` | Tổng KL khớp lệnh trong quý | cổ phiếu |  | Biến bổ sung |
-| `ty_suat_sinh_loi_quy_sau` | Tỷ suất sinh lời kỳ tiếp theo, tính từ MỐC DỰ BÁO | % | Mốc dự báo của quý t = ngày cuối quý t + 45 ngày (khi BCTC quý t đã công bố). Lợi suất = giá tại mốc của quý t+1 / giá tại mốc của quý t − 1, × 100; giá tại mốc = giá đóng cửa điều chỉnh của phiên cuối cùng trước hoặc đúng ngày mốc. KHÁC `ty_suat_sinh_loi_quy` của quý sau (tính theo quý lịch). Giá dùng tính nhãn có đủ trong `bang2a_gia_ngay` (đến 2026-05-15). **Không dùng làm biến đầu vào** | Nguồn của nhãn |
+| `ty_suat_sinh_loi_quy_sau` | Tỷ suất sinh lời kỳ tiếp theo, tính từ MỐC DỰ BÁO | % | Mốc dự báo của quý t = ngày cuối quý t + 45 ngày (khi BCTC quý t đã công bố). Lợi suất = giá tại mốc của quý t+1 / giá tại mốc của quý t − 1, × 100; giá tại mốc = giá đóng cửa điều chỉnh của phiên cuối cùng trước hoặc đúng ngày mốc. KHÁC `ty_suat_sinh_loi_quy` của quý sau (tính theo quý lịch). Giá dùng tính nhãn có đủ trong `bang2a_gia_ngay` (đến 2026-10-28). **Không dùng làm biến đầu vào** | Nguồn của nhãn |
 | `xu_huong_quy_sau` | Biến mục tiêu: giá kỳ tiếp theo (từ mốc dự báo) tăng? | 0/1 | 1 nếu ty_suat_sinh_loi_quy_sau > 0, ngược lại 0 | Biến mục tiêu (nhãn) |
 
 ## Bảng 3a – Sự kiện chi tiết (`bang3a_su_kien_chi_tiet.csv`)
@@ -95,7 +95,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 |---|---|---|---|---|
 | `ma_nh` | Mã cổ phiếu ngân hàng | - | VCB, BID, CTG, TCB, MBB, ACB, STB, VPB | Khóa nối bảng |
 | `quy` | Quý của ngày công bố sự kiện | - | Q1..Q4 | Khóa nối bảng |
-| `nam` | Năm của ngày công bố sự kiện | - | 2021..2025 | Khóa nối bảng |
+| `nam` | Năm của ngày công bố sự kiện | - | 2021..2026 | Khóa nối bảng |
 | `ngay_cong_bo` | Ngày giờ đăng tin đầu tiên của sự kiện | yyyy-mm-dd HH:MM | Tin sớm nhất trong cụm tin đã gộp; 00:00 = nguồn chỉ ghi ngày, không ghi giờ | Mô tả / truy vết |
 | `loai_su_kien` | Mã loại sự kiện | - | tang_von / chuyen_doi_so / hop_tac_trung_thau / doi_lanh_dao / chinh_sach_nhnn / khac. Phân loại bằng từ khóa trên tiêu đề + rà soát thủ công (data/manual) | Mô tả / truy vết |
 | `loai_su_kien_nhan` | Tên loại sự kiện (tiếng Việt) | - | Tăng vốn; Chuyển đổi số - tiền số; Hợp tác chiến lược - trúng thầu; Đổi lãnh đạo; Chính sách NHNN; Khác | Mô tả / truy vết |
@@ -111,7 +111,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 |---|---|---|---|---|
 | `ma_nh` | Mã cổ phiếu ngân hàng | - | VCB, BID, CTG, TCB, MBB, ACB, STB, VPB | Khóa nối bảng |
 | `quy` | Quý | - | Q1..Q4 | Khóa nối bảng |
-| `nam` | Năm | - | 2021..2025 | Khóa nối bảng |
+| `nam` | Năm | - | 2021..2026 | Khóa nối bảng |
 | `co_su_kien` | Có sự kiện phi tài chính đáng chú ý trong quý | 0/1 | 1 nếu so_luong_su_kien > 0 | Biến phân tích chính |
 | `so_luong_su_kien` | Số sự kiện trong quý (sau khi gộp tin trùng) | sự kiện | Tin cùng loại cách nhau ≤ 3 ngày tính là 1; riêng tăng vốn tính tối đa 1 lần/quý | Biến phân tích chính |
 | `loai_su_kien` | Các loại sự kiện trong quý | - | Tăng vốn; Chuyển đổi số - tiền số; Hợp tác chiến lược - trúng thầu; Đổi lãnh đạo; Chính sách NHNN; Khác | Mô tả / truy vết |

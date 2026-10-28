@@ -343,7 +343,7 @@ RANGES = {  # khoảng hợp lý để phát hiện số liệu bất thường 
 def validation_report(bang4: pd.DataFrame, annual: pd.DataFrame, events_detail: pd.DataFrame,
                       entry: pd.DataFrame | None = None) -> str:
     L = ["# Báo cáo kiểm tra chất lượng dữ liệu", ""]
-    n_exp = len(config.BANKS) * (config.END_YEAR - config.START_YEAR + 1) * 4
+    n_exp = len(config.BANKS) * ((config.END_YEAR - config.START_YEAR) * 4 + config.END_QUARTER)
     L += [f"- Số dòng Bảng 4: **{len(bang4)}** (kỳ vọng {n_exp})", ""]
 
     L += ["## 1. Số quý có dữ liệu theo ngân hàng", "",

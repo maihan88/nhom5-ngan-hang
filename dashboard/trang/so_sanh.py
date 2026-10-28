@@ -111,9 +111,10 @@ if kd is not None:
         phan.append(f"ngân hàng {nhom_cao} có {' và '.join(t for t, n in co if n == nhom_cao)} cao hơn rõ rệt")
     if khong:
         phan.append(f"{' và '.join(t for t, _ in khong)} chưa khác biệt đáng kể")
+    nam_car = sorted(b4.loc[b4["car_nguon"].isin(["cong_bo", "tra_thu_cong"]), "nam"].unique())
     gd.muc("Quốc doanh và tư nhân", gd.hoa_dau("; ".join(phan)),
-           "Quốc doanh: VCB, BID, CTG · Tư nhân: TCB, MBB, ACB, STB, VPB. Trung bình theo năm, 2021–2025 "
-           "(CAR: số công bố cuối năm 2021–2024).")
+           f"Quốc doanh: VCB, BID, CTG · Tư nhân: TCB, MBB, ACB, STB, VPB. Trung bình theo năm, {dl.giai_doan()} "
+           f"(CAR: số công bố cuối năm {nam_car[0]}–{nam_car[-1]}).")
     gd.dumbbell([{"ten": ten[c], "qd": chinh.loc[c, "tb_quoc_doanh"], "tn": chinh.loc[c, "tb_tu_nhan"],
                   "y_nghia": bool(chinh.loc[c, "bac_bo_H0"])} for c in ["nim", "npl", "car"]],
                 cf.MAU_NHOM[cf.NHOM_QUOC_DOANH], cf.MAU_NHOM[cf.NHOM_TU_NHAN])

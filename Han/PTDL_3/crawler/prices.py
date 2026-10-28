@@ -93,7 +93,7 @@ def aggregate_quarterly(daily: pd.DataFrame) -> pd.DataFrame:
 
     agg["quy"] = "Q" + agg["period"].dt.quarter.astype(str)
     agg["nam"] = agg["period"].dt.year
-    agg = agg[agg["nam"].between(config.START_YEAR, config.END_YEAR)]
+    agg = agg[(agg["nam"] >= config.START_YEAR) & (agg["period"] <= config.END_PERIOD)]
     cols = ["ma_nh", "quy", "nam", "ngay_dau", "ngay_cuoi", "so_phien_gd",
             "gia_dau_quy", "gia_cuoi_quy", "gia_cuoi_quy_chua_dieu_chinh",
             "ty_suat_sinh_loi_quy", "bien_dong_gia_max_min", "gia_max", "gia_min",

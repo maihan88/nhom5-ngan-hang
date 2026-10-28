@@ -3,7 +3,9 @@
 Phụ trách: **Nguyễn Ngọc Mai Hân** (giai đoạn thu thập & làm sạch).
 Bàn giao cho: Hoàng Ngọc Gia Nghi (thống kê) và Hoàng Mạnh Quân (Machine Learning).
 
-Phạm vi: 8 ngân hàng (VCB, BID, CTG, TCB, MBB, ACB, STB, VPB), Q1/2021 – Q4/2025.
+Phạm vi: 8 ngân hàng (VCB, BID, CTG, TCB, MBB, ACB, STB, VPB), từ Q1/2021 đến quý gần nhất đã qua hạn công bố
+BCTC (cuối quý + 45 ngày). Bản báo cáo gốc dùng Q1/2021 – Q4/2025; chốt lại đúng giai đoạn đó bằng biến môi trường
+`PTDL_DEN_QUY=2025Q4` (xem mục 2).
 
 ## 1. Nguồn dữ liệu đã chọn và lý do
 
@@ -26,6 +28,14 @@ python run_pipeline.py --refresh  # bỏ cache, tải lại hết
 ```
 
 Phản hồi gốc được lưu vào `data/raw/`, nên chạy lại sẽ không phải tải lại và vẫn truy vết được số liệu.
+
+Kỳ cuối tự tăng khi có quý mới; khóa cache gắn theo kỳ cuối nên quý mới được tải về chứ không đọc cache cũ.
+Quý cuối thường chưa có nhãn `xu_huong_quy_sau` (chưa tới mốc giá của quý sau) – ô trống đó là đúng.
+Tái lập đúng bộ dữ liệu 2021–2025 của báo cáo, không cần mạng (PowerShell):
+
+```powershell
+$env:PTDL_DEN_QUY = "2025Q4"; py run_pipeline.py --offline --xlsx; Remove-Item Env:PTDL_DEN_QUY
+```
 
 ## 3. Kết quả (`data/output/`)
 

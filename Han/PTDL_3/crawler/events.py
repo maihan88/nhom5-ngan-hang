@@ -136,7 +136,7 @@ def fetch_cafef(client: HttpClient, code: str, page_size: int = 30, max_pages: i
         params = {"symbol": code, "floorID": 0, "configID": 0,
                   "PageIndex": page, "PageSize": page_size, "Type": 2}
         html = client.get_text(config.CAFEF_EVENTS_URL, params, namespace="cafef_events",
-                               key=f"{code}_p{page}_s{page_size}")
+                               key=f"{code}_p{page}_s{page_size}{config.CACHE_TAG}")
         items = _parse_cafef_page(html)
         if not items:
             break
@@ -156,7 +156,7 @@ def fetch_cafef(client: HttpClient, code: str, page_size: int = 30, max_pages: i
 # ---------------------------------------------------------------------------
 def fetch_vnd_capital_events(client: HttpClient, code: str) -> pd.DataFrame:
     q = f"code:{code}~locale:VN~disclosureDate:gte:{config.EVENT_FROM}~disclosureDate:lte:{config.EVENT_TO}"
-    rows = client.vnd_paged("events", q, namespace="vnd_events", key=f"{code}_events",
+    rows = client.vnd_paged("events", q, namespace="vnd_events", key=f"{code}_events{config.CACHE_TAG}",
                             sort="disclosureDate:asc", size=1000)
     out = []
     for r in rows:
@@ -186,7 +186,7 @@ def fetch_vnd_news(client: HttpClient, code: str) -> pd.DataFrame:
     while True:
         params = {"q": q, "sort": "newsDate:desc~newsTime:desc", "size": 100, "page": page,
                   "fields": "newsId,newsTitle,newsAbstract,newsDate,newsTime,newsSource,tagCodes,newsUrl"}
-        data = client.get_json(url, params, namespace="vnd_news", key=f"{code}_news_p{page}")
+        data = client.get_json(url, params, namespace="vnd_news", key=f"{code}_news_p{page}{config.CACHE_TAG}")
         rows.extend(data.get("data", []))
         if page >= int(data.get("totalPages") or 1):
             break
@@ -305,6 +305,8 @@ def aggregate_quarterly(events: pd.DataFrame) -> pd.DataFrame:
     grid = pd.MultiIndex.from_product(
         [list(config.BANKS), range(config.START_YEAR, config.END_YEAR + 1), ["Q1", "Q2", "Q3", "Q4"]],
         names=["ma_nh", "nam", "quy"]).to_frame(index=False)
+    # Năm cuối có thể chưa đủ 4 quý: chỉ giữ đến quý cuối của bộ dữ liệu
+    grid = grid[(grid["nam"] < config.END_YEAR) | (grid["quy"].str[1].astype(int) <= config.END_QUARTER)]
 
     ev = events.copy()
     ev["nam"] = ev["ngay_cong_bo"].dt.year

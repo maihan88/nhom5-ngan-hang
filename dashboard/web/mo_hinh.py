@@ -10,7 +10,8 @@ khi triển khai lên máy khác) thì tự huấn luyện lại theo đúng thi
 Logistic (logistic_model.py):
   • Pipeline = ColumnTransformer(StandardScaler cho 6 biến tài chính, giữ nguyên biến sự kiện)
                + LogisticRegression(max_iter=1000, random_state=42)  (L2, C = 1, ngưỡng 0,5)
-  • Train = các năm trước năm cuối có nhãn, Test = năm cuối (2021–2024 / 2025 với dữ liệu hiện tại)
+  • Test = năm cuối có nhãn đủ 4 quý, Train = các năm trước đó (2021–2024 / 2025 đến khi 2026 đủ năm);
+    quý của năm đang dở chỉ dùng để dự báo
   • CAR đầu vào dự báo: quý 4 dùng CAR quý 3 cùng năm (utils.prediction_data)
   • Mốc so sánh: DummyClassifier(most_frequent)
 K-Means + PCA (clustering.py): chuẩn hóa 6 chỉ số trên toàn bộ mẫu (CAR gốc), thử K = 2..6,
@@ -96,11 +97,15 @@ def _danh_gia(y, du_doan, xac_suat):
 
 def huan_luyen(b4, co_san=None):
     """Huấn luyện mốc so sánh + 3 mô hình (hoặc dùng `co_san` = {tên: Pipeline} đã nạp từ file .pkl) rồi đánh giá
-    trên năm kiểm chứng. Trả về dict: du_lieu (bản dự báo, đủ 160 dòng), nam_test, n_train, n_test,
+    trên năm kiểm chứng. Trả về dict: du_lieu (bản dự báo, mọi ngân hàng–quý), nam_test, n_train, n_test,
     mo_hinh {tên: Pipeline}, danh_gia (DataFrame), du_doan_test (DataFrame), nguon (mô tả nguồn mô hình)."""
     d = du_lieu_du_bao(b4)
     co_nhan = d.dropna(subset=[NHAN] + FIN)
-    nam_test = int(co_nhan["nam"].max())
+    # Năm kiểm chứng = năm cuối mà mọi ngân hàng có nhãn đủ 4 quý (như utils.test_year của Quân); các quý
+    # của năm đang dở chỉ dùng để dự báo, không huấn luyện/kiểm chứng
+    du_nam = co_nhan.groupby("nam").size() == 4 * d["ma_nh"].nunique()
+    nam_test = int(du_nam[du_nam].index.max())
+    co_nhan = co_nhan[co_nhan["nam"] <= nam_test]
     train, test = co_nhan[co_nhan["nam"] < nam_test], co_nhan[co_nhan["nam"] == nam_test]
     ytr, yte = train[NHAN].astype(int), test[NHAN].astype(int)
 

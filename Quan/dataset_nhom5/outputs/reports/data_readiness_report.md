@@ -6,14 +6,14 @@
 
 | file | rows | columns | banks | years | quarters | exact_duplicates |
 |---|---|---|---|---|---|---|
-| bang1_tai_chinh_quy.csv | 160 | 30 | 8 | 2021,2022,2023,2024,2025 | Q1,Q2,Q3,Q4 | 0 |
-| bang2a_gia_ngay.csv | 10851 | 10 | 8 |  |  | 0 |
-| bang2b_gia_quy.csv | 160 | 17 | 8 | 2021,2022,2023,2024,2025 | Q1,Q2,Q3,Q4 | 0 |
-| bang3a_su_kien_chi_tiet.csv | 121 | 11 | 8 | 2021,2022,2023,2024,2025 | Q1,Q2,Q3,Q4 | 0 |
-| bang3b_su_kien_quy.csv | 160 | 15 | 8 | 2021,2022,2023,2024,2025 | Q1,Q2,Q3,Q4 | 0 |
-| bang4_tong_hop.csv | 160 | 56 | 8 | 2021,2022,2023,2024,2025 | Q1,Q2,Q3,Q4 | 0 |
+| bang1_tai_chinh_quy.csv | 176 | 30 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang2a_gia_ngay.csv | 11771 | 10 | 8 |  |  | 0 |
+| bang2b_gia_quy.csv | 176 | 17 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang3a_su_kien_chi_tiet.csv | 146 | 11 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang3b_su_kien_quy.csv | 176 | 15 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang4_tong_hop.csv | 176 | 56 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
 
-Ngân hàng: ACB, BID, CTG, MBB, STB, TCB, VCB, VPB; 2021–2025; Q1–Q4. Mỗi mẫu là ngân hàng × quý.
+Ngân hàng: ACB, BID, CTG, MBB, STB, TCB, VCB, VPB; Q1/2021–Q2/2026. Mỗi mẫu là ngân hàng × quý.
 
 ## 2. Missing Data
 
@@ -33,7 +33,7 @@ Ngân hàng: ACB, BID, CTG, MBB, STB, TCB, VCB, VPB; 2021–2025; Q1–Q4. Mỗi
 | sk_doi_lanh_dao | 0 |
 | sk_chinh_sach_nhnn | 0 |
 | sk_khac | 0 |
-| xu_huong_quy_sau | 0 |
+| xu_huong_quy_sau | 8 |
 
 Các ô trống mô tả sự kiện khi không có sự kiện là hợp lệ. Toàn bộ cột/kiểu/missing nằm trong dataset_schema_missing.csv.
 
@@ -47,29 +47,29 @@ Các ô trống mô tả sự kiện khi không có sự kiện là hợp lệ. 
 |---|---|---|---|
 | All | 0 | 70 | 43.75 |
 | All | 1 | 90 | 56.25 |
-| Train 2021–2024 | 0 | 54 | 42.19 |
-| Train 2021–2024 | 1 | 74 | 57.81 |
-| Test 2025 | 0 | 16 | 50.0 |
-| Test 2025 | 1 | 16 | 50.0 |
+| Train 2021–2025 | 0 | 70 | 43.75 |
+| Train 2021–2025 | 1 | 90 | 56.25 |
+| Test 2026 | 0 | 7 | 43.75 |
+| Test 2026 | 1 | 1 | 6.25 |
 
 ## 5. Event Frequency
 
 | feature | sum_all | nonzero_all | sum_train | nonzero_train | rare_train_lt5 |
 |---|---|---|---|---|---|
-| co_su_kien | 88 | 88 | 70 | 70 | False |
-| so_luong_su_kien | 121 | 88 | 94 | 70 | False |
-| sk_tang_von | 61 | 61 | 49 | 49 | False |
-| sk_chuyen_doi_so | 4 | 4 | 2 | 2 | True |
-| sk_hop_tac_trung_thau | 15 | 15 | 10 | 10 | False |
-| sk_doi_lanh_dao | 33 | 30 | 26 | 24 | False |
+| co_su_kien | 102 | 102 | 88 | 88 | False |
+| so_luong_su_kien | 146 | 102 | 121 | 88 | False |
+| sk_tang_von | 69 | 69 | 61 | 61 | False |
+| sk_chuyen_doi_so | 7 | 7 | 4 | 4 | True |
+| sk_hop_tac_trung_thau | 22 | 21 | 15 | 15 | False |
+| sk_doi_lanh_dao | 40 | 35 | 33 | 30 | False |
 | sk_chinh_sach_nhnn | 2 | 2 | 2 | 2 | True |
-| sk_khac | 6 | 6 | 5 | 5 | False |
+| sk_khac | 6 | 6 | 6 | 6 | False |
 
 Hiếm: dưới 5 quan sát khác 0 trong Train, chỉ là ngưỡng cảnh báo. co_su_kien được suy ra từ count; Model 2A chọn co_su_kien trước khi xem kết quả Test. Model 2B giữ tất cả loại, không thêm tổng count vì tổng này bằng tổng các loại.
 
 ## 6. Leakage Check
 
-Cấm xu_huong_quy_sau và ty_suat_sinh_loi_quy_sau. Đối chiếu: roa_ttm_vnd, roe_ttm_vnd, nim_ttm_vnd, ldr_vnd. Các ngày, nguồn, URL, tiêu đề, car_nguon là mô tả, không làm input. Chỉ whitelist 6 financial và event được chọn. Train 2021–2024; Test 2025; mọi scaler dự báo fit Train. Nhãn theo mốc +45 ngày, không phải quý lịch. Không dùng Test chọn feature/hyperparameter.
+Cấm xu_huong_quy_sau và ty_suat_sinh_loi_quy_sau. Đối chiếu: roa_ttm_vnd, roe_ttm_vnd, nim_ttm_vnd, ldr_vnd. Các ngày, nguồn, URL, tiêu đề, car_nguon là mô tả, không làm input. Chỉ whitelist 6 financial và event được chọn. Train 2021–2025; Test 2026; mọi scaler dự báo fit Train. Nhãn theo mốc +45 ngày, không phải quý lịch. Không dùng Test chọn feature/hyperparameter.
 
 ## 7. CAR Check và giới hạn thời điểm
 
@@ -87,8 +87,8 @@ READY FOR ML — điều kiện: dùng bản CAR dự báo theo dictionary, ch�
 
 | model | columns_including_intercept | rank | condition_number_standardized |
 |---|---|---|---|
-| Financial | 7 | 7 | 8.204 |
-| Financial + general | 8 | 8 | 8.308 |
-| Financial + categories | 13 | 13 | 9.012 |
+| Financial | 7 | 7 | 7.686 |
+| Financial + general | 8 | 8 | 7.78 |
+| Financial + categories | 13 | 13 | 8.227 |
 
 Rank và condition number được kiểm tra trước train. Correlation ở train_feature_correlations.csv. Các financial giữ theo câu hỏi nghiên cứu; regularization L2 hỗ trợ khi tương quan lớn, nhưng hệ số cần diễn giải có điều kiện. Tổng count bằng tổng category nên không đưa đồng thời vào Model 2B.

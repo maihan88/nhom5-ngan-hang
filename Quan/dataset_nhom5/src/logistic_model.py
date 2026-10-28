@@ -13,7 +13,8 @@ from utils import *
 
 def run(d):
     data=prediction_data(d)
-    train,test=data[data.nam<=2024],data[data.nam==2025]
+    year=test_year(data)
+    train,test=data[data.nam<year],data[data.nam==year]
     ytr,yte=train[TARGET],test[TARGET]
     sets={'Baseline':[], 'Financial Only':FIN, 'Financial + General Event':FIN+['co_su_kien'], 'Financial + Event Categories':FIN+CAT}
     performance=[]; coefficients=[]; predictions=[]; matrices=[]; scalers=[]
@@ -54,6 +55,6 @@ def run(d):
     result=pd.DataFrame(performance)
     save(result,'model_comparison'); save(co,'logistic_coefficients'); save(pd.DataFrame(predictions),'test_predictions')
     save(pd.DataFrame(matrices),'confusion_matrices'); save(pd.DataFrame(scalers),'logistic_scaler_parameters')
-    counts=pd.crosstab(data.nam.map(lambda x:'Train' if x<=2024 else 'Test'),data[TARGET])
+    counts=pd.crosstab(data[data.nam<=year].nam.map(lambda x:'Train' if x<year else 'Test'),data[TARGET])
     counts.plot.bar(); plt.ylabel('Observations'); plt.tight_layout(); plt.savefig(FIGURES/'target_distribution.png',dpi=160); plt.close()
     return result,co
