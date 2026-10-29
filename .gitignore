@@ -5,3 +5,6 @@ __pycache__/
 .ipynb_checkpoints/
 .cache/
 ~$*
+
+# Cấu hình Claude Code cá nhân trên máy từng người
+.claude/settings.local.json
