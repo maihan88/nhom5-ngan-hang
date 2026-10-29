@@ -60,7 +60,8 @@ dashboard/
 │   ├── mo_hinh.py         # Logistic Regression, K-Means, PCA theo đúng code của Quân
 │   ├── giao_dien.py       # nhận diện: CSS, định dạng số kiểu Việt, thành phần HTML (đổi tên/màu ở đây)
 │   └── bieu_do.py         # biểu đồ Plotly kiểu báo chí
-├── assets/                # logo, icon, sơ đồ kiến trúc
+├── assets/                # logo, icon, sơ đồ kiến trúc (so_do_kien_truc.svg cho web, .png 16:9 cho ppt)
+├── ve_so_do.py            # vẽ lại sơ đồ kiến trúc: py ve_so_do.py
 ├── .streamlit/config.toml # theme: nền giấy, font Be Vietnam Pro + Fraunces
 ├── src/                   # bản sao code của Nghi (config, data_loader, viz, thong_ke) – KHÔNG sửa ở đây
 ├── data/                  # 6 bảng CSV + data_dictionary.csv của Hân

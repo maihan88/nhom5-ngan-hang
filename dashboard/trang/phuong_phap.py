@@ -36,10 +36,10 @@ gd.nguon("Thu thập, làm sạch dữ liệu và xây dựng bản tin: Nguyễ
 
 # ---- Quy trình -------------------------------------------------------------------------------------------------
 gd.muc("Quy trình", "Từ dữ liệu thô đến bản tin",
-       "Nhóm chạy lại pipeline khi có quý mới; bản tin đọc thẳng bộ dữ liệu sạch nên tự cập nhật, kể cả mô hình.")
-so_do = GOC / "assets" / "SoDoKienTruc.png"
+       "Một lệnh chạy lại cả chuỗi khi có quý mới; bản tin đọc thẳng dữ liệu và kết quả nên tự cập nhật, kể cả mô hình.")
+so_do = GOC / "assets" / "so_do_kien_truc_web.png"   # vẽ bằng ve_so_do.py
 if so_do.exists():
-    st.image(str(so_do), width="stretch")
+    st.image(str(so_do), width="stretch", output_format="PNG")
 c1, c2 = st.columns(2, gap="large")
 c1.markdown("""
 **1 · Thu thập** – API công khai VNDirect (báo cáo tài chính quý, NPL, CAR, giá ngày đã điều chỉnh, sự kiện quyền)

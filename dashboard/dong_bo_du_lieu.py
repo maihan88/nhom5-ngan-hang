@@ -32,7 +32,6 @@ NGUON = [
      ["model_comparison.csv", "logistic_coefficients.csv", "test_predictions.csv",
       "cluster_assignments.csv", "cluster_profiles.csv", "k_selection.csv",
       "pca_explained_variance.csv", "pca_loadings.csv"]),
-    (NHOM, GOC / "assets", ["SoDoKienTruc.png"]),
 ]
 
 
