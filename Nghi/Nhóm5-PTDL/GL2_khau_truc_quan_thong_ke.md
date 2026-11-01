@@ -9,7 +9,7 @@ Pipeline của nhóm gồm năm khâu nối tiếp: Thu thập → Xử lý & l�
 ```mermaid
 flowchart LR
     A[Thu thập<br/>VNDirect API, CafeF] --> B[Xử lý & làm sạch<br/>6 CSV + Data Dictionary]
-    B --> C1[data_loader.py<br/>đọc, lọc 2021–2025, tạo cột kỳ]
+    B --> C1[data_loader.py<br/>đọc, lọc Q1/2021 → kỳ cuối, tạo cột kỳ]
     C1 --> C2[kiem_tra.py<br/>kiểm tra chất lượng]
     C1 --> C3[viz.py<br/>hàm vẽ plotly]
     C1 --> C4[Notebook phân tích<br/>câu 1, 2, 3]

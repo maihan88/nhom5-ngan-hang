@@ -4,8 +4,8 @@ Phụ trách: **Nguyễn Ngọc Mai Hân** (giai đoạn thu thập & làm sạc
 Bàn giao cho: Hoàng Ngọc Gia Nghi (thống kê) và Hoàng Mạnh Quân (Machine Learning).
 
 Phạm vi: 8 ngân hàng (VCB, BID, CTG, TCB, MBB, ACB, STB, VPB), từ Q1/2021 đến quý gần nhất đã qua hạn công bố
-BCTC (cuối quý + 45 ngày). Bản báo cáo gốc dùng Q1/2021 – Q4/2025; chốt lại đúng giai đoạn đó bằng biến môi trường
-`PTDL_DEN_QUY=2025Q4` (xem mục 2).
+BCTC (cuối quý + 45 ngày). Bản dùng cho báo cáo chốt ở Q1/2021 – Q2/2026 (176 dòng), giá đến 28/10/2026; tái lập đúng bộ đó
+bằng biến môi trường `PTDL_DEN_QUY` và `PTDL_GIA_DEN` (xem mục 2).
 
 ## 1. Nguồn dữ liệu đã chọn và lý do
 
@@ -15,7 +15,7 @@ BCTC (cuối quý + 45 ngày). Bản báo cáo gốc dùng Q1/2021 – Q4/2025; 
 | NPL, CAR | VNDirect `/v4/ratios` | BCTC dạng bảng không có phân loại nợ và vốn tự có (nằm trong thuyết minh PDF). VNDirect đã tổng hợp sẵn. |
 | Giá cổ phiếu ngày | VNDirect `/v4/stock_prices` | Có cả giá **đã điều chỉnh** (adClose). Cần giá này vì ngân hàng chia cổ tức bằng cổ phiếu gần như năm nào cũng có. |
 | Sự kiện tăng vốn | VNDirect `/v4/events` | Dữ liệu sự kiện quyền có cấu trúc, ngày công bố chính xác. |
-| Tin/công bố thông tin doanh nghiệp | **CafeF**, mục tin theo mã (`Events_RelatedNews_New.aspx`) | Có lịch sử đủ 2021–2025, mỗi tin có ngày giờ và link gốc. Tin VNDirect **chỉ có từ khoảng 2025** nên chỉ dùng bổ sung. |
+| Tin/công bố thông tin doanh nghiệp | **CafeF**, mục tin theo mã (`Events_RelatedNews_New.aspx`) | Có lịch sử đủ từ 2021, mỗi tin có ngày giờ và link gốc. Tin VNDirect **chỉ có từ khoảng 2025** nên chỉ dùng bổ sung. |
 
 ## 2. Cài đặt và chạy
 
@@ -31,10 +31,11 @@ Phản hồi gốc được lưu vào `data/raw/`, nên chạy lại sẽ không
 
 Kỳ cuối tự tăng khi có quý mới; khóa cache gắn theo kỳ cuối nên quý mới được tải về chứ không đọc cache cũ.
 Quý cuối thường chưa có nhãn `xu_huong_quy_sau` (chưa tới mốc giá của quý sau) – ô trống đó là đúng.
-Tái lập đúng bộ dữ liệu 2021–2025 của báo cáo, không cần mạng (PowerShell):
+Tái lập đúng bộ dữ liệu của báo cáo, không cần mạng (PowerShell). Cần chốt cả ngày cuối của giá, vì khóa cache giá
+có ghi ngày cuối, còn mặc định ngày này trượt theo hôm nay:
 
 ```powershell
-$env:PTDL_DEN_QUY = "2025Q4"; py run_pipeline.py --offline --xlsx; Remove-Item Env:PTDL_DEN_QUY
+$env:PTDL_DEN_QUY = "2026Q2"; $env:PTDL_GIA_DEN = "2026-10-28"; py run_pipeline.py --offline --xlsx; Remove-Item Env:PTDL_DEN_QUY, Env:PTDL_GIA_DEN
 ```
 
 ## 3. Kết quả (`data/output/`)
@@ -46,7 +47,7 @@ $env:PTDL_DEN_QUY = "2025Q4"; py run_pipeline.py --offline --xlsx; Remove-Item E
 | `bang2b_gia_quy.csv` | Bảng 2: gộp theo quý, gồm `ty_suat_sinh_loi_quy` và biến mục tiêu `xu_huong_quy_sau` |
 | `bang3a_su_kien_chi_tiet.csv` | Bảng 3: từng sự kiện kèm ngày, tiêu đề và link (dùng để rà soát) |
 | `bang3b_su_kien_quy.csv` | Bảng 3: theo quý, gồm `co_su_kien`, `so_luong_su_kien`, `loai_su_kien`, `sk_*` |
-| `bang4_tong_hop.csv` | **Bảng 4 bàn giao**: 160 dòng, mỗi dòng là 1 ngân hàng × 1 quý |
+| `bang4_tong_hop.csv` | **Bảng 4 bàn giao**: 176 dòng × 44 cột, mỗi dòng là 1 ngân hàng × 1 quý |
 | `mo_ta_du_lieu.md` | **Đọc đầu tiên**: mỗi file / mỗi cột nói về chuyện gì, viết bằng lời thường, kèm gợi ý cột cho từng câu hỏi nghiên cứu |
 | `data_dictionary.csv/.md` | Giải thích **mọi cột của mọi file**: ý nghĩa, đơn vị, công thức, vai trò (khóa / biến phân tích / nhãn / đối chiếu…), dùng cho câu hỏi nào, lưu ý và thống kê nhanh (ô trống, min, max, trung bình, ví dụ) |
 | `bao_cao_kiem_tra.md` | Kiểm tra chất lượng: độ phủ, ô thiếu, đối chiếu LNST năm, giá trị bất thường |
@@ -72,7 +73,6 @@ Sự kiện được phân loại bằng từ khóa trên tiêu đề (cấu hì
 ## 5. Hạn chế đã biết (nên ghi vào báo cáo)
 
 - **CAR**: VNDirect chỉ có số cuối năm (dù một số ngân hàng tự công bố theo quý/nửa năm). Quý không có số được điền bằng số thật gần nhất trước đó (cột `car_nguon`: `cong_bo`, `tra_thu_cong`, `dien_tiep_ky_truoc`). Cách này không dùng số của tương lai nên không làm rò rỉ thông tin vào mô hình. Số tra thủ công của CTG là nguồn thứ cấp (công ty chứng khoán) vì VietinBank chỉ ghi "tuân thủ"; năm 2025 chưa thay vì một số ngân hàng đã đổi cách tính CAR theo Thông tư 14/2025 nên không so sánh được với các năm trước.
-- **no_xau** là số **ước tính**, tính bằng NPL × dư nợ cho vay KH.
 - **ROA/ROE/NIM** được năm hóa từ số liệu một quý (×4) nên dao động hơn số TTM. Các cột `*_ttm_vnd` để đối chiếu.
 - Tin hợp tác/chuyển đổi số giai đoạn 2021–2024 có thể bị thiếu vì CafeF chủ yếu đăng công bố thông tin chính thức. Nên bổ sung bằng tay qua `su_kien_bo_sung.csv`.
 - API VNDirect là API công khai không có tài liệu chính thức. Nếu cấu trúc thay đổi, chương trình sẽ báo lỗi rõ ràng chứ không âm thầm ghi dữ liệu sai.

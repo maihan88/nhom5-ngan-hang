@@ -24,18 +24,11 @@ DICTIONARY = [
     ("tong_tai_san", "Tổng tài sản cuối quý", "tỷ đồng", "BCĐKT – TỔNG CỘNG TÀI SẢN (mã 12700)"),
     ("von_chu_so_huu", "Vốn chủ sở hữu cuối quý", "tỷ đồng", "BCĐKT – Vốn chủ sở hữu (mã 14000)"),
     ("loi_nhuan_sau_thue", "LNST trong quý (hợp nhất)", "tỷ đồng", "KQKD – LNST TNDN (mã 23003), số phát sinh trong quý"),
-    ("lnst_cong_ty_me", "LNST của cổ đông công ty mẹ trong quý", "tỷ đồng", "KQKD mã 23000"),
-    ("loi_nhuan_truoc_thue", "Lợi nhuận trước thuế trong quý", "tỷ đồng", "KQKD mã 23800"),
     ("tong_du_no", "Dư nợ cho vay khách hàng (gộp, trước dự phòng)", "tỷ đồng", "BCĐKT mã 412100"),
-    ("du_phong_cho_vay", "Dự phòng rủi ro cho vay KH (số âm)", "tỷ đồng", "BCĐKT mã 412200"),
     ("tien_gui_khach_hang", "Tiền gửi của khách hàng", "tỷ đồng", "BCĐKT mã 413300"),
     ("thu_nhap_lai_thuan", "Thu nhập lãi thuần trong quý", "tỷ đồng", "KQKD mã 421900"),
-    ("tong_thu_nhap_hoat_dong", "Tổng thu nhập hoạt động trong quý", "tỷ đồng", "KQKD mã 421701"),
-    ("chi_phi_hoat_dong", "Chi phí hoạt động (quản lý) trong quý", "tỷ đồng", "KQKD mã 22200"),
-    ("chi_phi_du_phong", "Chi phí dự phòng rủi ro tín dụng trong quý", "tỷ đồng", "KQKD mã 422900"),
     ("earning_assets", "Tài sản sinh lãi cuối quý", "tỷ đồng",
      "Tiền gửi NHNN + Tiền gửi & cho vay TCTD + CK kinh doanh + Cho vay KH + CK đầu tư + Mua nợ"),
-    ("no_xau", "Nợ xấu (ƯỚC TÍNH)", "tỷ đồng", "npl/100 × tong_du_no"),
     ("roa", "ROA năm hóa", "%", "LNST quý × 4 / bình quân(Tổng TS đầu quý, cuối quý) × 100"),
     ("roe", "ROE năm hóa", "%", "LNST quý × 4 / bình quân(VCSH đầu quý, cuối quý) × 100"),
     ("nim", "NIM năm hóa", "%", "Thu nhập lãi thuần quý × 4 / bình quân(TS sinh lãi đầu, cuối quý) × 100"),
@@ -70,13 +63,8 @@ DICTIONARY = [
     ("so_phien_gd", "Số phiên giao dịch trong quý", "phiên", ""),
     ("gia_dau_quy", "Giá đầu quý (điều chỉnh)", "nghìn đồng", "Giá đóng cửa điều chỉnh phiên cuối của quý trước"),
     ("gia_cuoi_quy", "Giá cuối quý (điều chỉnh)", "nghìn đồng", "Giá đóng cửa điều chỉnh phiên cuối của quý"),
-    ("gia_cuoi_quy_chua_dieu_chinh", "Giá cuối quý chưa điều chỉnh", "nghìn đồng", "close phiên cuối quý"),
     ("ty_suat_sinh_loi_quy", "Tỷ suất sinh lời cổ phiếu trong quý", "%", "(gia_cuoi_quy / gia_dau_quy − 1) × 100"),
     ("bien_dong_gia_max_min", "Biên độ dao động giá trong quý", "%", "(giá cao nhất − giá thấp nhất) / giá thấp nhất × 100, giá điều chỉnh"),
-    ("gia_max", "Giá cao nhất trong quý (điều chỉnh)", "nghìn đồng", "max adHigh"),
-    ("gia_min", "Giá thấp nhất trong quý (điều chỉnh)", "nghìn đồng", "min adLow"),
-    ("kl_gd_tb_phien", "KL khớp lệnh bình quân phiên", "cổ phiếu", ""),
-    ("tong_kl_gd_quy", "Tổng KL khớp lệnh trong quý", "cổ phiếu", ""),
     ("ty_suat_sinh_loi_quy_sau", "Tỷ suất sinh lời kỳ tiếp theo, tính từ MỐC DỰ BÁO", "%",
      f"Mốc dự báo của quý t = ngày cuối quý t + {config.LABEL_LAG_DAYS} ngày (khi BCTC quý t đã công bố). "
      "Lợi suất = giá tại mốc của quý t+1 / giá tại mốc của quý t − 1, × 100; giá tại mốc = giá đóng cửa "
@@ -122,16 +110,13 @@ DICTIONARY_3A = [
 # (vai trò, dùng cho, lưu ý khi dùng) – để người phân tích biết cột nào dùng vào việc gì.
 # CH1..CH5 = 5 câu hỏi nghiên cứu trong đề xuất của nhóm.
 _KEY = ("Khóa nối bảng", "Mọi bảng", "Nối các bảng theo ma_nh + quy + nam")
-_RAW = ("Số liệu gốc", "Dashboard (tra cứu), mô tả quy mô",
-        "Số tuyệt đối, quy mô các NH chênh nhau nhiều – chuẩn hóa trước khi đưa vào K-Means/PCA")
-_RAW_EXTRA = ("Số liệu gốc", "Dashboard; tính thêm chỉ số nếu cần (vd CIR = chi phí HĐ / tổng thu nhập HĐ)", "")
+_RAW_NOTE = "Số tuyệt đối, quy mô các NH chênh nhau nhiều – không đưa trực tiếp vào mô hình"
 _CHECK = ("Chỉ để đối chiếu", "Kiểm tra chéo với cột tự tính",
           "Trùng thông tin với cột chính – không đưa cùng vào mô hình (đa cộng tuyến)")
 _TRACE = ("Mô tả / truy vết", "Dashboard, rà soát", "")
 _EVENT_TEXT = ("Mô tả / truy vết", "Dashboard (xem tin), rà soát",
                "Để trống khi co_su_kien = 0 – ô trống hợp lệ, không phải thiếu dữ liệu")
 _PRICE = ("Dữ liệu giá", "Biểu đồ xu hướng giá / thanh khoản", "")
-_PRICE_Q = ("Biến bổ sung", "Mô tả biến động và thanh khoản; có thể thêm vào mô hình", "")
 ROLES = {
     "ma_nh": _KEY, "quy": _KEY, "nam": _KEY,
     "ngay": ("Khóa nối bảng", "Biểu đồ giá",
@@ -152,11 +137,12 @@ ROLES = {
             "Làm biến đầu vào dự báo: dòng Q4 lấy car của Q3 cùng năm"),
     "ldr": ("Biến phân tích chính", "CH3, CH4–5",
             "Tỷ lệ đơn giản cho vay / tiền gửi KH, khác LDR theo quy định NHNN; VPB > 130% vì hợp nhất FE Credit"),
-    **{c: _RAW for c in ["tong_tai_san", "von_chu_so_huu", "loi_nhuan_sau_thue", "tong_du_no"]},
-    "no_xau": ("Số liệu gốc (ước tính)", "Dashboard", "ƯỚC TÍNH = npl × dư nợ, không phải số công bố"),
-    **{c: _RAW_EXTRA for c in ["lnst_cong_ty_me", "loi_nhuan_truoc_thue", "thu_nhap_lai_thuan",
-                               "tong_thu_nhap_hoat_dong", "chi_phi_hoat_dong", "chi_phi_du_phong",
-                               "tien_gui_khach_hang", "du_phong_cho_vay"]},
+    "tong_tai_san": ("Thành phần tính toán", "Mẫu số của ROA", _RAW_NOTE),
+    "von_chu_so_huu": ("Thành phần tính toán", "Mẫu số của ROE", _RAW_NOTE),
+    "loi_nhuan_sau_thue": ("Thành phần tính toán", "Tử số của ROA, ROE; đối chiếu với LNST năm trên BCTC", _RAW_NOTE),
+    "tong_du_no": ("Thành phần tính toán", "Tử số của LDR; một phần tài sản sinh lãi (NIM)", _RAW_NOTE),
+    "thu_nhap_lai_thuan": ("Thành phần tính toán", "Tử số của NIM", _RAW_NOTE),
+    "tien_gui_khach_hang": ("Thành phần tính toán", "Mẫu số của LDR", _RAW_NOTE),
     "earning_assets": ("Thành phần tính toán", "Mẫu số của NIM", ""),
     **{c: _CHECK for c in ["roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd", "ldr_vnd"]},
     "ngay_bctc": _TRACE,
@@ -168,10 +154,9 @@ ROLES = {
     **{c: _TRACE for c in ["ngay_dau", "ngay_cuoi", "so_phien_gd"]},
     "gia_dau_quy": ("Thành phần tính toán", "Tính ty_suat_sinh_loi_quy", ""),
     "gia_cuoi_quy": ("Thành phần tính toán", "Tính ty_suat_sinh_loi_quy", ""),
-    "gia_cuoi_quy_chua_dieu_chinh": ("Chỉ để đối chiếu", "Giá thực tế cuối quý", ""),
     "ty_suat_sinh_loi_quy": ("Biến phân tích chính", "CH3 (tương quan với chỉ số tài chính)",
                              "Tính theo quý lịch – KHÁC ty_suat_sinh_loi_quy_sau"),
-    **{c: _PRICE_Q for c in ["bien_dong_gia_max_min", "gia_max", "gia_min", "kl_gd_tb_phien", "tong_kl_gd_quy"]},
+    "bien_dong_gia_max_min": ("Biến mô tả", "Thống kê mô tả (biểu đồ biên độ giá theo quý)", ""),
     "ty_suat_sinh_loi_quy_sau": ("Nguồn của nhãn", "CH4 (chỉ để hiểu nhãn)",
                                  "KHÔNG dùng làm biến đầu vào – nhãn được tạo trực tiếp từ cột này (rò rỉ 100%)"),
     "xu_huong_quy_sau": ("Biến mục tiêu (nhãn)", "CH4 (Logistic Regression)",

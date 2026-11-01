@@ -26,11 +26,10 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `nam` | Năm | - | 2021..2026 | Khóa nối bảng |
 | `ngay_bctc` | Ngày kết thúc kỳ BCTC | yyyy-mm-dd | VNDirect financial_statements | Mô tả / truy vết |
 | `loai_hinh_so_huu` | Loại hình sở hữu | - | Quốc doanh (VCB, BID, CTG) / Tư nhân (còn lại) | Biến nhóm |
-| `tong_tai_san` | Tổng tài sản cuối quý | tỷ đồng | BCĐKT – TỔNG CỘNG TÀI SẢN (mã 12700) | Số liệu gốc |
-| `von_chu_so_huu` | Vốn chủ sở hữu cuối quý | tỷ đồng | BCĐKT – Vốn chủ sở hữu (mã 14000) | Số liệu gốc |
-| `loi_nhuan_sau_thue` | LNST trong quý (hợp nhất) | tỷ đồng | KQKD – LNST TNDN (mã 23003), số phát sinh trong quý | Số liệu gốc |
-| `tong_du_no` | Dư nợ cho vay khách hàng (gộp, trước dự phòng) | tỷ đồng | BCĐKT mã 412100 | Số liệu gốc |
-| `no_xau` | Nợ xấu (ƯỚC TÍNH) | tỷ đồng | npl/100 × tong_du_no | Số liệu gốc (ước tính) |
+| `tong_tai_san` | Tổng tài sản cuối quý | tỷ đồng | BCĐKT – TỔNG CỘNG TÀI SẢN (mã 12700) | Thành phần tính toán |
+| `von_chu_so_huu` | Vốn chủ sở hữu cuối quý | tỷ đồng | BCĐKT – Vốn chủ sở hữu (mã 14000) | Thành phần tính toán |
+| `loi_nhuan_sau_thue` | LNST trong quý (hợp nhất) | tỷ đồng | KQKD – LNST TNDN (mã 23003), số phát sinh trong quý | Thành phần tính toán |
+| `tong_du_no` | Dư nợ cho vay khách hàng (gộp, trước dự phòng) | tỷ đồng | BCĐKT mã 412100 | Thành phần tính toán |
 | `roa` | ROA năm hóa | % | LNST quý × 4 / bình quân(Tổng TS đầu quý, cuối quý) × 100 | Biến phân tích chính |
 | `roe` | ROE năm hóa | % | LNST quý × 4 / bình quân(VCSH đầu quý, cuối quý) × 100 | Biến phân tích chính |
 | `nim` | NIM năm hóa | % | Thu nhập lãi thuần quý × 4 / bình quân(TS sinh lãi đầu, cuối quý) × 100 | Biến phân tích chính |
@@ -38,14 +37,8 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `car` | Hệ số an toàn vốn | % | VNDirect ratio BANK_CAR_AQ. **VNDirect chỉ có 1 số/năm (cuối năm)**; riêng BID, CTG 2022–2024 (VNDirect ghi đúng 8,00) được thay bằng số tra thủ công có link nguồn trong `data/manual/car_tra_thu_cong.csv`. Các quý khác (kể cả năm chưa có số) được điền bằng số thật gần nhất trước đó. Xem cột `car_nguon` và báo cáo kiểm tra | Biến phân tích chính |
 | `car_nguon` | Cách có giá trị CAR | - | cong_bo = số VNDirect đúng kỳ; tra_thu_cong = số nhóm tự tra từ nguồn ngân hàng / công ty chứng khoán (xem data/manual/car_tra_thu_cong.csv); dien_tiep_ky_truoc = điền tiếp số thật gần nhất | Mô tả / truy vết |
 | `ldr` | Tỷ lệ cho vay / tiền gửi KH (hệ số thanh khoản) | % | tong_du_no / tien_gui_khach_hang × 100 | Biến phân tích chính |
-| `lnst_cong_ty_me` | LNST của cổ đông công ty mẹ trong quý | tỷ đồng | KQKD mã 23000 | Số liệu gốc |
-| `loi_nhuan_truoc_thue` | Lợi nhuận trước thuế trong quý | tỷ đồng | KQKD mã 23800 | Số liệu gốc |
-| `thu_nhap_lai_thuan` | Thu nhập lãi thuần trong quý | tỷ đồng | KQKD mã 421900 | Số liệu gốc |
-| `tong_thu_nhap_hoat_dong` | Tổng thu nhập hoạt động trong quý | tỷ đồng | KQKD mã 421701 | Số liệu gốc |
-| `chi_phi_hoat_dong` | Chi phí hoạt động (quản lý) trong quý | tỷ đồng | KQKD mã 22200 | Số liệu gốc |
-| `chi_phi_du_phong` | Chi phí dự phòng rủi ro tín dụng trong quý | tỷ đồng | KQKD mã 422900 | Số liệu gốc |
-| `tien_gui_khach_hang` | Tiền gửi của khách hàng | tỷ đồng | BCĐKT mã 413300 | Số liệu gốc |
-| `du_phong_cho_vay` | Dự phòng rủi ro cho vay KH (số âm) | tỷ đồng | BCĐKT mã 412200 | Số liệu gốc |
+| `thu_nhap_lai_thuan` | Thu nhập lãi thuần trong quý | tỷ đồng | KQKD mã 421900 | Thành phần tính toán |
+| `tien_gui_khach_hang` | Tiền gửi của khách hàng | tỷ đồng | BCĐKT mã 413300 | Thành phần tính toán |
 | `earning_assets` | Tài sản sinh lãi cuối quý | tỷ đồng | Tiền gửi NHNN + Tiền gửi & cho vay TCTD + CK kinh doanh + Cho vay KH + CK đầu tư + Mua nợ | Thành phần tính toán |
 | `roa_ttm_vnd` | ROAA 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAA_TR_AVG5Q | Chỉ để đối chiếu |
 | `roe_ttm_vnd` | ROAE 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAE_TR_AVG5Q | Chỉ để đối chiếu |
@@ -79,13 +72,8 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `so_phien_gd` | Số phiên giao dịch trong quý | phiên |  | Mô tả / truy vết |
 | `gia_dau_quy` | Giá đầu quý (điều chỉnh) | nghìn đồng | Giá đóng cửa điều chỉnh phiên cuối của quý trước | Thành phần tính toán |
 | `gia_cuoi_quy` | Giá cuối quý (điều chỉnh) | nghìn đồng | Giá đóng cửa điều chỉnh phiên cuối của quý | Thành phần tính toán |
-| `gia_cuoi_quy_chua_dieu_chinh` | Giá cuối quý chưa điều chỉnh | nghìn đồng | close phiên cuối quý | Chỉ để đối chiếu |
 | `ty_suat_sinh_loi_quy` | Tỷ suất sinh lời cổ phiếu trong quý | % | (gia_cuoi_quy / gia_dau_quy − 1) × 100 | Biến phân tích chính |
-| `bien_dong_gia_max_min` | Biên độ dao động giá trong quý | % | (giá cao nhất − giá thấp nhất) / giá thấp nhất × 100, giá điều chỉnh | Biến bổ sung |
-| `gia_max` | Giá cao nhất trong quý (điều chỉnh) | nghìn đồng | max adHigh | Biến bổ sung |
-| `gia_min` | Giá thấp nhất trong quý (điều chỉnh) | nghìn đồng | min adLow | Biến bổ sung |
-| `kl_gd_tb_phien` | KL khớp lệnh bình quân phiên | cổ phiếu |  | Biến bổ sung |
-| `tong_kl_gd_quy` | Tổng KL khớp lệnh trong quý | cổ phiếu |  | Biến bổ sung |
+| `bien_dong_gia_max_min` | Biên độ dao động giá trong quý | % | (giá cao nhất − giá thấp nhất) / giá thấp nhất × 100, giá điều chỉnh | Biến mô tả |
 | `ty_suat_sinh_loi_quy_sau` | Tỷ suất sinh lời kỳ tiếp theo, tính từ MỐC DỰ BÁO | % | Mốc dự báo của quý t = ngày cuối quý t + 45 ngày (khi BCTC quý t đã công bố). Lợi suất = giá tại mốc của quý t+1 / giá tại mốc của quý t − 1, × 100; giá tại mốc = giá đóng cửa điều chỉnh của phiên cuối cùng trước hoặc đúng ngày mốc. KHÁC `ty_suat_sinh_loi_quy` của quý sau (tính theo quý lịch). Giá dùng tính nhãn có đủ trong `bang2a_gia_ngay` (đến 2026-10-28). **Không dùng làm biến đầu vào** | Nguồn của nhãn |
 | `xu_huong_quy_sau` | Biến mục tiêu: giá kỳ tiếp theo (từ mốc dự báo) tăng? | 0/1 | 1 nếu ty_suat_sinh_loi_quy_sau > 0, ngược lại 0 | Biến mục tiêu (nhãn) |
 
@@ -127,4 +115,4 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 
 ## Bảng 4 – Tổng hợp (bàn giao) (`bang4_tong_hop.csv`)
 
-Ghép Bảng 1 + Bảng 2b + Bảng 3b theo `ma_nh` + `quy` + `nam`: 56 cột, mỗi dòng = 1 ngân hàng × 1 quý. Ý nghĩa từng cột giống ở bảng gốc phía trên; cột `lay_tu_bang` trong `data_dictionary.csv` cho biết cột lấy từ bảng nào.
+Ghép Bảng 1 + Bảng 2b + Bảng 3b theo `ma_nh` + `quy` + `nam`: 44 cột, mỗi dòng = 1 ngân hàng × 1 quý. Ý nghĩa từng cột giống ở bảng gốc phía trên; cột `lay_tu_bang` trong `data_dictionary.csv` cho biết cột lấy từ bảng nào.

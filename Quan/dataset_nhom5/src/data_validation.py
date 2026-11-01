@@ -78,7 +78,7 @@ def run():
         prices=daily[daily.ma_nh.eq(r.ma_nh)].sort_values('date')
         in_quarter=prices[(prices.date>=period.start_time)&(prices.date<=period.end_time)]
         previous=prices[prices.date<period.start_time]
-        calculated={'gia_dau_quy':previous.iloc[-1].gia_dong_cua_dieu_chinh,'gia_cuoi_quy':in_quarter.iloc[-1].gia_dong_cua_dieu_chinh,'so_phien_gd':len(in_quarter),'gia_max':in_quarter.gia_cao_nhat_dieu_chinh.max(),'gia_min':in_quarter.gia_thap_nhat_dieu_chinh.min(),'tong_kl_gd_quy':in_quarter.khoi_luong_gd.sum(),'kl_gd_tb_phien':in_quarter.khoi_luong_gd.mean()}
+        calculated={'gia_dau_quy':previous.iloc[-1].gia_dong_cua_dieu_chinh,'gia_cuoi_quy':in_quarter.iloc[-1].gia_dong_cua_dieu_chinh,'so_phien_gd':len(in_quarter)}
         calculated['ty_suat_sinh_loi_quy']=(calculated['gia_cuoi_quy']/calculated['gia_dau_quy']-1)*100
         for c,v in calculated.items():
             valid=np.isclose(v,getattr(r,c),atol=.011,rtol=1e-6)
@@ -108,7 +108,7 @@ def run():
     save(car,'car_audit')
     save(d.groupby(['quy','car_nguon']).size().rename('observations').reset_index(),'car_source_distribution')
     # Quy tắc điền tiếp của nhóm: Q2/Q3 phải tiếp tục CAR gần nhất trong năm.
-    for (bank,year),sub in d.groupby(['ma_nh','nam']):
+    for (bank,nam),sub in d.groupby(['ma_nh','nam']):  # không dùng tên `year`: sẽ ghi đè năm Test ở trên
         by_quarter=sub.set_index('quy')
         for quarter in ['Q2','Q3']:
             if quarter in by_quarter.index and by_quarter.loc[quarter,'car_nguon']=='dien_tiep_ky_truoc' and not np.isclose(by_quarter.loc[quarter,'car'],by_quarter.loc['Q1','car']):

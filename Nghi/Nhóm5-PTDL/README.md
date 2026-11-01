@@ -5,7 +5,7 @@ phan1/
 ├── data/                  # đặt 6 file CSV của Hân vào đây
 ├── src/
 │   ├── config.py          # bảng màu, thứ tự, nhãn chỉ số, giao diện biểu đồ
-│   ├── data_loader.py     # hàm đọc dữ liệu dùng chung (lọc 2021–2025, cột ky)
+│   ├── data_loader.py     # hàm đọc dữ liệu dùng chung (lọc Q1/2021 → kỳ cuối trong dữ liệu, cột ky)
 │   ├── kiem_tra.py        # kiểm tra chất lượng dữ liệu bàn giao
 │   └── ket_qua.py         # cấu trúc + hàm xuất 4 bảng kết quả
 ├── notebooks/01_chuan_bi_du_lieu.ipynb

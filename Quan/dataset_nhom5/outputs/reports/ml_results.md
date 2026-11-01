@@ -117,8 +117,8 @@ Financial + General Event: các financial có |hệ số| lớn nhất: roa +0.5
 
 Financial Only: các financial có |hệ số| lớn nhất: roa +0.492 (cùng chiều), roe -0.327 (ngược chiều), car -0.276 (ngược chiều). Đây là liên hệ có điều kiện, không phải tác động nhân quả.
 
-Có 0 lần chuyển cụm giữa các quý liên tiếp trong toàn bộ panel. Cụm 0: ACB 22 mẫu, BID 22 mẫu, CTG 22 mẫu, MBB 22 mẫu, STB 22 mẫu, VCB 22 mẫu. Cụm 1: TCB 22 mẫu, VPB 22 mẫu. Phân cụm chủ yếu phản ánh khác biệt cố hữu giữa ngân hàng, chưa chứng minh trạng thái tài chính biến đổi rộng theo thời gian. Các mẫu STB trong cụm ít quan sát: .
+Có 0 lần chuyển cụm giữa các quý liên tiếp trong toàn bộ panel. Cụm 0: ACB 22 mẫu, BID 22 mẫu, CTG 22 mẫu, MBB 22 mẫu, STB 22 mẫu, VCB 22 mẫu. Cụm 1: TCB 22 mẫu, VPB 22 mẫu. Phân cụm chủ yếu phản ánh khác biệt cố hữu giữa ngân hàng, chưa chứng minh trạng thái tài chính biến đổi rộng theo thời gian.
 
-K=2 có silhouette 0.435; K=5 và 6 tạo cụm nhỏ nhất chỉ 3 mẫu. Đường inertia tiếp tục giảm nhưng tách thêm cụm kém gọn và khó bảo vệ trên dataset nhỏ. K=2 phù hợp hai profile đối lập về NPL/LDR, đồng thời nhóm NPL/LDR cao có NIM và CAR cao hơn, ROE thấp hơn. Chênh lệch ROA nhỏ, không nên gọi nhóm này profitability cao.
+K=2 có silhouette 0.435; cụm nhỏ nhất ở các K khác: K=3 22 mẫu, K=4 22 mẫu, K=5 12 mẫu, K=6 6 mẫu. Đường inertia tiếp tục giảm nhưng tách thêm cụm kém gọn và khó bảo vệ trên dataset nhỏ. Cụm 1 (CAR cao tương đối / LDR cao tương đối, 44 mẫu) so với cụm 0: ROA, NIM, NPL, CAR, LDR cao hơn; ROE thấp hơn. Đây là trung bình cụm, không gọi cụm nào là “tốt hơn”.
 
-PC1 có NIM, LDR, CAR cùng dấu và đóng góp mạnh; mô tả trục đồng biến ba tỷ lệ này, không gọi chung là “tốt hơn”. PC2 chủ yếu đối chiếu ROE/ROA dương với NPL âm; hỗ trợ cách đọc lợi nhuận tương đối đối lập nợ xấu trong phép chiếu này. PCA scatter vẫn có một điểm cụm NPL cao lệch xa theo PC2; không xem mọi điểm cùng cụm là đồng nhất.
+PC1 có NIM, LDR, CAR cùng dấu và đóng góp mạnh; mô tả trục đồng biến ba tỷ lệ này, không gọi chung là “tốt hơn”. PC2 chủ yếu đối chiếu ROE/ROA dương với NPL âm; hỗ trợ cách đọc lợi nhuận tương đối đối lập nợ xấu trong phép chiếu này. Điểm lệch xa nhất theo PC2 là STB Q4/2025 (cụm 0, PC2 = -7.33); không xem mọi điểm cùng cụm là đồng nhất.

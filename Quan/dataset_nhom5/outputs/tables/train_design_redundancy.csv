@@ -1,4 +1,4 @@
 ﻿model,columns_including_intercept,rank,condition_number_standardized
-Financial,7,7,7.686428732874149
-Financial + general,8,8,7.779952255682107
-Financial + categories,13,13,8.226978085100734
+Financial,7,7,8.203895034529223
+Financial + general,8,8,8.30756340147846
+Financial + categories,13,13,9.012257959107986

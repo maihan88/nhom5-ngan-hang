@@ -3,13 +3,13 @@ data_loader.py – Hàm đọc dữ liệu dùng chung (Nhóm 5 PTDL)
 
 Cách dùng nhanh:
     from src.data_loader import doc_tat_ca, doc_tong_hop, doc_gia_ngay
-    ds = doc_tat_ca()              # dict 6 bảng, đã lọc 2021–2025
-    b4 = doc_tong_hop()            # bảng phân tích chính (160 dòng)
-    gia = doc_gia_ngay()           # giá ngày, chỉ 2021-01-01 → 2025-12-31
+    ds = doc_tat_ca()              # dict 6 bảng, đã lọc Q1/2021 → kỳ cuối trong dữ liệu
+    b4 = doc_tong_hop()            # bảng phân tích chính (8 NH × số quý, hiện 176 dòng)
+    gia = doc_gia_ngay()           # giá ngày, từ 2021-01-01 đến ngày cuối kỳ cuối
 
 Mọi bảng trả về đều có thêm:
     ky          : chuỗi "2021Q1" để làm trục x (bảng theo quý)
-    ky_so       : số thứ tự quý 1..20 (để sắp xếp, tính tương quan hạng...)
+    ky_so       : số thứ tự quý 1..số quý (để sắp xếp, tính tương quan hạng...)
     ngay_ky     : ngày cuối quý (Timestamp) nếu cần trục thời gian thật
     ma_nh, quy  : kiểu Categorical có thứ tự cố định theo config
 """
@@ -102,7 +102,7 @@ def doc_bang(ten_bang, loc_giai_doan=True, thu_muc=None):
 
 
 def doc_tong_hop(**kw):
-    """Bảng 4 – bảng phân tích chính cho câu 1, 2, 3 (160 dòng = 8 NH × 20 quý)."""
+    """Bảng 4 – bảng phân tích chính cho câu 1, 2, 3 (8 NH × số quý, hiện 176 dòng)."""
     df = doc_bang("tong_hop", **kw)
     # Cờ lọc 32 giá trị CAR thật (số VNDirect công bố + số nhóm tra thủ công), xem cf.CAR_NGUON_SO_THAT
     df["car_cong_bo"] = df["car_nguon"].isin(cf.CAR_NGUON_SO_THAT)

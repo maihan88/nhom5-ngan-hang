@@ -1,11 +1,11 @@
 {
   "source_sha256": {
-    "bang1_tai_chinh_quy.csv": "68656f38f6ac857cc83357ca3cdcda41948e6cade304c464f73447168ca952b3",
+    "bang1_tai_chinh_quy.csv": "3980db8a309c7a55c06bb823cbe32b1cae1ef15600fbd6a14ce863d9d5813551",
     "bang2a_gia_ngay.csv": "1a6879dabb5073f54e083bf5db566ae086609008786279d83ecdcb3aa34a6154",
-    "bang2b_gia_quy.csv": "e1bd39d8f050913fbdc188a7ecfa1c02134b4ed5d2aae807232a97e5a23e02bd",
+    "bang2b_gia_quy.csv": "0f8f7ba350c5a14e749753a48b6e88155366ed53abc3a5c842e0297f88245c5f",
     "bang3a_su_kien_chi_tiet.csv": "eda32a50816e1988e94410e8af69ca95784e23ba1a26db763178c6ca6d2755a0",
     "bang3b_su_kien_quy.csv": "2d5c3d9c7f6fdaddf20ebb22fd7407bc8ca24c8678aaeb90936bc8565acad9ac",
-    "bang4_tong_hop.csv": "fb3dc466c3591026deb9d152f0b876681d0b839057794f1cf5fde357c01b9708"
+    "bang4_tong_hop.csv": "39cc5d13a69716001ea1448509162377340e3e4d7c8deae92c44cc389d86fd33"
   },
   "python": "3.14.1",
   "packages": {

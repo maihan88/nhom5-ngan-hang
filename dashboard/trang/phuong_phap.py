@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 from src import config as cf
@@ -85,11 +86,13 @@ BANG = [("tong_hop", "Bảng tổng hợp", "1 dòng = 1 ngân hàng × 1 quý; 
         ("su_kien_chi_tiet", "Sự kiện chi tiết", "Mỗi dòng 1 tin: ngày, loại, tiêu đề, link nguồn"),
         ("su_kien_quy", "Sự kiện theo quý", "Cờ có sự kiện, số sự kiện theo loại")]
 for ten, nhan, mo_ta in BANG:
-    df = ds[ten].drop(columns=[c for c in ["ky_so", "ngay_ky"] if c in ds[ten]])
+    # Đưa nguyên file CSV bàn giao (không phải bảng đã lọc giai đoạn / thêm cột phụ để vẽ) để khớp báo cáo
+    tep = cf.THU_MUC_DATA / cf.TEN_FILE[ten]
+    so_dong, so_cot = pd.read_csv(tep).shape
     a, b, c = st.columns([1.3, 3, 1], vertical_alignment="center")
     a.html(f"<b>{nhan}</b>")
-    b.html(f"<span style='color:var(--muc2);font-size:.9rem'>{mo_ta} · {gd.so(len(df), 0, '')} dòng × {df.shape[1]} cột</span>")
-    c.download_button("Tải CSV", df.to_csv(index=False).encode("utf-8-sig"), file_name=cf.TEN_FILE[ten],
+    b.html(f"<span style='color:var(--muc2);font-size:.9rem'>{mo_ta} · {gd.so(so_dong, 0, '')} dòng × {so_cot} cột</span>")
+    c.download_button("Tải CSV", tep.read_bytes(), file_name=cf.TEN_FILE[ten],
                       mime="text/csv", key=f"tai_{ten}", width="stretch")
 if ds["tu_dien"] is not None:
     with st.expander("Từ điển dữ liệu – ý nghĩa, đơn vị, công thức của từng cột"):

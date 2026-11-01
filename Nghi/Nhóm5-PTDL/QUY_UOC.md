@@ -6,7 +6,7 @@ Mọi giá trị dưới đây đã được viết thành code trong `src/confi
 
 ## 1. Dữ liệu đầu vào và cách đọc
 
-Mọi phần đều đọc dữ liệu qua `src/data_loader.py`, không gọi `pd.read_csv` trực tiếp. Hàm đọc tự động lọc giai đoạn 2021–2025 (bảng giá ngày lọc 01/01/2021 → 31/12/2025), thêm cột `ky` dạng `"2021Q1"` làm trục x, `ky_so` (1..20) để sắp xếp, `ngay_ky` (ngày cuối quý), và ép `ma_nh`, `quy`, `loai_hinh_so_huu` về kiểu có thứ tự cố định. Bảng 4 có thêm cờ `car_cong_bo` (True ở 32 dòng CAR công bố thật).
+Mọi phần đều đọc dữ liệu qua `src/data_loader.py`, không gọi `pd.read_csv` trực tiếp. Hàm đọc tự động lọc từ Q1/2021 đến kỳ cuối có trong dữ liệu (hiện Q2/2026; bảng giá ngày lọc 01/01/2021 → ngày cuối kỳ đó), thêm cột `ky` dạng `"2021Q1"` làm trục x, `ky_so` (1..số quý, hiện 22) để sắp xếp, `ngay_ky` (ngày cuối quý), và ép `ma_nh`, `quy`, `loai_hinh_so_huu` về kiểu có thứ tự cố định. Bảng 4 có thêm cờ `car_cong_bo` (True ở 32 dòng CAR công bố thật).
 
 Thư mục dữ liệu mặc định là `data/`; trên Streamlit Cloud đặt biến môi trường `PTDL_DATA_DIR` nếu để ở chỗ khác.
 

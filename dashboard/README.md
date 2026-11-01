@@ -23,7 +23,7 @@ py chay_tat_ca.py             # crawl (dùng cache nếu có) -> thống kê (Ng
 py chay_tat_ca.py --refresh   # bỏ cache, tải lại dữ liệu mới từ nguồn
 py chay_tat_ca.py --offline   # chỉ dùng cache, vd sau khi sửa tay Han/PTDL_3/data/manual/
 py chay_tat_ca.py --mo-web    # chạy xong mở web luôn
-py chay_tat_ca.py --den-quy 2025Q4 --offline   # tái lập đúng bộ 2021–2025 của báo cáo, không cần mạng
+py chay_tat_ca.py --den-quy 2026Q2 --gia-den 2026-10-28 --offline   # tái lập đúng bộ dữ liệu của báo cáo, không cần mạng
 ```
 
 Mặc định dữ liệu kéo tới quý gần nhất đã qua hạn công bố BCTC (cuối quý + 45 ngày). Năm kiểm chứng của mô hình là năm

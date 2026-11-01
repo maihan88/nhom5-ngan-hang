@@ -43,9 +43,18 @@ def main():
         sub=assignments[assignments.cluster.eq(c)]
         distribution=sub.ma_nh.value_counts()
         report+=f'Cụm {c}: '+', '.join(f'{bank} {count} mẫu' for bank,count in distribution.items())+'. '
-    report+='Phân cụm chủ yếu phản ánh khác biệt cố hữu giữa ngân hàng, chưa chứng minh trạng thái tài chính biến đổi rộng theo thời gian. Các mẫu STB trong cụm ít quan sát: '+', '.join(f'{r.quy}/{r.nam}' for r in assignments[(assignments.ma_nh.eq('STB'))&(assignments.cluster.eq(profile.observations.idxmin()))].itertuples())+'.\n\n'
-    report+=f'K={k} có silhouette {scores.loc[scores.K.eq(k),"Silhouette"].iloc[0]:.3f}; K=5 và 6 tạo cụm nhỏ nhất chỉ 3 mẫu. Đường inertia tiếp tục giảm nhưng tách thêm cụm kém gọn và khó bảo vệ trên dataset nhỏ. K=2 phù hợp hai profile đối lập về NPL/LDR, đồng thời nhóm NPL/LDR cao có NIM và CAR cao hơn, ROE thấp hơn. Chênh lệch ROA nhỏ, không nên gọi nhóm này profitability cao.\n\n'
-    report+='PC1 có NIM, LDR, CAR cùng dấu và đóng góp mạnh; mô tả trục đồng biến ba tỷ lệ này, không gọi chung là “tốt hơn”. PC2 chủ yếu đối chiếu ROE/ROA dương với NPL âm; hỗ trợ cách đọc lợi nhuận tương đối đối lập nợ xấu trong phép chiếu này. PCA scatter vẫn có một điểm cụm NPL cao lệch xa theo PC2; không xem mọi điểm cùng cụm là đồng nhất.\n'
+    small_c,big_c=profile.observations.idxmin(),profile.observations.idxmax()
+    stb=[f'{r.quy}/{r.nam}' for r in assignments[(assignments.ma_nh.eq('STB'))&(assignments.cluster.eq(small_c))].itertuples()]
+    report+='Phân cụm chủ yếu phản ánh khác biệt cố hữu giữa ngân hàng, chưa chứng minh trạng thái tài chính biến đổi rộng theo thời gian.'+(' Các mẫu STB trong cụm ít quan sát: '+', '.join(stb)+'.' if stb else '')+'\n\n'
+    # Câu mô tả cụm lấy từ kết quả thật (không ghi cứng), để chạy lại với dữ liệu mới vẫn đúng
+    sizes=scores.set_index('K').smallest_cluster
+    higher=[f.upper() for f in FIN if profile.loc[small_c,f]>profile.loc[big_c,f]]
+    lower=[f.upper() for f in FIN if profile.loc[small_c,f]<profile.loc[big_c,f]]
+    report+=f'K={k} có silhouette {scores.loc[scores.K.eq(k),"Silhouette"].iloc[0]:.3f}; cụm nhỏ nhất ở các K khác: '+', '.join(f'K={K} {sizes[K]} mẫu' for K in sizes.index if K!=k)+'. Đường inertia tiếp tục giảm nhưng tách thêm cụm kém gọn và khó bảo vệ trên dataset nhỏ. '
+    report+=f'Cụm {small_c} ({profile.description[small_c]}, {int(profile.observations[small_c])} mẫu) so với cụm {big_c}: '+', '.join(higher)+' cao hơn'+('; '+', '.join(lower)+' thấp hơn' if lower else '')+'. Đây là trung bình cụm, không gọi cụm nào là “tốt hơn”.\n\n'
+    report+='PC1 có NIM, LDR, CAR cùng dấu và đóng góp mạnh; mô tả trục đồng biến ba tỷ lệ này, không gọi chung là “tốt hơn”. PC2 chủ yếu đối chiếu ROE/ROA dương với NPL âm; hỗ trợ cách đọc lợi nhuận tương đối đối lập nợ xấu trong phép chiếu này.'
+    far=assignments.loc[assignments.PC2.abs().idxmax()]
+    report+=f' Điểm lệch xa nhất theo PC2 là {far.ma_nh} {far.quy}/{far.nam} (cụm {far.cluster}, PC2 = {far.PC2:.2f}); không xem mọi điểm cùng cụm là đồng nhất.\n'
     (REPORTS/'ml_results.md').write_text(report,encoding='utf-8')
     assert before==hashes(), 'CSV nguồn bị thay đổi'
     (REPORTS/'reproducibility.json').write_text(json.dumps({'source_sha256':before,'python':platform.python_version(),'packages':{p:importlib.metadata.version(p) for p in ['pandas','numpy','scikit-learn','matplotlib']},'random_state':42,'csv_unchanged':True},indent=2),encoding='utf-8')

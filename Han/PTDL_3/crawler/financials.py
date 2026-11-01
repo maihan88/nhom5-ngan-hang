@@ -138,7 +138,6 @@ def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     # NPL, CAR từ VNDirect (dạng thập phân -> %)
     for col in ["npl", "car", "nim_ttm_vnd", "roa_ttm_vnd", "roe_ttm_vnd", "ldr_vnd"]:
         df[col] = df[col] * 100
-    df["no_xau"] = df["npl"] / 100 * df["tong_du_no"]  # ước tính từ NPL x dư nợ
 
     # CAR: phần lớn ngân hàng chỉ công bố cuối năm -> điền tiếp giá trị gần nhất ĐÃ công bố
     # (không dùng giá trị tương lai để tránh rò rỉ thông tin cho mô hình dự báo)
@@ -181,11 +180,9 @@ def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
     df = df[df["nam"].between(config.START_YEAR, config.END_YEAR)]
 
     cols = ["ma_nh", "quy", "nam", "ngay_bctc", "loai_hinh_so_huu",
-            "tong_tai_san", "von_chu_so_huu", "loi_nhuan_sau_thue", "tong_du_no", "no_xau",
+            "tong_tai_san", "von_chu_so_huu", "loi_nhuan_sau_thue", "tong_du_no",
             "roa", "roe", "nim", "npl", "car", "car_nguon", "ldr",
-            "lnst_cong_ty_me", "loi_nhuan_truoc_thue", "thu_nhap_lai_thuan",
-            "tong_thu_nhap_hoat_dong", "chi_phi_hoat_dong", "chi_phi_du_phong",
-            "tien_gui_khach_hang", "du_phong_cho_vay", "earning_assets",
+            "thu_nhap_lai_thuan", "tien_gui_khach_hang", "earning_assets",
             "roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd", "ldr_vnd"]
     bang1 = df[cols].sort_values(["ma_nh", "nam", "quy"]).reset_index(drop=True)
 

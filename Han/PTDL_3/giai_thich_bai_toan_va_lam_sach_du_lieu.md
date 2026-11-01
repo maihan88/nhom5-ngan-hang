@@ -1,6 +1,8 @@
 # Giải thích bài toán và quy trình làm sạch dữ liệu – Nhóm 5 PTDL
 
 > Tài liệu này dựa trên bản đề xuất `Nhóm 5_PTDL 6.docx` và **code + dữ liệu thực tế** trong thư mục `PTDL_3` (pipeline `run_pipeline.py`, thư mục `crawler/`, kết quả trong `data/output/`). Mọi con số dưới đây lấy từ lần chạy pipeline gần nhất.
+>
+> **Lưu ý về phạm vi:** các con số thống kê trong tài liệu này (160 quan sát, 10.851 phiên giá, 5.636 tin thô, 121 sự kiện, phân bố nhãn…) là **số liệu bản Q1/2021 – Q4/2025**. Bộ dữ liệu dùng cho báo cáo hiện là Q1/2021 – Q2/2026: 176 quan sát, 11.771 phiên giá (đến 28/10/2026), 6.160 tin thô, 146 sự kiện; kích thước bảng xem `data/output/mo_ta_du_lieu.md`. Quy trình làm sạch mô tả bên dưới không đổi. Mỗi bảng chỉ giữ cột phục vụ 5 câu hỏi nghiên cứu, nguyên liệu tính chỉ số, cột đối chiếu hoặc truy vết; Bảng 4 hiện có 44 cột.
 
 ---
 
@@ -125,7 +127,6 @@ Tin CafeF + VNDirect     ──► Bảng 3: Sự kiện quý ──────
 | ROE | LNST quý × 4 / bình quân(VCSH đầu & cuối quý) × 100 | Năm hóa |
 | NIM | Thu nhập lãi thuần × 4 / bình quân(TS sinh lãi) × 100 | TS sinh lãi = tiền gửi NHNN + tiền gửi/cho vay TCTD + CK kinh doanh + cho vay KH + CK đầu tư + mua nợ |
 | LDR | Dư nợ / Tiền gửi KH × 100 | Tỷ lệ đơn giản |
-| Nợ xấu | NPL × Dư nợ | **Ước tính**, không phải số công bố |
 
 Vì sao lấy thêm dữ liệu Q4/2020? → Để có "số dư đầu kỳ" cho Q1/2021 khi tính bình quân.
 
@@ -147,7 +148,7 @@ Vì sao lấy thêm dữ liệu Q4/2020? → Để có "số dư đầu kỳ" ch
 
 1. Khử trùng lặp phiên (cùng mã, cùng ngày → giữ 1 dòng).
 2. **Mọi phép tính lợi suất dùng giá đã điều chỉnh** (`adClose`, `adHigh`, `adLow`). Giá chưa điều chỉnh vẫn giữ để đối chiếu.
-3. Gộp theo quý: giá cuối quý, giá max/min, số phiên, khối lượng bình quân…
+3. Gộp theo quý: giá cuối quý, số phiên, biên độ giá (tính từ giá cao nhất và thấp nhất trong quý)…
 4. **Giá đầu quý** = giá đóng cửa phiên cuối của quý trước, tra theo kỳ (Period + 1) chứ không dùng `shift()` → không bị lệch nếu thiếu một quý.
 5. Lấy thêm giá từ 12/2020 → có giá đầu quý cho Q1/2021.
 
@@ -238,7 +239,7 @@ Phân bố 121 sự kiện: tăng vốn 61, đổi lãnh đạo 33, hợp tác/t
 - Lấy lưới 160 dòng làm khung, **left join** Bảng 1 + Bảng 2b + Bảng 3b theo khóa `ma_nh + quy + nam` → không mất dòng nào kể cả khi một nguồn thiếu.
 - Sắp xếp đúng thứ tự thời gian (Q1 < Q2 < Q3 < Q4).
 - Làm tròn 4 chữ số, xuất CSV mã hóa **UTF-8-BOM** (Excel hiển thị đúng tiếng Việt) và file `.xlsx`.
-- Kết quả: **160 dòng × 56 cột**.
+- Kết quả: **176 dòng × 44 cột** (Q1/2021 – Q2/2026).
 
 ### 4.5. Quy ước dữ liệu thiếu (áp dụng toàn bộ)
 
@@ -283,12 +284,11 @@ Pipeline tự sinh báo cáo kiểm tra mỗi lần chạy:
 
 1. **CAR** chỉ có 32 số thật (26 từ VNDirect, 6 tra thủ công); phần còn lại là điền tiếp. Năm 2025 dùng số 2024 (một số ngân hàng đã đổi cách tính CAR theo Thông tư 14/2025).
 2. **ROA/ROE/NIM** năm hóa từ 1 quý nên dao động mạnh hơn số TTM.
-3. **Nợ xấu (`no_xau`)** là số ước tính (NPL × dư nợ).
-4. **Tin hợp tác / chuyển đổi số 2021–2024 có thể bị thiếu** vì CafeF chủ yếu đăng công bố thông tin chính thức. Thử nghiệm Vietstock tìm thêm được ~80 sự kiện tiềm năng (chủ yếu hợp tác và chuyển đổi số) – cần rà soát trước khi đưa vào.
-5. Phân loại sự kiện dựa trên **tiêu đề**, không đọc nội dung bài → vẫn có thể sót/nhầm.
-6. VNDirect chỉ lưu **bản BCTC sau cùng** (đã kiểm toán), không có bản công bố ban đầu.
-7. API VNDirect là API công khai **không có tài liệu chính thức** – cấu trúc có thể thay đổi.
-8. Mẫu nhỏ: chỉ 3 NH quốc doanh vs 5 tư nhân; các quý của cùng 1 NH không độc lập → cần lưu ý khi kiểm định (CH2).
+3. **Tin hợp tác / chuyển đổi số 2021–2024 có thể bị thiếu** vì CafeF chủ yếu đăng công bố thông tin chính thức. Thử nghiệm Vietstock tìm thêm được ~80 sự kiện tiềm năng (chủ yếu hợp tác và chuyển đổi số) – cần rà soát trước khi đưa vào.
+4. Phân loại sự kiện dựa trên **tiêu đề**, không đọc nội dung bài → vẫn có thể sót/nhầm.
+5. VNDirect chỉ lưu **bản BCTC sau cùng** (đã kiểm toán), không có bản công bố ban đầu.
+6. API VNDirect là API công khai **không có tài liệu chính thức** – cấu trúc có thể thay đổi.
+7. Mẫu nhỏ: chỉ 3 NH quốc doanh vs 5 tư nhân; các quý của cùng 1 NH không độc lập → cần lưu ý khi kiểm định (CH2).
 
 ---
 

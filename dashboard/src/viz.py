@@ -422,13 +422,20 @@ def ve_duong_nhom(df, chi_so="nim", bo_ma=None):
 #    Đầu vào: b4 (doc_tong_hop) hoặc bảng kết quả từ thong_ke.tuong_quan_voi_loi_suat
 # ============================================================================
 TEN_MAU_TQ = {
-    "chinh": "Chính (160 quý)",
+    "chinh": "Chính",
     "loai_bien_dong_chung": "Bỏ biến động chung",
     "thay_doi_chi_so": "Thay đổi chỉ số",
-    "q4_2021_2024": "Chỉ quý 4 (32)",
-    "car_cong_bo": "CAR công bố (32)",
-    "cap_ngan_hang": "Cấp ngân hàng (8)",
+    "q4_2021_2024": "Chỉ quý 4",
+    "car_cong_bo": "CAR công bố",
+    "cap_ngan_hang": "Cấp ngân hàng",
 }
+
+
+def _ten_mau_tq(tq, mau_du_lieu):
+    """Tên mẫu kèm số quan sát lấy từ bảng kết quả, vd 'Chính (176)' – không ghi cứng số."""
+    n = tq.loc[tq["mau_du_lieu"] == mau_du_lieu, "so_quan_sat"].max()
+    ten = TEN_MAU_TQ.get(mau_du_lieu, mau_du_lieu)
+    return f"{ten} ({int(n)})" if pd.notna(n) else ten
 
 
 def ve_ma_tran_tuong_quan(df, cot=None, phuong_phap="spearman"):
@@ -465,7 +472,7 @@ def ve_cot_tuong_quan(tq, mau_du_lieu="chinh"):
     fig.update_xaxes(range=[-lim, lim], zeroline=True, zerolinecolor="#888", zerolinewidth=1)
     n = int(d["so_quan_sat"].iloc[0])
     fig = cf.ap_dung_giao_dien(
-        fig, f"Tương quan của 6 chỉ số với lợi suất cổ phiếu quý – {TEN_MAU_TQ.get(mau_du_lieu, mau_du_lieu)}"
+        fig, f"Tương quan của 6 chỉ số với lợi suất cổ phiếu quý – {_ten_mau_tq(tq, mau_du_lieu)}"
              f"<br><sup>n = {n}; p hc = p-value Spearman đã hiệu chỉnh Holm (có ý nghĩa nếu < 0,05)</sup>",
         "Hệ số tương quan", "", chu_thich="")
     fig.update_layout(barmode="group", hovermode="closest", height=470)
@@ -484,7 +491,7 @@ def ve_tuong_quan_so_sanh(tq, gia_tri="spearman_rho", bo_mau=("car_cong_bo",)):
     chu = (d.assign(t=d[gia_tri].map(lambda v: f"{v:.2f}") + d["sao"])
            .pivot(index="chi_so", columns="mau_du_lieu", values="t").reindex(index=cf.DS_CHI_SO, columns=thu_tu_mau))
     fig = go.Figure(go.Heatmap(
-        z=z.values, x=[TEN_MAU_TQ[m] for m in thu_tu_mau], y=[cf.TEN_NGAN[c] for c in z.index],
+        z=z.values, x=[_ten_mau_tq(d, m) for m in thu_tu_mau], y=[cf.TEN_NGAN[c] for c in z.index],
         text=chu.fillna("").values, texttemplate="%{text}", zmin=-1, zmax=1, colorscale="RdBu_r",
         colorbar=dict(title="ρ"), hovertemplate="%{y} – %{x}: %{z:.2f}<extra></extra>"))
     fig.update_yaxes(autorange="reversed")

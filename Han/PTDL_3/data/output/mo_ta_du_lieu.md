@@ -1,6 +1,6 @@
 # Mô tả dữ liệu trong `data/output`
 
-Phạm vi: 8 ngân hàng, từ Q1/2021 đến Q4/2025.
+Phạm vi: 8 ngân hàng, từ Q1/2021 đến Q2/2026 (176 ngân hàng × quý). Mỗi bảng chỉ giữ các cột phục vụ 5 câu hỏi nghiên cứu, nguyên liệu để tính chỉ số, cột đối chiếu hoặc cột truy vết; các chỉ tiêu BCTC khác vẫn còn nguyên trong `data/raw/`.
 
 | Mã | Ngân hàng | Loại hình |
 |---|---|---|
@@ -24,12 +24,12 @@ Phạm vi: 8 ngân hàng, từ Q1/2021 đến Q4/2025.
 
 | File | Mỗi dòng là | Số dòng × cột | Dùng để |
 |---|---|---|---|
-| `bang1_tai_chinh_quy.csv` | 1 ngân hàng × 1 quý | 160 × 30 | Xem sức khỏe tài chính |
-| `bang2a_gia_ngay.csv` | 1 cổ phiếu × 1 phiên giao dịch | 10.851 × 10 | Vẽ biểu đồ giá |
-| `bang2b_gia_quy.csv` | 1 cổ phiếu × 1 quý | 160 × 17 | Xem giá tăng/giảm trong quý, nhãn dự báo |
-| `bang3a_su_kien_chi_tiet.csv` | 1 sự kiện | 121 × 11 | Xem từng sự kiện kèm link tin |
-| `bang3b_su_kien_quy.csv` | 1 ngân hàng × 1 quý | 160 × 15 | Đếm sự kiện theo quý |
-| `bang4_tong_hop.csv` | 1 ngân hàng × 1 quý | 160 × 56 | **File bàn giao chính**: ghép bảng 1 + 2b + 3b |
+| `bang1_tai_chinh_quy.csv` | 1 ngân hàng × 1 quý | 176 × 23 | Xem sức khỏe tài chính |
+| `bang2a_gia_ngay.csv` | 1 cổ phiếu × 1 phiên giao dịch | 11.771 × 10 | Vẽ biểu đồ giá |
+| `bang2b_gia_quy.csv` | 1 cổ phiếu × 1 quý | 176 × 12 | Xem giá tăng/giảm trong quý, nhãn dự báo |
+| `bang3a_su_kien_chi_tiet.csv` | 1 sự kiện | 146 × 11 | Xem từng sự kiện kèm link tin |
+| `bang3b_su_kien_quy.csv` | 1 ngân hàng × 1 quý | 176 × 15 | Đếm sự kiện theo quý |
+| `bang4_tong_hop.csv` | 1 ngân hàng × 1 quý | 176 × 44 | **File bàn giao chính**: ghép bảng 1 + 2b + 3b |
 
 ---
 
@@ -46,23 +46,16 @@ Mỗi dòng là kết quả tài chính của 1 ngân hàng trong 1 quý, lấy 
 | `ngay_bctc` | Ngày chốt số liệu của báo cáo, tức ngày cuối quý |
 | `loai_hinh_so_huu` | Quốc doanh (Nhà nước chi phối) hay Tư nhân |
 
-**Quy mô và kết quả kinh doanh** (tỷ đồng)
+**Số liệu gốc để tính chỉ số** (tỷ đồng)
 
 | Cột | Ý nghĩa |
 |---|---|
-| `tong_tai_san` | Tổng tài sản cuối quý, cho biết ngân hàng "to" cỡ nào |
-| `von_chu_so_huu` | Vốn của cổ đông cuối quý. Đây là tiền của chính ngân hàng, dùng làm tấm đệm khi thua lỗ |
-| `tong_du_no` | Tổng tiền đang cho khách hàng vay, chưa trừ dự phòng |
-| `tien_gui_khach_hang` | Tổng tiền khách hàng đang gửi tại ngân hàng |
-| `loi_nhuan_sau_thue` | Lãi ròng trong quý, sau thuế, gồm cả công ty con |
-| `lnst_cong_ty_me` | Phần lãi ròng thuộc về cổ đông ngân hàng mẹ |
-| `loi_nhuan_truoc_thue` | Lãi trong quý trước khi nộp thuế thu nhập doanh nghiệp |
-| `thu_nhap_lai_thuan` | Lãi thu từ cho vay và đầu tư, trừ đi lãi trả cho người gửi. Đây là nguồn thu chính của ngân hàng |
-| `tong_thu_nhap_hoat_dong` | Tổng thu nhập từ mọi hoạt động: lãi, phí dịch vụ, ngoại hối, chứng khoán… |
-| `chi_phi_hoat_dong` | Chi phí vận hành: lương, thuê trụ sở, công nghệ… |
-| `chi_phi_du_phong` | Tiền trích trong quý để phòng các khoản vay không đòi được. Cao nghĩa là ngân hàng đang lo nợ xấu |
-| `du_phong_cho_vay` | Tổng quỹ dự phòng đã tích lũy. Ghi số âm vì đây là khoản trừ khỏi dư nợ |
-| `no_xau` | Số tiền nợ xấu **ước tính** (bằng `npl` × `tong_du_no`), không phải số công bố |
+| `tong_tai_san` | Tổng tài sản cuối quý, mẫu số của ROA |
+| `von_chu_so_huu` | Vốn của cổ đông cuối quý, mẫu số của ROE |
+| `tong_du_no` | Tổng tiền đang cho khách hàng vay, chưa trừ dự phòng. Tử số của LDR, một phần tài sản sinh lãi |
+| `tien_gui_khach_hang` | Tổng tiền khách hàng đang gửi tại ngân hàng, mẫu số của LDR |
+| `loi_nhuan_sau_thue` | Lãi ròng trong quý, sau thuế, gồm cả công ty con. Tử số của ROA, ROE; dùng đối chiếu với LNST năm trên BCTC |
+| `thu_nhap_lai_thuan` | Lãi thu từ cho vay và đầu tư, trừ đi lãi trả cho người gửi. Tử số của NIM |
 | `earning_assets` | Tài sản sinh lãi (cho vay, tiền gửi ở ngân hàng khác, chứng khoán…), dùng để tính NIM |
 
 **Chỉ số tài chính** (%)
@@ -90,7 +83,7 @@ Mỗi dòng là kết quả tài chính của 1 ngân hàng trong 1 quý, lấy 
 
 ## 2. `bang2a_gia_ngay.csv` – Giá cổ phiếu từng ngày
 
-Mỗi dòng là giao dịch của 1 cổ phiếu trong 1 phiên. Dữ liệu chạy từ 1/12/2020 đến 15/5/2026. Các phiên nằm ngoài 2021–2025 chỉ dùng để tính giá đầu kỳ và nhãn dự báo, nên lọc bỏ khi vẽ biểu đồ.
+Mỗi dòng là giao dịch của 1 cổ phiếu trong 1 phiên. Dữ liệu chạy từ 1/12/2020 đến 28/10/2026. Các phiên nằm ngoài Q1/2021 – Q2/2026 chỉ dùng để tính giá đầu kỳ và nhãn dự báo, nên lọc bỏ khi vẽ biểu đồ.
 
 | Cột | Ý nghĩa | Đơn vị |
 |---|---|---|
@@ -119,12 +112,8 @@ Mỗi dòng là diễn biến giá của 1 cổ phiếu trong 1 quý, tính trê
 | `so_phien_gd` | Số phiên giao dịch trong quý | phiên |
 | `gia_dau_quy` | Giá lúc bắt đầu quý, tức giá đóng cửa cuối quý trước | nghìn đồng |
 | `gia_cuoi_quy` | Giá đóng cửa cuối quý | nghìn đồng |
-| `gia_cuoi_quy_chua_dieu_chinh` | Giá cuối quý như trên bảng điện, để đối chiếu | nghìn đồng |
 | `ty_suat_sinh_loi_quy` | Cổ phiếu tăng hay giảm bao nhiêu % trong quý, nếu giữ từ đầu đến cuối quý | % |
-| `bien_dong_gia_max_min` | Khoảng cách giữa giá cao nhất và thấp nhất trong quý, đo mức biến động | % |
-| `gia_max`, `gia_min` | Giá cao nhất và thấp nhất trong quý | nghìn đồng |
-| `kl_gd_tb_phien` | Khối lượng khớp lệnh trung bình mỗi phiên, đo độ sôi động | cổ phiếu |
-| `tong_kl_gd_quy` | Tổng khối lượng khớp lệnh cả quý | cổ phiếu |
+| `bien_dong_gia_max_min` | Khoảng cách giữa giá cao nhất và thấp nhất trong quý (giá điều chỉnh), đo mức biến động | % |
 | `ty_suat_sinh_loi_quy_sau` | Lãi/lỗ nếu mua cổ phiếu vào **ngày thứ 45 sau khi quý kết thúc** (lúc BCTC quý đã công bố) và giữ đúng 1 quý | % |
 | `xu_huong_quy_sau` | **Nhãn cho mô hình dự báo**: 1 là giá tăng trong khoảng thời gian trên, 0 là không tăng | 0/1 |
 
@@ -186,8 +175,8 @@ Mỗi dòng là 1 ngân hàng × 1 quý, **kể cả quý không có sự kiện
 Mỗi dòng là 1 ngân hàng × 1 quý. Bảng này ghép 3 bảng lại, ý nghĩa từng cột giống ở bảng gốc:
 
 - **Khóa:** `ma_nh`, `quy`, `nam`
-- **Từ Bảng 1 (tài chính, 27 cột):** từ `ngay_bctc` đến `ldr_vnd`
-- **Từ Bảng 2b (giá quý, 14 cột):** từ `ngay_dau` đến `xu_huong_quy_sau`
+- **Từ Bảng 1 (tài chính, 20 cột):** từ `ngay_bctc` đến `ldr_vnd`
+- **Từ Bảng 2b (giá quý, 9 cột):** từ `ngay_dau` đến `xu_huong_quy_sau`
 - **Từ Bảng 3b (sự kiện, 12 cột):** từ `co_su_kien` đến `nguon`
 
 **Gợi ý cột cho từng câu hỏi nghiên cứu**

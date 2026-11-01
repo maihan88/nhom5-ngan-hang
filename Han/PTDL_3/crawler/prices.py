@@ -3,7 +3,7 @@
 Lưu ý quan trọng về giá điều chỉnh:
   Các ngân hàng trả cổ tức bằng cổ phiếu / phát hành thêm gần như hằng năm, khiến giá
   chưa điều chỉnh bị "rơi" tại ngày GDKHQ. Vì vậy tỷ suất sinh lời quý được tính trên
-  GIÁ ĐIỀU CHỈNH (adClose). Giá chưa điều chỉnh vẫn được giữ lại để đối chiếu.
+  GIÁ ĐIỀU CHỈNH (adClose). Giá chưa điều chỉnh vẫn được giữ trong bảng giá ngày để đối chiếu.
 """
 from __future__ import annotations
 
@@ -61,12 +61,9 @@ def aggregate_quarterly(daily: pd.DataFrame) -> pd.DataFrame:
         ngay_dau=("ngay", "min"),
         ngay_cuoi=("ngay", "max"),
         gia_cuoi_quy=("gia_dong_cua_dieu_chinh", "last"),
-        gia_cuoi_quy_chua_dieu_chinh=("gia_dong_cua", "last"),
-        gia_max=("gia_cao_nhat_dieu_chinh", "max"),
-        gia_min=("gia_thap_nhat_dieu_chinh", "min"),
+        _gia_max=("gia_cao_nhat_dieu_chinh", "max"),   # chỉ để tính biên độ giá, không xuất ra
+        _gia_min=("gia_thap_nhat_dieu_chinh", "min"),
         so_phien_gd=("ngay", "count"),
-        kl_gd_tb_phien=("khoi_luong_gd", "mean"),
-        tong_kl_gd_quy=("khoi_luong_gd", "sum"),
     ).reset_index()
 
     # Giá đầu quý = giá đóng cửa (điều chỉnh) phiên cuối cùng của quý TRƯỚC.
@@ -77,7 +74,7 @@ def aggregate_quarterly(daily: pd.DataFrame) -> pd.DataFrame:
                     on=["ma_nh", "period"], how="left")
 
     agg["ty_suat_sinh_loi_quy"] = (agg["gia_cuoi_quy"] / agg["gia_dau_quy"] - 1) * 100
-    agg["bien_dong_gia_max_min"] = (agg["gia_max"] - agg["gia_min"]) / agg["gia_min"] * 100
+    agg["bien_dong_gia_max_min"] = (agg["_gia_max"] - agg["_gia_min"]) / agg["_gia_min"] * 100
 
     # Biến mục tiêu cho Logistic Regression, "đóng vai người ở quá khứ":
     # lợi suất từ MỐC DỰ BÁO của quý t (cuối quý + LABEL_LAG_DAYS, khi BCTC quý t đã công bố)
@@ -95,9 +92,7 @@ def aggregate_quarterly(daily: pd.DataFrame) -> pd.DataFrame:
     agg["nam"] = agg["period"].dt.year
     agg = agg[(agg["nam"] >= config.START_YEAR) & (agg["period"] <= config.END_PERIOD)]
     cols = ["ma_nh", "quy", "nam", "ngay_dau", "ngay_cuoi", "so_phien_gd",
-            "gia_dau_quy", "gia_cuoi_quy", "gia_cuoi_quy_chua_dieu_chinh",
-            "ty_suat_sinh_loi_quy", "bien_dong_gia_max_min", "gia_max", "gia_min",
-            "kl_gd_tb_phien", "tong_kl_gd_quy",
+            "gia_dau_quy", "gia_cuoi_quy", "ty_suat_sinh_loi_quy", "bien_dong_gia_max_min",
             "ty_suat_sinh_loi_quy_sau", "xu_huong_quy_sau"]
     return agg[cols].sort_values(["ma_nh", "nam", "quy"]).reset_index(drop=True)
 

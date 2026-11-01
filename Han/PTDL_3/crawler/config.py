@@ -60,6 +60,10 @@ FIN_FROM = "2020-12-31"
 FIN_TO = END_DATE.isoformat()
 PRICE_FROM = "2020-12-01"
 PRICE_TO = min((END_PERIOD + 1).end_time.date() + timedelta(days=LABEL_LAG_DAYS), date.today()).isoformat()
+# Khóa cache giá có ghi ngày cuối, nên PRICE_TO mặc định trượt theo hôm nay làm --offline không tìm thấy cache cũ.
+# Đặt biến môi trường PTDL_GIA_DEN (vd "2026-10-28") để chốt ngày cuối của giá khi tái lập một bộ dữ liệu đã có.
+if os.environ.get("PTDL_GIA_DEN", "").strip():
+    PRICE_TO = min(date.fromisoformat(os.environ["PTDL_GIA_DEN"].strip()), date.fromisoformat(PRICE_TO)).isoformat()
 EVENT_FROM = f"{START_YEAR}-01-01"
 EVENT_TO = END_DATE.isoformat()
 
@@ -106,7 +110,6 @@ BS_ITEMS = {  # Bảng cân đối kế toán (số dư cuối quý)
     12700: "tong_tai_san",
     14000: "von_chu_so_huu",
     412100: "tong_du_no",               # Cho vay khách hàng (gộp, trước dự phòng)
-    412200: "du_phong_cho_vay",         # Dự phòng rủi ro cho vay khách hàng (số âm)
     413300: "tien_gui_khach_hang",
     # Các khoản mục tài sản sinh lãi – dùng tính NIM
     411200: "tien_gui_nhnn",
@@ -117,13 +120,9 @@ BS_ITEMS = {  # Bảng cân đối kế toán (số dư cuối quý)
 }
 IS_ITEMS = {  # Kết quả kinh doanh (số phát sinh trong quý)
     421900: "thu_nhap_lai_thuan",
-    421701: "tong_thu_nhap_hoat_dong",
-    22200: "chi_phi_hoat_dong",
-    422900: "chi_phi_du_phong",
-    23800: "loi_nhuan_truoc_thue",
     23003: "loi_nhuan_sau_thue",
-    23000: "lnst_cong_ty_me",
 }
+# Chỉ giữ chỉ tiêu dùng để tính 6 chỉ số hoặc đối chiếu; các chỉ tiêu khác vẫn còn nguyên trong data/raw.
 EARNING_ASSET_COLS = [
     "tien_gui_nhnn", "tien_gui_cho_vay_tctd", "chung_khoan_kinh_doanh",
     "tong_du_no", "chung_khoan_dau_tu", "mua_no",
