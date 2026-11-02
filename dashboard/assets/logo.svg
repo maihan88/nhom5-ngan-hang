@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 48">
-  <polyline points="2,30 12,30 17,16 25,40 30,24 35,30 44,30" fill="none" stroke="#A8381C" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="54" y="34" font-family="Georgia, 'Times New Roman', serif" font-size="26" fill="#1A1A1A"><tspan font-weight="700">Nhịp</tspan> Ngân Hàng</text>
+  <rect x="2" y="6" width="36" height="36" rx="9" fill="#2F6FE4"/>
+  <polyline points="8,26 14,26 18,16 23,34 27,22 32,22" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="50" y="33" font-family="'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif" font-size="22" fill="#FFFFFF"><tspan font-weight="700">Nhịp</tspan> Ngân Hàng</text>
 </svg>

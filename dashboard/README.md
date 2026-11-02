@@ -1,8 +1,10 @@
-# Nhịp Ngân Hàng – bản tin dữ liệu 8 ngân hàng niêm yết
+# Nhịp Ngân Hàng – dữ liệu 8 ngân hàng niêm yết
 
-Sản phẩm đầu ra của Nhóm 5 (Phân tích dữ liệu cho môi trường doanh nghiệp): web Streamlit trình bày như một
-bản tin tài chính. Mỗi mục mở đầu bằng một câu kết luận tự sinh từ dữ liệu, kèm biểu đồ làm nổi bật đúng
-ngân hàng đang được nói tới.
+Sản phẩm đầu ra của Nhóm 5 (Phân tích dữ liệu cho môi trường doanh nghiệp): web Streamlit dạng dashboard –
+sidebar trái, nội dung trên các thẻ, nền sáng navy + trắng. Mỗi trang có một câu nhận định tự sinh từ dữ liệu;
+biểu đồ làm nổi bật đúng ngân hàng đang được nói tới.
+
+Giao diện tối (kiểu terminal tài chính): menu ⋮ góc phải → Settings → Dark. Biểu đồ tự vẽ lại theo màu tối.
 
 ## Chạy trên máy
 
@@ -53,16 +55,16 @@ Dùng `py` thay vì `python`: trên máy này `python` đang trỏ tới Python 
 
 ```
 dashboard/
-├── app.py                 # điểm vào: menu ngang các mục
+├── app.py                 # điểm vào: sidebar các mục, theo dõi giao diện sáng/tối
 ├── trang/                 # mỗi mục một file
 ├── web/
 │   ├── du_lieu.py         # đọc dữ liệu + kết quả (có cache, tự làm mới khi CSV đổi)
 │   ├── mo_hinh.py         # Logistic Regression, K-Means, PCA theo đúng code của Quân
-│   ├── giao_dien.py       # nhận diện: CSS, định dạng số kiểu Việt, thành phần HTML (đổi tên/màu ở đây)
-│   └── bieu_do.py         # biểu đồ Plotly kiểu báo chí
+│   ├── giao_dien.py       # nhận diện: bảng màu sáng/tối, CSS, số kiểu Việt, thẻ và thành phần HTML (đổi màu ở đây)
+│   └── bieu_do.py         # biểu đồ Plotly, màu theo giao diện sáng/tối
 ├── assets/                # logo, icon, sơ đồ kiến trúc (so_do_kien_truc.svg cho web, .png 16:9 cho ppt)
 ├── ve_so_do.py            # vẽ lại sơ đồ kiến trúc: py ve_so_do.py
-├── .streamlit/config.toml # theme: nền giấy, font Be Vietnam Pro + Fraunces
+├── .streamlit/config.toml # theme sáng/tối, sidebar navy, font Be Vietnam Pro + JetBrains Mono
 ├── src/                   # bản sao code của Nghi (config, data_loader, viz, thong_ke) – KHÔNG sửa ở đây
 ├── data/                  # 6 bảng CSV + data_dictionary.csv của Hân
 ├── outputs/               # 4 bảng kết quả thống kê của Nghi; outputs/ml: bảng kết quả của Quân
