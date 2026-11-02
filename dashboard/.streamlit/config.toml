@@ -1,19 +1,49 @@
 [theme]
-base = "light"
-primaryColor = "#1A1A1A"
-backgroundColor = "#F4F1EA"
-secondaryBackgroundColor = "#EAE5DA"
-textColor = "#1A1A1A"
-linkColor = "#A8381C"
-borderColor = "#D9D2C4"
-showWidgetBorder = true
-baseRadius = "0.35rem"
 font = "Be Vietnam Pro:https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap, sans-serif"
-headingFont = "Fraunces:https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap, Georgia, serif"
-dataframeHeaderBackgroundColor = "#EFEBE2"
+headingFont = "Be Vietnam Pro, sans-serif"
+codeFont = "JetBrains Mono:https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap, monospace"
+headingFontWeights = [700, 700, 600, 600, 600, 600]
+baseRadius = "0.6rem"
+showWidgetBorder = true
+
+# Mặc định: sáng navy + trắng (ngân hàng hiện đại)
+[theme.light]
+primaryColor = "#1C5BD6"
+backgroundColor = "#F3F5F9"
+secondaryBackgroundColor = "#EAEFF6"
+textColor = "#0E1A2B"
+linkColor = "#174CB3"
+borderColor = "#E1E6EE"
+dataframeHeaderBackgroundColor = "#EEF2F7"
+
+[theme.light.sidebar]
+primaryColor = "#7FB2FF"
+backgroundColor = "#0E2442"
+secondaryBackgroundColor = "#1D3D66"
+textColor = "#E6ECF5"
+linkColor = "#B9C6D8"
+borderColor = "#1B3557"
+
+# Tối: kiểu terminal tài chính
+[theme.dark]
+primaryColor = "#5B9DFF"
+backgroundColor = "#0A0D12"
+secondaryBackgroundColor = "#161D27"
+textColor = "#E2E8F0"
+linkColor = "#7FB2FF"
+borderColor = "#1F2834"
+dataframeHeaderBackgroundColor = "#161D27"
+
+[theme.dark.sidebar]
+primaryColor = "#5B9DFF"
+backgroundColor = "#07090D"
+secondaryBackgroundColor = "#141B25"
+textColor = "#C9D4E3"
+linkColor = "#8E9BAE"
+borderColor = "#1A212B"
 
 [client]
-toolbarMode = "minimal"
+toolbarMode = "viewer"
 
 [server]
 runOnSave = true

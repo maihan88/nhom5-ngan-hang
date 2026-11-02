@@ -13,4 +13,4 @@ plotly>=5.20
 kaleido>=1.0        # xuất hình PNG của Nghi (cần Chrome); thiếu thì chỉ bỏ qua hình
 Pillow>=10
 joblib>=1.3
-streamlit>=1.50
+streamlit>=1.52   # cần st.components.v2 và theme sáng/tối
