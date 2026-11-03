@@ -1,5 +1,5 @@
 """
-Nhịp Ngân Hàng – dashboard dữ liệu 8 ngân hàng niêm yết (Nhóm 5 · Phân tích dữ liệu cho môi trường doanh nghiệp)
+UpBank! – dashboard dữ liệu 8 ngân hàng niêm yết (Nhóm 5 · Phân tích dữ liệu cho môi trường doanh nghiệp)
 
 Chạy:  streamlit run app.py   (trong thư mục dashboard/)
 """

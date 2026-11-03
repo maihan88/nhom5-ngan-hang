@@ -1,4 +1,4 @@
-# Nhịp Ngân Hàng – dữ liệu 8 ngân hàng niêm yết
+# UpBank! – dữ liệu 8 ngân hàng niêm yết
 
 Sản phẩm đầu ra của Nhóm 5 (Phân tích dữ liệu cho môi trường doanh nghiệp): web Streamlit dạng dashboard –
 sidebar trái, nội dung trên các thẻ, nền sáng navy + trắng. Mỗi trang có một câu nhận định tự sinh từ dữ liệu;

@@ -14,7 +14,7 @@ import streamlit as st
 
 from src import config as cf
 
-TEN = "Nhịp Ngân Hàng"
+TEN = "UpBank!"
 KHAU_HIEU = "Dữ liệu 8 ngân hàng niêm yết"
 
 # Chữ và biểu đồ: Inter · con số trong bảng, thẻ số, ngày: JetBrains Mono (độ rộng đều, cột số thẳng hàng)
@@ -368,5 +368,4 @@ def chan_trang():
     st.html(
         "<div class='nguon' style='margin-top:36px;border-top:1px solid var(--ke);padding-top:12px;display:flex;"
         "flex-wrap:wrap;justify-content:space-between;gap:6px 24px'>"
-        f"<span><b style='color:var(--muc)'>{TEN}</b> · Nhóm 5 – Phân tích dữ liệu cho môi trường doanh nghiệp · "
-        "Nguồn: VNDirect, CafeF</span><span>Chỉ để tham khảo, không phải khuyến nghị đầu tư</span></div>")
+        f"<span><b style='color:var(--muc)'>{TEN}</b> · Nhóm 5 – Phân tích dữ liệu cho môi trường doanh nghiệp</span></div>")
