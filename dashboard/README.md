@@ -1,7 +1,7 @@
 # UpBank! – dữ liệu 8 ngân hàng niêm yết
 
 Sản phẩm đầu ra của Nhóm 5 (Phân tích dữ liệu cho môi trường doanh nghiệp): web Streamlit dạng dashboard –
-sidebar trái, nội dung trên các thẻ, nền sáng navy + trắng. Mỗi trang có một câu nhận định tự sinh từ dữ liệu;
+sidebar trái, nội dung trên các thẻ, nền giấy ấm + thẻ trắng, tông than chì + vàng đồng. Mỗi trang có một câu nhận định tự sinh từ dữ liệu;
 biểu đồ làm nổi bật đúng ngân hàng đang được nói tới.
 
 Giao diện tối (kiểu terminal tài chính): menu ⋮ góc phải → Settings → Dark. Biểu đồ tự vẽ lại theo màu tối.
@@ -64,7 +64,7 @@ dashboard/
 │   └── bieu_do.py         # biểu đồ Plotly, màu theo giao diện sáng/tối
 ├── assets/                # logo, icon, sơ đồ kiến trúc (so_do_kien_truc.svg cho web, .png 16:9 cho ppt)
 ├── ve_so_do.py            # vẽ lại sơ đồ kiến trúc: py ve_so_do.py
-├── .streamlit/config.toml # theme sáng/tối, sidebar navy, font Inter (chữ) + JetBrains Mono (số) + Merriweather (câu nhận định)
+├── .streamlit/config.toml # theme sáng/tối than chì + vàng đồng, font Inter (chữ) + JetBrains Mono (số) + Merriweather (câu nhận định)
 ├── src/                   # bản sao code của Nghi (config, data_loader, viz, thong_ke) – KHÔNG sửa ở đây
 ├── data/                  # 6 bảng CSV + data_dictionary.csv của Hân
 ├── outputs/               # 4 bảng kết quả thống kê của Nghi; outputs/ml: bảng kết quả của Quân

@@ -6,41 +6,41 @@ headingFontWeights = [700, 700, 600, 600, 600, 600]
 baseRadius = "0.6rem"
 showWidgetBorder = true
 
-# Mặc định: sáng navy + trắng (ngân hàng hiện đại)
+# Mặc định: than chì + vàng đồng – nền giấy ấm, sidebar than
 [theme.light]
-primaryColor = "#1C5BD6"
-backgroundColor = "#F3F5F9"
-secondaryBackgroundColor = "#EAEFF6"
-textColor = "#0E1A2B"
-linkColor = "#174CB3"
-borderColor = "#E1E6EE"
-dataframeHeaderBackgroundColor = "#EEF2F7"
+primaryColor = "#9A6F1E"
+backgroundColor = "#F4F3F0"
+secondaryBackgroundColor = "#ECE9E3"
+textColor = "#17181C"
+linkColor = "#8A6416"
+borderColor = "#E3E0DA"
+dataframeHeaderBackgroundColor = "#EFEDE8"
 
 [theme.light.sidebar]
-primaryColor = "#7FB2FF"
-backgroundColor = "#0E2442"
-secondaryBackgroundColor = "#1D3D66"
-textColor = "#E6ECF5"
-linkColor = "#B9C6D8"
-borderColor = "#1B3557"
+primaryColor = "#E2B65A"
+backgroundColor = "#16181D"
+secondaryBackgroundColor = "#25282F"
+textColor = "#DAD6CE"
+linkColor = "#A8A39A"
+borderColor = "#25282F"
 
-# Tối: kiểu terminal tài chính
+# Tối: nền than, điểm nhấn vàng đồng sáng
 [theme.dark]
-primaryColor = "#5B9DFF"
-backgroundColor = "#0A0D12"
-secondaryBackgroundColor = "#161D27"
-textColor = "#E2E8F0"
-linkColor = "#7FB2FF"
-borderColor = "#1F2834"
-dataframeHeaderBackgroundColor = "#161D27"
+primaryColor = "#E2B65A"
+backgroundColor = "#0F1013"
+secondaryBackgroundColor = "#1E2127"
+textColor = "#ECE8E1"
+linkColor = "#E9C46A"
+borderColor = "#262931"
+dataframeHeaderBackgroundColor = "#1E2127"
 
 [theme.dark.sidebar]
-primaryColor = "#5B9DFF"
-backgroundColor = "#07090D"
-secondaryBackgroundColor = "#141B25"
-textColor = "#C9D4E3"
-linkColor = "#8E9BAE"
-borderColor = "#1A212B"
+primaryColor = "#E2B65A"
+backgroundColor = "#0A0B0D"
+secondaryBackgroundColor = "#1A1C21"
+textColor = "#CFCAC0"
+linkColor = "#9A958B"
+borderColor = "#1A1C21"
 
 [client]
 toolbarMode = "viewer"

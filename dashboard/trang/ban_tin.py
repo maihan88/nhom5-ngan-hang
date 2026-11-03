@@ -26,6 +26,7 @@ cp_tot, cp_kem = q["ty_suat_sinh_loi_quy"].idxmax(), q["ty_suat_sinh_loi_quy"].i
 y_roe = "sinh lời hạ nhiệt" if d_roe < -0.3 else ("sinh lời cải thiện" if d_roe > 0.3 else "sinh lời đi ngang")
 y_npl = "nợ xấu nhích lên" if d_npl > 0.05 else ("nợ xấu giảm" if d_npl < -0.05 else "nợ xấu ổn định")
 
+gd.bang_dien(ac.set_index("ma_nh").loc[cf.DS_NGAN_HANG].reset_index(), f"Giá cuối Q{quy}/{nam}")
 gd.dau_trang("Tổng quan ngành", f"Bản tin quý {quy}/{nam}",
              f"Bình quân 8 ngân hàng · số liệu tài chính đến {ngay_cuoi:%d/%m/%Y}")
 gd.nhan_dinh(f"{gd.hoa_dau(y_roe)}, {y_npl}.", f"Nhận định · Quý {quy}/{nam}",
