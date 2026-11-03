@@ -12,7 +12,7 @@ b4 = ds["tong_hop"]
 ds_ky = dl.ds_ky()
 
 gd.dau_trang("So sánh", "Đặt các ngân hàng cạnh nhau",
-             "Chọn vài ngân hàng để làm nổi bật – các ngân hàng còn lại hiện màu xám làm nền so sánh")
+             "Ngân hàng không được chọn hiện màu xám làm nền")
 mac_dinh = list(dict.fromkeys([st.session_state.get("ma", "VCB"), "TCB" if st.session_state.get("ma") != "TCB" else "VCB"]))
 with gd.the("chon"):
     c1, c2 = st.columns([2.4, 1.6], vertical_alignment="bottom", gap="large")
@@ -56,8 +56,7 @@ else:
 gd.nhan_dinh(cau, f"Nhận định · Quý {ky[-1]}/{ky[:4]}")
 
 with gd.the("doi-dau"):
-    gd.tieu_the(f"Đối đầu · quý {ky[-1]}/{ky[:4]}", "● tốt hơn ở tiêu chí đó · nợ xấu: thấp hơn là tốt",
-                "LDR không chấm vì không có mức “tốt” chung")
+    gd.tieu_the(f"Đối đầu · quý {ky[-1]}/{ky[:4]}", "● tốt nhất ở tiêu chí đó (nợ xấu: thấp là tốt; LDR không chấm)")
     st.html("<div class='cuon'><table class='bang' style='min-width:640px'><thead><tr><th>Tiêu chí</th>"
             + "".join(f"<th>{gd.chip(m)}</th>" for m in chon) + "<th>Trung vị 8 NH</th></tr></thead><tbody>"
             + "".join(dong) + "</tbody></table></div>")
@@ -86,8 +85,8 @@ with gd.the("xu-huong"):
     st.segmented_control("Chỉ số", cf.DS_CHI_SO, default="roe", format_func=mh.TEN_BIEN.get, key="ss_cs",
                          label_visibility="collapsed")
     bd.ve(bd.duong(d, "moc", chi_so, chon, nhan_tat_ca=True), key="ss_duong")
-    gd.nguon(cf.NHAN_CHI_SO[chi_so] + (" – số công bố cuối năm." if chi_so == "car" else
-             " theo quý, năm hóa." if chi_so in ("roa", "roe", "nim") else " theo quý.") + " Đường chấm: trung vị 8 ngân hàng.")
+    gd.nguon(cf.NHAN_CHI_SO[chi_so] + (" – số công bố cuối năm" if chi_so == "car" else
+             " theo quý, đã năm hóa" if chi_so in ("roa", "roe", "nim") else " theo quý") + " · nét chấm: trung vị 8 ngân hàng")
 
 # ---- Xếp hạng sinh lời · quốc doanh và tư nhân -----------------------------------------------------------------------
 c1, c2 = st.columns(2, gap="medium")
@@ -111,24 +110,21 @@ if kd is not None:
         chinh = kd[kd["phan_tich"] == "chinh"].set_index("chi_so")
         ten = {"nim": "Biên lãi NIM", "npl": "Nợ xấu", "car": "Vốn đệm CAR"}
         nam_car = sorted(b4.loc[b4["car_nguon"].isin(["cong_bo", "tra_thu_cong"]), "nam"].unique())
-        gd.tieu_the("Quốc doanh và tư nhân", f"Trung bình theo năm, {dl.giai_doan()} · kiểm định ở mức 5%")
+        gd.tieu_the("Quốc doanh và tư nhân", f"Bình quân {dl.giai_doan()}")
         st.html("<div style='display:flex;gap:16px;flex-wrap:wrap;font-size:.78rem;color:var(--nhat);margin-bottom:4px'>"
-                f"<span><span class='chip'><i style='background:{gd.mau_nhom('A')};border-radius:50%'></i></span> QD: VCB, BID, CTG</span>"
-                f"<span><span class='chip'><i style='background:{gd.mau_nhom('B')};border-radius:50%'></i></span> TN: TCB, MBB, ACB, STB, VPB</span></div>")
-
-        def _p(r):
-            return "p < 0,001" if r["p_value"] < 0.001 else "p = " + so(r["p_value"], 3, "")
+                f"<span><span class='chip'><i style='background:{gd.mau_nhom('A')};border-radius:50%'></i></span> Quốc doanh (QD): VCB, BID, CTG</span>"
+                f"<span><span class='chip'><i style='background:{gd.mau_nhom('B')};border-radius:50%'></i></span> Tư nhân (TN): TCB, MBB, ACB, STB, VPB</span></div>")
 
         dong_kd = []
         for c in ["nim", "npl", "car"]:
             r = chinh.loc[c]
             cao = "tư nhân" if r["tb_tu_nhan"] > r["tb_quoc_doanh"] else "quốc doanh"
-            ghi = f"{r['kiem_dinh']}, {_p(r)}" + (f" · {cao} cao hơn" if r["bac_bo_H0"] else "")
+            ghi = f"Nhóm {cao} cao hơn" if r["bac_bo_H0"] else "Chênh lệch chưa đủ lớn để kết luận"
             if c == "car":
                 ghi += f" · số công bố cuối năm {nam_car[0]}–{nam_car[-1]}"
             dong_kd.append({"ten": ten[c], "qd": r["tb_quoc_doanh"], "tn": r["tb_tu_nhan"], "y_nghia": bool(r["bac_bo_H0"]), "ghi": ghi})
         gd.dumbbell(dong_kd, gd.mau_nhom("A"), gd.mau_nhom("B"))
-        with st.expander("Chi tiết kiểm định và kiểm tra lại"):
+        with st.expander("Chi tiết thống kê"):
             TEN_MAU = {"chinh": "Mẫu chính", "khong_VPB": "Bỏ VPB", "car_chi_so_vndirect": "CAR theo VNDirect",
                        "cap_ngan_hang": "Trung bình từng ngân hàng (8 quan sát)"}
             x = kd.copy()
@@ -141,7 +137,7 @@ if kd is not None:
                 "tb_tu_nhan": st.column_config.NumberColumn("TB tư nhân", format="%.2f%%"),
                 "kiem_dinh": "Kiểm định", "p_value": st.column_config.NumberColumn("p-value", format="%.4f"),
                 "bac_bo_H0": st.column_config.CheckboxColumn("Khác biệt rõ")})
-            st.caption("Cả hai nhóm phân phối chuẩn → t-test (Student/Welch theo phương sai), ngược lại → Mann–Whitney U. "
-                       "Kết luận đáng tin hơn khi giữ nguyên qua các mẫu kiểm tra lại. Phân tích: Hoàng Ngọc Gia Nghi.")
+            st.caption("“Khác biệt rõ” khi p-value dưới 0,05, tức khả năng chênh lệch chỉ do ngẫu nhiên dưới 5%. "
+                       "Kết luận đáng tin hơn khi vẫn giữ nguyên lúc bỏ VPB hoặc đổi nguồn CAR.")
 
 gd.chan_trang()

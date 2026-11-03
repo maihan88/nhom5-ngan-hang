@@ -20,20 +20,20 @@ thanh_vien = {n: [m for m in cf.DS_NGAN_HANG if ((ty_le["ma_nh"] == m) & (ty_le[
 nho = ho_so.sort_values("so_quan_sat").iloc[0]
 tv_nho = thanh_vien[nho["nhom"]]
 
-gd.dau_trang("Phân nhóm · K-Means + PCA", "Nhóm theo đặc điểm tài chính",
-             f"{len(d)} ngân hàng–quý · 6 chỉ số ROA, ROE, NIM, nợ xấu, CAR, LDR")
+gd.dau_trang("Phân nhóm", "Nhóm theo đặc điểm tài chính",
+             f"8 ngân hàng qua {len(ds_ky)} quý, xếp theo mức tương đồng của 6 chỉ số: ROA, ROE, NIM, nợ xấu, CAR, LDR")
 gd.nhan_dinh(f"{' và '.join(cf.TEN_DAY_DU[m] for m in tv_nho)} đứng riêng một nhóm: {e(nho['ten_nhom'].lower())}."
              if tv_nho and len(tv_nho) <= 3 else f"Tám ngân hàng chia thành {pn['k']} nhóm đặc điểm tài chính.")
 
 with gd.the("ban-do"):
-    gd.tieu_the("Bản đồ đặc điểm tài chính", "Chấm càng gần nhau, “dáng” tài chính càng giống · chữ = vị trí trung bình "
-                "của từng ngân hàng")
+    gd.tieu_the("Bản đồ đặc điểm tài chính", "Mỗi chấm là một ngân hàng trong một quý; chấm càng gần nhau, cơ cấu tài chính "
+                "càng giống")
     noi_bat = st.pills("Vẽ đường đi của", ["Không"] + cf.DS_NGAN_HANG, default="Không", key="pn_nb") or "Không"
     bd.ve(bd.ban_do(pn, None if noi_bat == "Không" else noi_bat, cao=500), key="pn_bd")
     tt = pn["tai_trong"]
     truc = {pc: ", ".join(mh.TEN_BIEN[b] for b in tt[pc].abs().nlargest(3).index) for pc in ["PC1", "PC2"]}
-    gd.nguon(f"Trục ngang chủ yếu phản ánh {truc['PC1']}; trục dọc phản ánh {truc['PC2']}. Hai trục giữ "
-             f"{so(pn['phuong_sai'].sum() * 100, 0)} thông tin của 6 chỉ số (PCA). Phân nhóm: K-Means, Hoàng Mạnh Quân.")
+    gd.nguon(f"Trục ngang chủ yếu phản ánh {truc['PC1']}; trục dọc phản ánh {truc['PC2']}. Bản đồ hai chiều giữ được "
+             f"khoảng {so(pn['phuong_sai'].sum() * 100, 0)} khác biệt giữa các ngân hàng.")
 
 for c, (_, r) in zip(st.columns(len(ho_so), gap="medium"), ho_so.iterrows()):
     tv = " ".join(gd.chip(m) for m in thanh_vien[r["nhom"]]) or "<span class='nguon'>–</span>"
@@ -42,7 +42,7 @@ for c, (_, r) in zip(st.columns(len(ho_so), gap="medium"), ho_so.iterrows()):
             f"<div style='display:flex;align-items:center;gap:12px'><span style='width:40px;height:40px;border-radius:10px;"
             f"background:{gd.mau_nhom(r['nhom'])};color:#FFFFFF;display:flex;align-items:center;justify-content:center;"
             f"font-weight:700;font-size:1.05rem;flex:none'>{r['nhom']}</span><div><b style='font-size:.98rem;line-height:1.3'>"
-            f"{e(r['ten_nhom'])}</b><div class='nguon'>{int(r['so_quan_sat'])} ngân hàng–quý</div></div></div>"
+            f"{e(r['ten_nhom'])}</b><div class='nguon'>Bình quân của nhóm</div></div></div>"
             f"<div style='display:flex;gap:12px;flex-wrap:wrap;margin:12px 0'>{tv}</div>"
             "<div style='display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px 10px;padding-top:10px;"
             "border-top:1px solid var(--ke)'>"
@@ -55,7 +55,7 @@ lech = z.loc[nho["nhom"]].abs().nlargest(2)
 with gd.the("lech"):
     gd.tieu_the("Khác biệt giữa các nhóm",
                 f"Nhóm {nho['nhom']} lệch nhiều nhất ở {mh.TEN_DE_HIEU[lech.index[0]]} và {mh.TEN_DE_HIEU[lech.index[1]]}",
-                f"Độ lệch so với trung bình {len(d)} ngân hàng–quý, đơn vị độ lệch chuẩn")
+                "0 = mức trung bình chung; thanh càng dài, nhóm càng khác biệt")
     bd.ve(bd.lech_nhom(z), key="pn_lech")
 
 # ---- Theo thời gian --------------------------------------------------------------------------------------------
@@ -64,18 +64,14 @@ truoc = o.groupby("ma_nh")["nhom"].shift()
 so_doi = int((truoc.notna() & (truoc != o["nhom"])).sum())
 with gd.the("luoi"):
     gd.tieu_the("Qua từng quý",
-                f"{so_doi} lần đổi nhóm trong {len(ds_ky)} quý" + (" – nhóm phản ánh đặc điểm bền vững của mỗi ngân hàng"
-                                                                   if so_doi <= 3 else ""),
+                ("Không ngân hàng nào đổi nhóm" if so_doi == 0 else f"{so_doi} lần đổi nhóm") + f" trong {len(ds_ky)} quý"
+                + (" – nhóm phản ánh đặc điểm bền vững của mỗi ngân hàng" if so_doi <= 3 else ""),
                 "Mỗi ô là một quý của một ngân hàng, tô theo nhóm")
     bd.ve(bd.luoi_nhom(d, ds_ky), key="pn_luoi")
-    with st.expander(f"Phương pháp chọn số nhóm · K = {pn['k']} theo silhouette"):
+    with st.expander(f"Vì sao chia {pn['k']} nhóm"):
         ck = ds["chon_k_quan"] if ds["chon_k_quan"] is not None else pn["chon_k"].rename(columns={"Nhóm nhỏ nhất": "smallest_cluster"})
-        st.markdown(f"Chuẩn hóa 6 chỉ số trên toàn bộ mẫu, chạy K-Means với K = 2…6 và chọn K có hệ số silhouette (độ tách "
-                    f"biệt giữa các nhóm) cao nhất: **K = {pn['k']}**. K = 5, 6 tạo nhóm chỉ vài quan sát – quá nhỏ để có ý nghĩa.")
-        a, b = st.columns(2)
-        with a:
-            bd.ve(bd.duong_nho(ck["K"], ck["Silhouette"], "Silhouette – cao là tách tốt"), key="pn_sil")
-        with b:
-            bd.ve(bd.duong_nho(ck["K"], ck["Inertia"], "Inertia – tổng khoảng cách trong nhóm", mau=gd.mau()["nhat"]), key="pn_ine")
+        st.markdown(f"Thử chia từ 2 đến 6 nhóm và giữ cách chia có ranh giới giữa các nhóm rõ nhất: **{pn['k']} nhóm**. "
+                    "Chia 5–6 nhóm sinh ra những nhóm chỉ vài quan sát, quá nhỏ để có ý nghĩa.")
+        bd.ve(bd.duong_nho(ck["K"], ck["Silhouette"], "Độ rõ ranh giới giữa các nhóm (cao là rõ) theo số nhóm"), key="pn_sil")
 
 gd.chan_trang()

@@ -2,7 +2,7 @@
 giao_dien.py – Nhận diện của dashboard: bảng màu sáng/tối, CSS, định dạng số kiểu Việt và các
 thành phần HTML (đầu trang, nhận định, thẻ số liệu, thẻ nội dung, huy hiệu mã, sparkline, bảng, tin).
 
-Nguyên tắc: nền sáng navy + trắng (mặc định) hoặc tối kiểu terminal; nội dung nằm trên thẻ; mỗi trang
+Nguyên tắc: than chì + vàng đồng – nền giấy ấm, thẻ trắng (mặc định) hoặc nền than tối; nội dung nằm trên thẻ; mỗi trang
 một câu nhận định. Màu ngân hàng theo quy ước của Nghi (src/config.py), có bản sáng hơn cho nền tối.
 Đổi màu: sửa BANG_MAU dưới đây và .streamlit/config.toml (màu nền, sidebar, widget của Streamlit).
 """
@@ -14,39 +14,40 @@ import streamlit as st
 
 from src import config as cf
 
-TEN = "Nhịp Ngân Hàng"
+TEN = "UpBank!"
 KHAU_HIEU = "Dữ liệu 8 ngân hàng niêm yết"
 
-SANS = "'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif"
-MONO = "'JetBrains Mono', ui-monospace, monospace"
-SERIF = "'Source Serif 4', Georgia, serif"   # chỉ dùng cho câu nhận định
+# Chữ và biểu đồ: Inter · con số trong bảng, thẻ số, ngày: JetBrains Mono (độ rộng đều, cột số thẳng hàng)
+# · câu nhận định: Merriweather (giọng bài phân tích)
+CHU = "'Inter', 'Segoe UI', system-ui, sans-serif"
+SO = "'JetBrains Mono', ui-monospace, Consolas, monospace"
 
 # giay: nền trang · mat: nền thẻ · muc: chữ chính · muc2: chữ phụ · nhat: chú thích · ke: viền
 # nen_xam: đường/cột làm nền so sánh · vung: dải tô mờ trên biểu đồ · nhan: màu nhấn
 BANG_MAU = {
     "light": {
-        "giay": "#F3F5F9", "mat": "#FFFFFF", "mat2": "#EEF2F7", "muc": "#0E1A2B", "muc2": "#3F4D61", "nhat": "#5F6E83",
-        "ke": "#E1E6EE", "ke2": "#C9D2DE", "luoi": "#E9EDF3", "nen_xam": "#C3CCD8", "vung": "rgba(95,110,131,0.13)",
-        "nhan": "#1C5BD6", "nhan_nhat": "#E7EEFC", "nhan_chu": "#174CB3", "nhan_dinh": "#174CB3",
+        "giay": "#F4F3F0", "mat": "#FFFFFF", "mat2": "#EFEDE8", "muc": "#17181C", "muc2": "#44464D", "nhat": "#6E6A63",
+        "ke": "#E3E0DA", "ke2": "#CFCAC0", "luoi": "#ECE9E3", "nen_xam": "#C9C4BA", "vung": "rgba(110,106,99,0.13)",
+        "nhan": "#B8862B", "nhan_nhat": "#F6EDD9", "nhan_chu": "#8A6416", "nhan_dinh": "#8A6416",
         "tang": "#0A7A4A", "tang_nhat": "#E2F3EA", "giam": "#BF3328", "giam_nhat": "#FBE7E4",
-        "canh_bao": "#985A00", "canh_bao_nhat": "#FBF0DC", "bong": "0 1px 2px rgba(14,26,43,.06)", "bo": "12px",
-        "so": SANS,
+        "canh_bao": "#985A00", "canh_bao_nhat": "#FBF0DC", "bong": "0 1px 2px rgba(23,24,28,.06)", "bo": "12px",
+        "so": SO,
     },
     "dark": {
-        "giay": "#0A0D12", "mat": "#10151C", "mat2": "#161D27", "muc": "#E2E8F0", "muc2": "#B4C0D0", "nhat": "#8E9BAE",
-        "ke": "#1F2834", "ke2": "#2C3846", "luoi": "#1A222D", "nen_xam": "#3A4656", "vung": "rgba(142,155,174,0.12)",
-        "nhan": "#5B9DFF", "nhan_nhat": "#132338", "nhan_chu": "#7FB2FF", "nhan_dinh": "#F0B13E",
+        "giay": "#0F1013", "mat": "#17191E", "mat2": "#1E2127", "muc": "#ECE8E1", "muc2": "#C2BDB3", "nhat": "#9A958B",
+        "ke": "#262931", "ke2": "#343843", "luoi": "#1F2229", "nen_xam": "#43474F", "vung": "rgba(154,149,139,0.12)",
+        "nhan": "#E2B65A", "nhan_nhat": "#2A2416", "nhan_chu": "#E9C46A", "nhan_dinh": "#E2B65A",
         "tang": "#34C47C", "tang_nhat": "#0F2A1D", "giam": "#FF6A5C", "giam_nhat": "#2E1513",
         "canh_bao": "#F0B13E", "canh_bao_nhat": "#2A2110", "bong": "none", "bo": "6px",
-        "so": MONO,
+        "so": SO,
     },
 }
 MAU = BANG_MAU["light"]   # bản sáng cố định cho ve_so_do.py (sơ đồ kiến trúc, vẽ ngoài Streamlit)
 # Trên nền tối, các màu đậm (navy VCB, nâu VPB…) chìm mất – dùng bản sáng hơn, giữ nguyên tông
 MAU_NGAN_HANG_TOI = {"VCB": "#4E86D9", "BID": "#86B4EE", "CTG": "#BCD8F6", "TCB": "#FF6B72", "MBB": "#F2B544",
                      "ACB": "#2FC79A", "STB": "#B58BE3", "VPB": "#CDA75E"}
-MAU_NHOM = {"light": {"A": "#2F6DB5", "B": "#E07B39", "C": "#4E9A5B", "D": "#8E6C9E"},
-            "dark": {"A": "#5B9DFF", "B": "#FF9A57", "C": "#6CCB86", "D": "#C29BE0"}}
+MAU_NHOM = {"light": {"A": "#2F6DB5", "B": "#8E4F7E", "C": "#4E9A5B", "D": "#8E6C9E"},
+            "dark": {"A": "#6FA3E8", "B": "#D08AC0", "C": "#6CCB86", "D": "#C29BE0"}}
 
 
 # ----------------------------------------------------------------------------
@@ -116,7 +117,7 @@ def _bien_nh(loai):
 
 _CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Merriweather:wght@700&display=swap');
 /* ---------- Khung trang ---------- */
 [data-testid="stMainBlockContainer"], .block-container { max-width: 1240px; padding-top: 2.4rem; padding-bottom: 3.5rem; }
 [data-testid="stAppDeployButton"], [data-testid="stDecoration"], footer { display: none !important; }
@@ -138,13 +139,12 @@ div[class*="st-key-the-"] { background: var(--mat); border-color: var(--ke) !imp
 .dau-trang .nho { font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--nhat); }
 .dau-trang h1 { font-size: 1.85rem; font-weight: 700; margin: 0; padding: 0; line-height: 1.2; color: var(--muc); }
 .dau-trang .phu { color: var(--nhat); font-size: .92rem; }
-html[data-nnh="dark"] .dau-trang .nho, html[data-nnh="dark"] .nhan-dinh .nho { font-family: 'JetBrains Mono', monospace; }
 
 /* ---------- Câu nhận định ---------- */
 .nhan-dinh { background: var(--mat); border: 1px solid var(--ke); border-radius: var(--bo); box-shadow: var(--bong);
   padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; }
 .nhan-dinh .nho { font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--nhan-dinh); }
-.nhan-dinh .cau { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.6rem; font-weight: 600; line-height: 1.28;
+.nhan-dinh .cau { font-family: 'Merriweather', Georgia, serif; font-size: 1.5rem; font-weight: 600; line-height: 1.28;
   color: var(--muc); margin: 4px 0 0 0; }
 .nhan-dinh .phu { font-size: .9rem; color: var(--nhat); margin-top: 6px; }
 
@@ -156,9 +156,10 @@ html[data-nnh="dark"] .dau-trang .nho, html[data-nnh="dark"] .nhan-dinh .nho { f
 .the-so .tren span:last-child { color: var(--nhat); font-weight: 400; }
 .the-so .giua { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; min-width: 0; }
 .the-so .giua img { min-width: 0; max-width: 48%; height: auto; }
-.the-so .so { font-family: var(--so); font-size: 1.85rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; color: var(--muc); }
+.the-so .so { font-family: var(--so); font-size: 1.7rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; color: var(--muc); }
 .the-so.hep .so { font-size: 1.5rem; }
 .the-so.hep .giua { flex-wrap: wrap; }
+.the-so.hep .tren { font-size: .78rem; white-space: nowrap; }
 .the-so .duoi { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: .76rem; color: var(--nhat); }
 
 /* ---------- Tiêu đề trong thẻ ---------- */
@@ -185,7 +186,7 @@ code { overflow-wrap: anywhere; }
 .canh-bao { display: flex; gap: 12px; align-items: flex-start; padding: 14px 18px; border-radius: var(--bo);
   background: var(--canh-bao-nhat); color: var(--muc); font-size: .92rem; line-height: 1.55; }
 .i-tron { width: 18px; height: 18px; border-radius: 50%; border: 1.8px solid var(--canh-bao); color: var(--canh-bao);
-  font: 700 11px/1 'Be Vietnam Pro', sans-serif; display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 11px; line-height: 1; display: inline-flex; align-items: center; justify-content: center;
   flex: none; margin-top: 2px; }
 
 /* ---------- Bảng ---------- */
@@ -216,6 +217,39 @@ table.bang a { text-decoration: none; color: inherit; }
 /* ---------- Widget ---------- */
 [data-testid="stExpander"] details { border-radius: var(--bo); }
 [data-testid="stExpander"] summary { font-weight: 600; }
+
+/* ---------- Băng giá chạy (Bản tin) ---------- */
+.bang-dien { display: flex; align-items: stretch; background: var(--mat); border: 1px solid var(--ke);
+  border-radius: var(--bo); box-shadow: var(--bong); overflow: hidden; margin-bottom: 6px; }
+.bang-dien .nhan { flex: none; display: flex; align-items: center; padding: 0 14px; font-size: .72rem; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--nhan-chu); background: var(--nhan-nhat);
+  border-right: 1px solid var(--ke); white-space: nowrap; }
+.bang-dien .khung { flex: 1; overflow: hidden; min-width: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); }
+.bang-dien .chay { display: flex; width: max-content; animation: chay 36s linear infinite; }
+.bang-dien:hover .chay { animation-play-state: paused; }
+.bang-dien .ma-gia { display: inline-flex; align-items: baseline; gap: 8px; padding: 10px 22px; white-space: nowrap;
+  border-right: 1px solid var(--ke); font-size: .86rem; }
+.bang-dien .ma-gia b { font-weight: 700; }
+.bang-dien .ma-gia .gia { font-family: var(--so); color: var(--muc); }
+.bang-dien .ma-gia .len, .bang-dien .ma-gia .xuong { font-family: var(--so); font-size: .8rem; }
+@keyframes chay { to { transform: translateX(-50%); } }
+
+/* ---------- Chuyển động nhẹ: thẻ hiện dần, nhích lên khi rê chuột ---------- */
+@keyframes hien { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.nhan-dinh, .dau-trang, div[class*="st-key-the-"] { animation: hien .45s ease-out both; }
+.the-so .o { animation: hien .45s ease-out both; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.the-so .o:nth-child(2) { animation-delay: .06s; } .the-so .o:nth-child(3) { animation-delay: .12s; }
+.the-so .o:nth-child(4) { animation-delay: .18s; } .the-so .o:nth-child(5) { animation-delay: .24s; }
+.the-so .o:nth-child(6) { animation-delay: .30s; }
+.the-so .o:hover { transform: translateY(-2px); border-color: var(--nhan); box-shadow: 0 6px 18px rgba(23,24,28,.08); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bang-dien .chay, .nhan-dinh, .dau-trang, div[class*="st-key-the-"], .the-so .o { animation: none !important; }
+  .bang-dien .khung { overflow-x: auto; }
+  .the-so .o:hover { transform: none; }
+}
 </style>
 """
 
@@ -317,12 +351,30 @@ def sparkline(gia_tri, mau_duong=None, rong=110, cao=36, vung=True):
     mau_duong = mau_duong or mau()["nhan"]
     to = (f"<path d='M{x[0]:.1f},{cao} L{diem.replace(' ', ' L')} L{x[-1]:.1f},{cao} Z' fill='{mau_duong}' "
           f"fill-opacity='0.12'/>") if vung else ""
-    svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='{rong}' height='{cao}' viewBox='0 0 {rong} {cao}'>{to}"
-           f"<polyline points='{diem}' fill='none' stroke='{mau_duong}' stroke-width='1.8' stroke-linejoin='round'/>"
+    # Đường tự vẽ ra khi tải trang (CSS trong SVG vẫn chạy khi nhúng dạng ảnh); tắt nếu người xem giảm chuyển động
+    ve = ("<style>polyline{stroke-dasharray:1;stroke-dashoffset:1;animation:v .9s ease-out forwards}"
+          "path,circle{opacity:0;animation:h .3s .7s forwards}@keyframes v{to{stroke-dashoffset:0}}"
+          "@keyframes h{to{opacity:1}}@media (prefers-reduced-motion:reduce){polyline,path,circle"
+          "{animation:none;stroke-dashoffset:0;opacity:1}}</style>")
+    svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='{rong}' height='{cao}' viewBox='0 0 {rong} {cao}'>{ve}{to}"
+           f"<polyline points='{diem}' pathLength='1' fill='none' stroke='{mau_duong}' stroke-width='1.8' "
+           "stroke-linejoin='round'/>"
            f"<circle cx='{x[-1]:.1f}' cy='{y[-1]:.1f}' r='2.6' fill='{mau_duong}'/></svg>")
     # st.html lọc thẻ <svg>, nên nhúng dưới dạng ảnh data URI
     return (f"<img src='data:image/svg+xml;base64,{base64.b64encode(svg.encode()).decode()}' width='{rong}' "
             f"height='{cao}' style='vertical-align:middle;flex:none' alt=''>")
+
+
+def bang_dien(df, nhan):
+    """Băng giá chạy ngang: mã, giá cuối quý, % thay đổi trong quý. df có ma_nh, gia_cuoi_quy, ty_suat_sinh_loi_quy.
+    Nội dung lặp hai lần để vòng chạy nối liền; rê chuột thì dừng."""
+    o = "".join(
+        f"<span class='ma-gia'><span class='chip'><i style='background:var(--nh-{r.ma_nh.lower()})'></i></span>"
+        f"<b>{r.ma_nh}</b><span class='gia'>{so(r.gia_cuoi_quy, dv='')}</span>"
+        f"<span class='{'len' if r.ty_suat_sinh_loi_quy >= 0 else 'xuong'}'>{'▲' if r.ty_suat_sinh_loi_quy >= 0 else '▼'} "
+        f"{so(r.ty_suat_sinh_loi_quy, 1, dau=True)}</span></span>" for r in df.itertuples())
+    st.html(f"<div class='bang-dien'><span class='nhan'>{e(nhan)}</span><div class='khung'>"
+            f"<div class='chay'>{o}{o}</div></div></div>")
 
 
 def ds_tin(ds):
@@ -367,5 +419,4 @@ def chan_trang():
     st.html(
         "<div class='nguon' style='margin-top:36px;border-top:1px solid var(--ke);padding-top:12px;display:flex;"
         "flex-wrap:wrap;justify-content:space-between;gap:6px 24px'>"
-        f"<span><b style='color:var(--muc)'>{TEN}</b> · Nhóm 5 – Phân tích dữ liệu cho môi trường doanh nghiệp · "
-        "Nguồn: VNDirect, CafeF</span><span>Chỉ để tham khảo, không phải khuyến nghị đầu tư</span></div>")
+        f"<span><b style='color:var(--muc)'>{TEN}</b> · Nhóm 5 – Phân tích dữ liệu cho môi trường doanh nghiệp</span></div>")

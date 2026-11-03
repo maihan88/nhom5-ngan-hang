@@ -16,7 +16,7 @@ import streamlit as st
 
 from src import config as cf
 from web import giao_dien as gd
-from web.giao_dien import SANS, so
+from web.giao_dien import CHU, so
 
 
 def M():
@@ -28,9 +28,9 @@ def nen(fig, cao=360, hover="x unified", chu_giai=False, phai=12, tren=None):
     fig.update_layout(
         height=cao, margin=dict(l=4, r=phai, t=tren if tren is not None else (34 if chu_giai else 10), b=4),
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", separators=",.",
-        font=dict(family=SANS, size=12.5, color=M()["muc2"]), hovermode=hover, showlegend=chu_giai,
+        font=dict(family=CHU, size=12.5, color=M()["muc2"]), hovermode=hover, showlegend=chu_giai,
         legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0, title=None, font=dict(size=12, color=M()["muc2"])),
-        hoverlabel=dict(bgcolor=M()["mat"], bordercolor=M()["ke"], font=dict(family=SANS, size=12.5, color=M()["muc"])),
+        hoverlabel=dict(bgcolor=M()["mat"], bordercolor=M()["ke"], font=dict(family=CHU, size=12.5, color=M()["muc"])),
         barcornerradius=2,
     )
     fig.update_xaxes(showgrid=False, showline=True, linecolor=M()["ke2"], linewidth=1, ticks="outside",
@@ -115,7 +115,7 @@ def bump(xh, noi_bat, cao=400):
             x=s["nam"], y=s["hang"], mode="lines+markers+text" if sang else "lines+markers", name=ma,
             line=dict(color=mau, width=3 if sang else 1.4),
             marker=dict(size=22 if sang else 7, color=mau, line=dict(color=M()["mat"], width=2)),
-            text=s["hang"], textfont=dict(color=M()["giay"] if gd.loai_giao_dien() == "dark" else "#FFFFFF", size=11, family=SANS),
+            text=s["hang"], textfont=dict(color=M()["giay"] if gd.loai_giao_dien() == "dark" else "#FFFFFF", size=11, family=CHU),
             customdata=s["gia_tri"],
             hovertemplate=f"<b>{ma}</b> %{{x}}: hạng %{{y}} · %{{customdata:,.2f}}%<extra></extra>"))
         cuoi = s[s["nam"] == nam_cuoi]
@@ -206,8 +206,8 @@ def tuong_quan(tq, cao=280):
                              marker=dict(size=12, color=M()["muc"], line=dict(color=M()["mat"], width=2)),
                              text=[so(v, 2, "", dau=True) for v in d["spearman_rho"]], textposition="middle right",
                              textfont=dict(size=11.5, color=M()["muc2"]),
-                             hovertemplate="%{y}: ρ = %{x:,.3f}<extra></extra>"))
-    for x, chu, neo in [(-1, "← ngược chiều", "left"), (0, "vùng xám: rất yếu", "center"), (1, "cùng chiều →", "right")]:
+                             hovertemplate="%{y}: %{x:+,.2f}<extra></extra>"))
+    for x, chu, neo in [(-1, "← ngược chiều", "left"), (0, "vùng xám: gần như không liên hệ", "center"), (1, "cùng chiều →", "right")]:
         fig.add_annotation(x=x, y=1.0, yref="paper", yanchor="bottom", xanchor=neo, text=chu, showarrow=False,
                            font=dict(size=11, color=M()["nhat"]))
     nen(fig, cao, hover="closest", tren=28)
@@ -285,15 +285,15 @@ def lich_su_tin_hieu(ls, ma, nam_test, nhan, cao=280):
 
 
 def so_sanh_mo_hinh(dg, cao=230):
+    """Tỷ lệ đoán đúng của từng phiên bản; vạch dọc 50% = đoán bừa."""
     d = dg.iloc[::-1]
     fig = go.Figure()
-    fig.add_vline(x=0.5, line=dict(color=M()["muc2"], width=1))
-    for chi_tieu, mau, ky_hieu in [("Accuracy", M()["nen_xam"], "circle"), ("ROC-AUC", M()["muc"], "diamond")]:
-        fig.add_trace(go.Scatter(x=d[chi_tieu], y=d["ten"], mode="markers", name="Tỷ lệ đúng" if chi_tieu == "Accuracy" else "AUC",
-                                 marker=dict(size=13, color=mau, symbol=ky_hieu, line=dict(color=M()["mat"], width=2)),
-                                 hovertemplate="%{y}: %{x:,.3f}<extra>" + chi_tieu + "</extra>"))
-    nen(fig, cao, hover="closest", chu_giai=True)
-    fig.update_xaxes(range=[0.4, 0.75], showgrid=True, gridcolor=M()["luoi"], showline=False, ticks="")
+    fig.add_vline(x=50, line=dict(color=M()["muc2"], width=1, dash="dot"))
+    fig.add_trace(go.Bar(x=d["Accuracy"] * 100, y=d["ten"], orientation="h", marker_color=M()["nhan"],
+                         text=[so(v * 100, 1) for v in d["Accuracy"]], textposition="outside", cliponaxis=False,
+                         hovertemplate="%{y}: đúng %{x:,.1f}%<extra></extra>"))
+    nen(fig, cao, hover="closest")
+    fig.update_xaxes(range=[0, 80], ticksuffix="%", showgrid=True, gridcolor=M()["luoi"], showline=False, ticks="")
     fig.update_yaxes(showgrid=False)
     return fig
 
@@ -330,7 +330,9 @@ def ban_do(pn, noi_bat=None, cao=480):
                                  marker=dict(size=6, color=gd.mau_nh(noi_bat)), text=s["ky"],
                                  hovertemplate="%{text}<extra>" + noi_bat + "</extra>"))
     nen(fig, cao, hover="closest", chu_giai=True)
-    fig.update_xaxes(showgrid=True, gridcolor=M()["luoi"], showline=False, ticks="", zeroline=False)
+    # Tọa độ PCA không có đơn vị dễ hiểu – chỉ giữ vị trí tương đối, ẩn số trên trục
+    fig.update_xaxes(showgrid=True, gridcolor=M()["luoi"], showline=False, ticks="", zeroline=False, showticklabels=False)
+    fig.update_yaxes(showticklabels=False)
     return fig
 
 
@@ -365,7 +367,7 @@ def lech_nhom(z, cao=260):
 
 def duong_nho(x, y, ten_y, cao=200, mau=None):
     fig = go.Figure(go.Scatter(x=x, y=y, mode="lines+markers", line=dict(color=mau or M()["muc"], width=2),
-                               marker=dict(size=7), hovertemplate="K = %{x}: %{y:,.3f}<extra></extra>"))
+                               marker=dict(size=7), hovertemplate="%{x} nhóm: %{y:,.2f}<extra></extra>"))
     nen(fig, cao, hover="closest")
     fig.update_xaxes(dtick=1)
     fig.add_annotation(x=0, y=1.0, xref="paper", yref="paper", yanchor="bottom", xanchor="left", text=ten_y,

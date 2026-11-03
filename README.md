@@ -1,7 +1,7 @@
 # Nhóm 5 – Phân tích tài chính 8 ngân hàng niêm yết
 
 8 ngân hàng (VCB, BID, CTG, TCB, MBB, ACB, STB, VPB), dữ liệu từ Q1/2021 đến quý gần nhất đã qua hạn
-công bố BCTC (cuối quý + 45 ngày). Sản phẩm cuối: bản tin web **Nhịp Ngân Hàng** (Streamlit).
+công bố BCTC (cuối quý + 45 ngày). Sản phẩm cuối: bản tin web **UpBank!** (Streamlit).
 
 | Thư mục | Phụ trách | Nội dung |
 |---|---|---|
