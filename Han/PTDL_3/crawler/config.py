@@ -88,10 +88,6 @@ MANUAL_DIR = DATA_DIR / "manual"      # file rà soát thủ công sự kiện
 VND_API = "https://api-finfo.vndirect.com.vn/v4"   # API công khai phía sau dstock.vndirect.com.vn
 CAFEF_EVENTS_URL = "https://cafef.vn/du-lieu/Ajax/Events_RelatedNews_New.aspx"
 CAFEF_BASE = "https://cafef.vn"
-# Vietstock: danh sách tin theo mã tải bằng POST (JSON), cần token chống giả mạo lấy từ trang tin
-VIETSTOCK_NEWS_URL = "https://finance.vietstock.vn/data/GetNews"
-VIETSTOCK_NEWS_PAGE = "https://finance.vietstock.vn/{code}/tin-tuc-su-kien.htm"
-VIETSTOCK_ARTICLE_BASE = "https://vietstock.vn"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
