@@ -17,9 +17,7 @@ from src import config as cf
 TEN = "Nhịp Ngân Hàng"
 KHAU_HIEU = "Dữ liệu 8 ngân hàng niêm yết"
 
-SANS = "'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif"
-MONO = "'JetBrains Mono', ui-monospace, monospace"
-SERIF = "'Source Serif 4', Georgia, serif"   # chỉ dùng cho câu nhận định
+CHU = "'STIX Two Text', Georgia, 'Times New Roman', serif"   # một font cho cả chữ, số và biểu đồ
 
 # giay: nền trang · mat: nền thẻ · muc: chữ chính · muc2: chữ phụ · nhat: chú thích · ke: viền
 # nen_xam: đường/cột làm nền so sánh · vung: dải tô mờ trên biểu đồ · nhan: màu nhấn
@@ -30,7 +28,7 @@ BANG_MAU = {
         "nhan": "#1C5BD6", "nhan_nhat": "#E7EEFC", "nhan_chu": "#174CB3", "nhan_dinh": "#174CB3",
         "tang": "#0A7A4A", "tang_nhat": "#E2F3EA", "giam": "#BF3328", "giam_nhat": "#FBE7E4",
         "canh_bao": "#985A00", "canh_bao_nhat": "#FBF0DC", "bong": "0 1px 2px rgba(14,26,43,.06)", "bo": "12px",
-        "so": SANS,
+        "so": CHU,
     },
     "dark": {
         "giay": "#0A0D12", "mat": "#10151C", "mat2": "#161D27", "muc": "#E2E8F0", "muc2": "#B4C0D0", "nhat": "#8E9BAE",
@@ -38,7 +36,7 @@ BANG_MAU = {
         "nhan": "#5B9DFF", "nhan_nhat": "#132338", "nhan_chu": "#7FB2FF", "nhan_dinh": "#F0B13E",
         "tang": "#34C47C", "tang_nhat": "#0F2A1D", "giam": "#FF6A5C", "giam_nhat": "#2E1513",
         "canh_bao": "#F0B13E", "canh_bao_nhat": "#2A2110", "bong": "none", "bo": "6px",
-        "so": MONO,
+        "so": CHU,
     },
 }
 MAU = BANG_MAU["light"]   # bản sáng cố định cho ve_so_do.py (sơ đồ kiến trúc, vẽ ngoài Streamlit)
@@ -116,7 +114,6 @@ def _bien_nh(loai):
 
 _CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap');
 /* ---------- Khung trang ---------- */
 [data-testid="stMainBlockContainer"], .block-container { max-width: 1240px; padding-top: 2.4rem; padding-bottom: 3.5rem; }
 [data-testid="stAppDeployButton"], [data-testid="stDecoration"], footer { display: none !important; }
@@ -138,13 +135,12 @@ div[class*="st-key-the-"] { background: var(--mat); border-color: var(--ke) !imp
 .dau-trang .nho { font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--nhat); }
 .dau-trang h1 { font-size: 1.85rem; font-weight: 700; margin: 0; padding: 0; line-height: 1.2; color: var(--muc); }
 .dau-trang .phu { color: var(--nhat); font-size: .92rem; }
-html[data-nnh="dark"] .dau-trang .nho, html[data-nnh="dark"] .nhan-dinh .nho { font-family: 'JetBrains Mono', monospace; }
 
 /* ---------- Câu nhận định ---------- */
 .nhan-dinh { background: var(--mat); border: 1px solid var(--ke); border-radius: var(--bo); box-shadow: var(--bong);
   padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; }
 .nhan-dinh .nho { font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--nhan-dinh); }
-.nhan-dinh .cau { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.6rem; font-weight: 600; line-height: 1.28;
+.nhan-dinh .cau { font-size: 1.7rem; font-weight: 600; line-height: 1.28;
   color: var(--muc); margin: 4px 0 0 0; }
 .nhan-dinh .phu { font-size: .9rem; color: var(--nhat); margin-top: 6px; }
 
@@ -185,7 +181,7 @@ code { overflow-wrap: anywhere; }
 .canh-bao { display: flex; gap: 12px; align-items: flex-start; padding: 14px 18px; border-radius: var(--bo);
   background: var(--canh-bao-nhat); color: var(--muc); font-size: .92rem; line-height: 1.55; }
 .i-tron { width: 18px; height: 18px; border-radius: 50%; border: 1.8px solid var(--canh-bao); color: var(--canh-bao);
-  font: 700 11px/1 'Be Vietnam Pro', sans-serif; display: inline-flex; align-items: center; justify-content: center;
+  font: 700 11px/1 var(--so); display: inline-flex; align-items: center; justify-content: center;
   flex: none; margin-top: 2px; }
 
 /* ---------- Bảng ---------- */

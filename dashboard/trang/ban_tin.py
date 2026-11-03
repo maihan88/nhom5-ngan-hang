@@ -29,10 +29,10 @@ y_npl = "nợ xấu nhích lên" if d_npl > 0.05 else ("nợ xấu giảm" if d_
 gd.dau_trang("Tổng quan ngành", f"Bản tin quý {quy}/{nam}",
              f"Bình quân 8 ngân hàng · số liệu tài chính đến {ngay_cuoi:%d/%m/%Y}")
 gd.nhan_dinh(f"{gd.hoa_dau(y_roe)}, {y_npl}.", f"Nhận định · Quý {quy}/{nam}",
-             ben_phai=gd.vien(f"{cp_tot} {so(q.loc[cp_tot, 'ty_suat_sinh_loi_quy'], dau=True)} · tăng mạnh nhất",
+             ben_phai=gd.vien(f"{cp_tot} {so(q.loc[cp_tot, 'ty_suat_sinh_loi_quy'], 1, dau=True)} · giá tăng mạnh nhất",
                               "tot" if q.loc[cp_tot, "ty_suat_sinh_loi_quy"] >= 0 else "xau")
-             + gd.vien(f"{cp_kem} {so(q.loc[cp_kem, 'ty_suat_sinh_loi_quy'], dau=True)} · "
-                       f"{'giảm sâu nhất' if q.loc[cp_kem, 'ty_suat_sinh_loi_quy'] < 0 else 'tăng ít nhất'}",
+             + gd.vien(f"{cp_kem} {so(q.loc[cp_kem, 'ty_suat_sinh_loi_quy'], 1, dau=True)} · "
+                       f"{'giá giảm sâu nhất' if q.loc[cp_kem, 'ty_suat_sinh_loi_quy'] < 0 else 'tăng ít nhất'}",
                        "xau" if q.loc[cp_kem, "ty_suat_sinh_loi_quy"] < 0 else ""))
 
 o = []
@@ -75,8 +75,8 @@ with gd.the("xep-hang"):
     st.html("<div class='cuon'><table class='bang' style='min-width:900px'><thead><tr><th>#</th><th class='trai'>Ngân hàng</th>"
             "<th>Giá (nghìn đ)</th><th>Trong quý</th><th>12 tháng</th><th>ROE</th><th>NIM</th><th>Nợ xấu</th><th>CAR</th>"
             "<th class='trai'>Tín hiệu quý tới</th></tr></thead><tbody>" + "".join(dong) + "</tbody></table></div>")
-    gd.nguon("Giá đã điều chỉnh cổ tức, chia tách. CAR chỉ công bố cuối năm – các quý khác là số gần nhất trước đó. "
-             "Tín hiệu quý tới: khả năng giá tăng theo mô hình thống kê, độ tin cậy thấp – xem Dự báo.")
+    gd.nguon("Giá đã điều chỉnh cổ tức, chia tách · CAR là số công bố cuối năm gần nhất · "
+             "Tín hiệu quý tới chỉ để tham khảo, xem trang Dự báo.")
 
 # ---- Sinh lời qua các năm · cổ phiếu -------------------------------------------------------------
 with gd.the("bump"):
@@ -88,7 +88,7 @@ with gd.the("bump"):
     noi_bat = list(dict.fromkeys([a, vua_qua["ma_nh"]]))
     phu = (f"{a} số 1 trong {so_lan.iloc[0]}/{len(dau)} năm"
            + (f" · {vua_qua['ma_nh']} vượt lên năm {int(vua_qua['nam'])}" if vua_qua["ma_nh"] != a else ""))
-    gd.tieu_the("Thứ hạng ROE theo năm", phu, f"{int(xh['nam'].min())}–{int(xh['nam'].max())} · ROE cả năm")
+    gd.tieu_the("Thứ hạng ROE theo năm", phu, f"{int(xh['nam'].min())}–{int(xh['nam'].max())}")
     bd.ve(bd.bump(xh, noi_bat, cao=360), key="bt_bump")
 
 with gd.the("co-phieu"):
@@ -113,7 +113,7 @@ sk = ds["su_kien_chi_tiet"]
 sk_q = sk[sk["ky"] == ky]
 loai = sk_q["loai_su_kien_nhan"].value_counts()
 with gd.the("tin"):
-    gd.tieu_the("Tin doanh nghiệp", f"{len(sk_q)} sự kiện trong quý {quy}/{nam} · lọc từ công bố thông tin CafeF, VNDirect",
+    gd.tieu_the("Tin doanh nghiệp", f"{len(sk_q)} tin trong quý {quy}/{nam} · nguồn CafeF, VNDirect",
                 " ".join(f"<span class='the'>{gd.e(t)} · {n}</span>" for t, n in loai.items()))
     st.html(gd.ds_tin(sk.sort_values("ngay_cong_bo", ascending=False).head(6).itertuples()))
 

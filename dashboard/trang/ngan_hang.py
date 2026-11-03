@@ -66,7 +66,7 @@ nhom = pn["du_lieu"].set_index(["ma_nh", "ky"]).loc[(ma, ky)]
 st.html(
     "<div class='nhan-dinh' style='align-items:flex-end'><div style='flex:1 1 460px;min-width:0'>"
     f"<div style='display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px'><span class='the'>{cf.NHOM_CUA_NH[ma]}</span>"
-    f"<span class='the'>{ma} · HOSE</span><span class='the'>Nhóm {nhom['nhom']}</span></div>"
+    f"<span class='the'>{ma} · HOSE</span></div>"
     f"<h1 style='font-size:2.1rem;font-weight:700;margin:0;padding:0;display:flex;align-items:center;gap:12px'>"
     f"<span style='width:14px;height:14px;border-radius:4px;background:var(--nh-{ma.lower()})'></span>{e(cf.TEN_DAY_DU[ma])}</h1>"
     f"<div class='nho' style='margin-top:14px'>Nhận định · Quý {ky[-1]}/{ky[:4]}</div><p class='cau'>{nhan_dinh}</p></div>"
@@ -86,8 +86,7 @@ for cs in cf.DS_CHI_SO:
               "phu": gd.bien_dong(dong[cs] - nh.loc[ky_truoc, cs], chieu) if ky_truoc else "",
               "spark": gd.sparkline(nh[cs].iloc[max(0, vt - 7): vt + 1].tolist(), gd.mau_nh(ma), 72, 30, vung=False)})
 gd.the_so(o, rong=145, hep=True)
-gd.nguon("ROA, ROE, NIM năm hóa từ số liệu quý. CAR chỉ công bố cuối năm – các quý khác là số gần nhất trước đó. "
-         "Đường nhỏ: 8 quý gần nhất.")
+gd.nguon("ROA, ROE, NIM đã năm hóa · CAR là số công bố cuối năm gần nhất · đường nhỏ: 8 quý gần nhất.")
 
 # ---- So với mặt bằng ngành --------------------------------------------------------------------------------------
 p = b4.pivot_table(index="ky", columns="ma_nh", values=cf.DS_CHI_SO).reindex(ds_ky)
@@ -102,7 +101,7 @@ with gd.the("nganh"):
     gd.tieu_the("So với mặt bằng ngành",
                 f"{DIEM[noi_bat][0][:1].upper() + DIEM[noi_bat][0][1:]} {'cao' if cao_hon else 'thấp'} hơn trung vị ngành "
                 f"{max(n1, tong - n1)}/{tong} quý",
-                "Dải xám: khoảng 8 ngân hàng · đường chấm: trung vị · đường màu: " + ma)
+                "Vùng xám: 8 ngân hàng · nét chấm: trung vị ngành")
     hang_hinh = st.columns(3, gap="medium") + st.columns(3, gap="medium")
     for c, cs in zip(hang_hinh, cf.DS_CHI_SO):
         with c:
@@ -116,8 +115,8 @@ sk_nh = sk[sk["ma_nh"] == ma]
 sk_12 = sk_nh[(sk_nh["ngay_cong_bo"] > ngay_ky - pd.Timedelta(days=365)) & (sk_nh["ngay_cong_bo"] <= ngay_ky + pd.Timedelta(days=1))]
 with gd.the("gia"):
     gd.tieu_the("Cổ phiếu & sự kiện",
-                f"{'Tăng' if thay_doi_12t >= 0 else 'Giảm'} {so(abs(thay_doi_12t), 0)} trong 12 tháng đến {nhan_ky}, "
-                f"kèm {len(sk_12)} tin doanh nghiệp · chấm tròn: ngày công bố tin, rê chuột để đọc")
+                f"{'Tăng' if thay_doi_12t >= 0 else 'Giảm'} {so(abs(thay_doi_12t), 0)} trong 12 tháng đến {nhan_ky} · "
+                f"{len(sk_12)} tin doanh nghiệp, rê chuột vào chấm tròn để xem")
     ky_han = st.segmented_control("Kỳ hạn", ["1 năm", "3 năm", "Toàn bộ"], default="3 năm", key="nh_kh",
                                   label_visibility="collapsed") or "3 năm"
     tu = {"1 năm": ngay_ky - pd.Timedelta(days=365), "3 năm": ngay_ky - pd.Timedelta(days=3 * 365), "Toàn bộ": None}[ky_han]
@@ -135,7 +134,7 @@ c1, c2 = st.columns(2, gap="medium")
 with c1, gd.the("tin-hieu"):
     vt_ky = ds_ky.index(ky)
     ky_sau = ds_ky[vt_ky + 1] if vt_ky + 1 < len(ds_ky) else None
-    gd.tieu_the("Tín hiệu quý kế tiếp", "Ước lượng từ chỉ số tài chính và sự kiện, độ tin cậy thấp",
+    gd.tieu_the("Tín hiệu quý kế tiếp", "Chỉ để tham khảo, độ tin cậy thấp",
                 "<a href='du_bao' target='_self'>Xem Dự báo</a>")
     thuc_te = dong_db[mh.NHAN].iloc[0]
     ket = ""
@@ -156,11 +155,12 @@ with c1, gd.the("tin-hieu"):
             f"<div style='position:absolute;left:0;top:0;height:8px;border-radius:4px;width:{p_tang * 100:.0f}%;"
             f"background:{'var(--nhan)' if p_tang >= 0.5 else 'var(--nen-xam)'}'></div><div style='position:absolute;left:50%;"
             f"top:-4px;height:16px;border-left:2px solid var(--muc)'></div></div>"
-            f"<div class='nguon' style='margin-bottom:6px'>{len(ls)} quý gần nhất đã có kết quả</div>"
+            f"<div class='nguon' style='margin-bottom:6px'>{len(ls)} quý gần nhất: mô hình đoán và kết quả thực tế</div>"
             f"<div style='display:flex;gap:8px;flex-wrap:wrap'>{o_ls}</div>")
 
 with c2, gd.the("nhom"):
-    gd.tieu_the("Nhóm đặc điểm tài chính", "Phân cụm K-Means trên 6 chỉ số", "<a href='phan_nhom' target='_self'>Xem Phân nhóm</a>")
+    gd.tieu_the("Nhóm đặc điểm tài chính", "Xếp theo mức tương đồng của 6 chỉ số",
+                "<a href='phan_nhom' target='_self'>Xem Phân nhóm</a>")
     d_pn = pn["du_lieu"]
     so_quy = int((d_pn[d_pn["ma_nh"] == ma]["nhom"] == nhom["nhom"]).sum())
     cung = d_pn[(d_pn["ky"] == ky) & (d_pn["nhom"] == nhom["nhom"]) & (d_pn["ma_nh"] != ma)]["ma_nh"]

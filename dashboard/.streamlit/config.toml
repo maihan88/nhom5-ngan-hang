@@ -1,6 +1,6 @@
 [theme]
-font = "Be Vietnam Pro:https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap, sans-serif"
-headingFont = "Be Vietnam Pro, sans-serif"
+font = "STIX Two Text:https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap, Georgia, serif"
+headingFont = "STIX Two Text, Georgia, serif"
 codeFont = "JetBrains Mono:https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap, monospace"
 headingFontWeights = [700, 700, 600, 600, 600, 600]
 baseRadius = "0.6rem"
