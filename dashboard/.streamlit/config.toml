@@ -1,6 +1,6 @@
 [theme]
-font = "STIX Two Text:https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap, Georgia, serif"
-headingFont = "STIX Two Text, Georgia, serif"
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap, sans-serif"
+headingFont = "Inter, sans-serif"
 codeFont = "JetBrains Mono:https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap, monospace"
 headingFontWeights = [700, 700, 600, 600, 600, 600]
 baseRadius = "0.6rem"

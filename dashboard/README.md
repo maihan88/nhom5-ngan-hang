@@ -64,7 +64,7 @@ dashboard/
 │   └── bieu_do.py         # biểu đồ Plotly, màu theo giao diện sáng/tối
 ├── assets/                # logo, icon, sơ đồ kiến trúc (so_do_kien_truc.svg cho web, .png 16:9 cho ppt)
 ├── ve_so_do.py            # vẽ lại sơ đồ kiến trúc: py ve_so_do.py
-├── .streamlit/config.toml # theme sáng/tối, sidebar navy, font STIX Two Text
+├── .streamlit/config.toml # theme sáng/tối, sidebar navy, font Inter (chữ) + JetBrains Mono (số) + Merriweather (câu nhận định)
 ├── src/                   # bản sao code của Nghi (config, data_loader, viz, thong_ke) – KHÔNG sửa ở đây
 ├── data/                  # 6 bảng CSV + data_dictionary.csv của Hân
 ├── outputs/               # 4 bảng kết quả thống kê của Nghi; outputs/ml: bảng kết quả của Quân

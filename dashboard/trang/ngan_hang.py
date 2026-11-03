@@ -85,7 +85,7 @@ for cs in cf.DS_CHI_SO:
               "so": so(dong[cs]),
               "phu": gd.bien_dong(dong[cs] - nh.loc[ky_truoc, cs], chieu) if ky_truoc else "",
               "spark": gd.sparkline(nh[cs].iloc[max(0, vt - 7): vt + 1].tolist(), gd.mau_nh(ma), 72, 30, vung=False)})
-gd.the_so(o, rong=145, hep=True)
+gd.the_so(o, rong=136, hep=True)
 gd.nguon("ROA, ROE, NIM đã năm hóa · CAR là số công bố cuối năm gần nhất · đường nhỏ: 8 quý gần nhất.")
 
 # ---- So với mặt bằng ngành --------------------------------------------------------------------------------------
