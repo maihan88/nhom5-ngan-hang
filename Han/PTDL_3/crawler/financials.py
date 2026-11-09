@@ -136,7 +136,7 @@ def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df["ldr"] = df["tong_du_no"] / df["tien_gui_khach_hang"] * 100
 
     # NPL, CAR từ VNDirect (dạng thập phân -> %)
-    for col in ["npl", "car", "nim_ttm_vnd", "roa_ttm_vnd", "roe_ttm_vnd", "ldr_vnd"]:
+    for col in ["npl", "car", "nim_ttm_vnd", "roa_ttm_vnd", "roe_ttm_vnd"]:
         df[col] = df[col] * 100
 
     # CAR: phần lớn ngân hàng chỉ công bố cuối năm -> điền tiếp giá trị gần nhất ĐÃ công bố
@@ -183,7 +183,7 @@ def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
             "tong_tai_san", "von_chu_so_huu", "loi_nhuan_sau_thue", "tong_du_no",
             "roa", "roe", "nim", "npl", "car", "car_nguon", "ldr",
             "thu_nhap_lai_thuan", "tien_gui_khach_hang", "earning_assets",
-            "roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd", "ldr_vnd"]
+            "roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd"]
     bang1 = df[cols].sort_values(["ma_nh", "nam", "quy"]).reset_index(drop=True)
 
     annual = pd.concat(annual_frames, ignore_index=True) if annual_frames else pd.DataFrame()

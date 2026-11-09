@@ -10,7 +10,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 
 **Lưu ý khi dùng cho mô hình (câu hỏi 4):**
 - **Nhãn, KHÔNG được dùng làm biến đầu vào:** `xu_huong_quy_sau` (nhãn) và `ty_suat_sinh_loi_quy_sau` (nhãn được tạo trực tiếp từ cột này; dùng làm đầu vào là rò rỉ dữ liệu 100%).
-- **Chỉ để đối chiếu, trùng thông tin với cột chính:** `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd`, `ldr_vnd`.
+- **Chỉ để đối chiếu, trùng thông tin với cột chính:** `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd`.
 - **Cột mô tả, không phải biến số:** `ngay_bctc`, `ngay_dau`, `ngay_cuoi`, `car_nguon`, `loai_su_kien`, `ngay_cong_bo`, `mo_ta_ngan`, `nguon`.
 - **Nhãn đã căn thời điểm:** nhãn tính từ mốc dự báo (cuối quý + 45 ngày), sau khi BCTC quý đã công bố, nên các biến tài chính và sự kiện của quý t đều đã biết tại mốc dự báo.
 - **Riêng `car`:** CAR năm Y chỉ công bố cùng báo cáo năm, sau mốc dự báo của Q4/Y. Nếu dùng `car` làm biến đầu vào dự báo, dòng Q4 phải lấy giá trị `car` của dòng Q3 cùng năm.
@@ -43,7 +43,6 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `roa_ttm_vnd` | ROAA 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAA_TR_AVG5Q | Chỉ để đối chiếu |
 | `roe_ttm_vnd` | ROAE 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAE_TR_AVG5Q | Chỉ để đối chiếu |
 | `nim_ttm_vnd` | NIM 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect NET_INTEREST_MARGIN_TR_AVG5Q | Chỉ để đối chiếu |
-| `ldr_vnd` | LDR (VNDirect, đối chiếu) | % | VNDirect LOANS_TO_DEPOSIT_AQ | Chỉ để đối chiếu |
 
 ## Bảng 2a – Giá ngày (`bang2a_gia_ngay.csv`)
 
@@ -53,12 +52,9 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `ngay` | Ngày giao dịch (bảng giá ngày) | yyyy-mm-dd | VNDirect stock_prices, từ 2020-12-01 đến 2026-10-28. Các phiên ngoài 2021–2026 chỉ dùng để tính giá đầu quý Q1/2021 và nhãn quý sau; khi vẽ biểu đồ nên lọc theo giai đoạn nghiên cứu | Khóa nối bảng |
 | `gia_dong_cua` | Giá đóng cửa chưa điều chỉnh (bảng giá ngày) | nghìn đồng | close | Chỉ để đối chiếu |
 | `gia_dong_cua_dieu_chinh` | Giá đóng cửa đã điều chỉnh (bảng giá ngày) | nghìn đồng | adClose | Dữ liệu giá |
-| `gia_mo_cua_dieu_chinh` | Giá mở cửa đã điều chỉnh (bảng giá ngày) | nghìn đồng | adOpen | Dữ liệu giá |
 | `gia_cao_nhat_dieu_chinh` | Giá cao nhất trong phiên, đã điều chỉnh (bảng giá ngày) | nghìn đồng | adHigh | Dữ liệu giá |
 | `gia_thap_nhat_dieu_chinh` | Giá thấp nhất trong phiên, đã điều chỉnh (bảng giá ngày) | nghìn đồng | adLow | Dữ liệu giá |
 | `khoi_luong_gd` | Khối lượng khớp lệnh (bảng giá ngày) | cổ phiếu | nmVolume | Dữ liệu giá |
-| `khoi_luong_thoa_thuan` | Khối lượng giao dịch thỏa thuận (bảng giá ngày) | cổ phiếu | ptVolume | Dữ liệu giá |
-| `gia_tri_gd_ty` | Giá trị giao dịch khớp lệnh (bảng giá ngày) | tỷ đồng | nmValue / 1e9 | Dữ liệu giá |
 
 ## Bảng 2b – Giá quý (`bang2b_gia_quy.csv`)
 
@@ -115,4 +111,4 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 
 ## Bảng 4 – Tổng hợp (bàn giao) (`bang4_tong_hop.csv`)
 
-Ghép Bảng 1 + Bảng 2b + Bảng 3b theo `ma_nh` + `quy` + `nam`: 44 cột, mỗi dòng = 1 ngân hàng × 1 quý. Ý nghĩa từng cột giống ở bảng gốc phía trên; cột `lay_tu_bang` trong `data_dictionary.csv` cho biết cột lấy từ bảng nào.
+Ghép Bảng 1 + Bảng 2b + Bảng 3b theo `ma_nh` + `quy` + `nam`: 43 cột, mỗi dòng = 1 ngân hàng × 1 quý. Ý nghĩa từng cột giống ở bảng gốc phía trên; cột `lay_tu_bang` trong `data_dictionary.csv` cho biết cột lấy từ bảng nào.

@@ -32,12 +32,9 @@ def fetch_daily(client: HttpClient, code: str) -> pd.DataFrame:
         "ngay": pd.to_datetime(df["date"]),
         "gia_dong_cua": df["close"],                        # nghìn đồng, chưa điều chỉnh
         "gia_dong_cua_dieu_chinh": df["adClose"],
-        "gia_mo_cua_dieu_chinh": df["adOpen"],
         "gia_cao_nhat_dieu_chinh": df["adHigh"],
         "gia_thap_nhat_dieu_chinh": df["adLow"],
         "khoi_luong_gd": df["nmVolume"],                    # khớp lệnh (không gồm thỏa thuận)
-        "khoi_luong_thoa_thuan": df.get("ptVolume"),
-        "gia_tri_gd_ty": df["nmValue"] / 1e9,
     })
     return out.sort_values("ngay").reset_index(drop=True)
 

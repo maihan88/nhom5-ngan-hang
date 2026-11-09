@@ -47,7 +47,7 @@ $env:PTDL_DEN_QUY = "2026Q2"; $env:PTDL_GIA_DEN = "2026-10-28"; py run_pipeline.
 | `bang2b_gia_quy.csv` | Bảng 2: gộp theo quý, gồm `ty_suat_sinh_loi_quy` và biến mục tiêu `xu_huong_quy_sau` |
 | `bang3a_su_kien_chi_tiet.csv` | Bảng 3: từng sự kiện kèm ngày, tiêu đề và link (dùng để rà soát) |
 | `bang3b_su_kien_quy.csv` | Bảng 3: theo quý, gồm `co_su_kien`, `so_luong_su_kien`, `loai_su_kien`, `sk_*` |
-| `bang4_tong_hop.csv` | **Bảng 4 bàn giao**: 176 dòng × 44 cột, mỗi dòng là 1 ngân hàng × 1 quý |
+| `bang4_tong_hop.csv` | **Bảng 4 bàn giao**: 176 dòng × 43 cột, mỗi dòng là 1 ngân hàng × 1 quý |
 | `mo_ta_du_lieu.md` | **Đọc đầu tiên**: mỗi file / mỗi cột nói về chuyện gì, viết bằng lời thường, kèm gợi ý cột cho từng câu hỏi nghiên cứu |
 | `data_dictionary.csv/.md` | Giải thích **mọi cột của mọi file**: ý nghĩa, đơn vị, công thức, vai trò (khóa / biến phân tích / nhãn / đối chiếu…), dùng cho câu hỏi nào, lưu ý và thống kê nhanh (ô trống, min, max, trung bình, ví dụ) |
 | `bao_cao_kiem_tra.md` | Kiểm tra chất lượng: độ phủ, ô thiếu, đối chiếu LNST năm, giá trị bất thường |

@@ -24,12 +24,12 @@ Phạm vi: 8 ngân hàng, từ Q1/2021 đến Q2/2026 (176 ngân hàng × quý).
 
 | File | Mỗi dòng là | Số dòng × cột | Dùng để |
 |---|---|---|---|
-| `bang1_tai_chinh_quy.csv` | 1 ngân hàng × 1 quý | 176 × 23 | Xem sức khỏe tài chính |
-| `bang2a_gia_ngay.csv` | 1 cổ phiếu × 1 phiên giao dịch | 11.771 × 10 | Vẽ biểu đồ giá |
+| `bang1_tai_chinh_quy.csv` | 1 ngân hàng × 1 quý | 176 × 22 | Xem sức khỏe tài chính |
+| `bang2a_gia_ngay.csv` | 1 cổ phiếu × 1 phiên giao dịch | 11.771 × 7 | Vẽ biểu đồ giá |
 | `bang2b_gia_quy.csv` | 1 cổ phiếu × 1 quý | 176 × 12 | Xem giá tăng/giảm trong quý, nhãn dự báo |
 | `bang3a_su_kien_chi_tiet.csv` | 1 sự kiện | 146 × 11 | Xem từng sự kiện kèm link tin |
 | `bang3b_su_kien_quy.csv` | 1 ngân hàng × 1 quý | 176 × 15 | Đếm sự kiện theo quý |
-| `bang4_tong_hop.csv` | 1 ngân hàng × 1 quý | 176 × 44 | **File bàn giao chính**: ghép bảng 1 + 2b + 3b |
+| `bang4_tong_hop.csv` | 1 ngân hàng × 1 quý | 176 × 43 | **File bàn giao chính**: ghép bảng 1 + 2b + 3b |
 
 ---
 
@@ -77,7 +77,8 @@ Mỗi dòng là kết quả tài chính của 1 ngân hàng trong 1 quý, lấy 
 | Cột | Ý nghĩa |
 |---|---|
 | `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd` | ROA, ROE, NIM do VNDirect tính theo 4 quý gần nhất |
-| `ldr_vnd` | LDR do VNDirect tính |
+
+Không giữ LDR của VNDirect: số này trùng với `ldr` tự tính (lệch tối đa 0,026 điểm %), không thêm thông tin.
 
 ---
 
@@ -90,12 +91,9 @@ Mỗi dòng là giao dịch của 1 cổ phiếu trong 1 phiên. Dữ liệu ch�
 | `ma_nh`, `ngay` | Mã cổ phiếu và ngày giao dịch | |
 | `gia_dong_cua` | Giá đóng cửa thực tế hiển thị trên bảng điện hôm đó | nghìn đồng |
 | `gia_dong_cua_dieu_chinh` | Giá đóng cửa **đã điều chỉnh**, dùng khi so sánh giá qua thời gian | nghìn đồng |
-| `gia_mo_cua_dieu_chinh` | Giá mở cửa trong phiên, đã điều chỉnh | nghìn đồng |
 | `gia_cao_nhat_dieu_chinh` | Giá cao nhất trong phiên, đã điều chỉnh | nghìn đồng |
 | `gia_thap_nhat_dieu_chinh` | Giá thấp nhất trong phiên, đã điều chỉnh | nghìn đồng |
 | `khoi_luong_gd` | Số cổ phiếu khớp lệnh trong phiên | cổ phiếu |
-| `khoi_luong_thoa_thuan` | Số cổ phiếu giao dịch thỏa thuận, thường là giao dịch lô lớn giữa hai bên | cổ phiếu |
-| `gia_tri_gd_ty` | Tổng giá trị khớp lệnh trong phiên | tỷ đồng |
 
 **Vì sao cần giá điều chỉnh:** khi ngân hàng chia cổ tức bằng cổ phiếu, số cổ phiếu tăng lên. Giá trên bảng điện vì thế "rơi" đột ngột, dù nhà đầu tư không hề lỗ. Giá điều chỉnh xóa cú rơi giả này.
 
@@ -175,7 +173,7 @@ Mỗi dòng là 1 ngân hàng × 1 quý, **kể cả quý không có sự kiện
 Mỗi dòng là 1 ngân hàng × 1 quý. Bảng này ghép 3 bảng lại, ý nghĩa từng cột giống ở bảng gốc:
 
 - **Khóa:** `ma_nh`, `quy`, `nam`
-- **Từ Bảng 1 (tài chính, 20 cột):** từ `ngay_bctc` đến `ldr_vnd`
+- **Từ Bảng 1 (tài chính, 19 cột):** từ `ngay_bctc` đến `nim_ttm_vnd`
 - **Từ Bảng 2b (giá quý, 9 cột):** từ `ngay_dau` đến `xu_huong_quy_sau`
 - **Từ Bảng 3b (sự kiện, 12 cột):** từ `co_su_kien` đến `nguon`
 

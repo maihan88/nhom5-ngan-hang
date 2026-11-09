@@ -44,7 +44,6 @@ DICTIONARY = [
     ("roa_ttm_vnd", "ROAA 4 quý gần nhất (VNDirect, đối chiếu)", "%", "VNDirect ROAA_TR_AVG5Q"),
     ("roe_ttm_vnd", "ROAE 4 quý gần nhất (VNDirect, đối chiếu)", "%", "VNDirect ROAE_TR_AVG5Q"),
     ("nim_ttm_vnd", "NIM 4 quý gần nhất (VNDirect, đối chiếu)", "%", "VNDirect NET_INTEREST_MARGIN_TR_AVG5Q"),
-    ("ldr_vnd", "LDR (VNDirect, đối chiếu)", "%", "VNDirect LOANS_TO_DEPOSIT_AQ"),
     # --- Bảng 2
     ("ngay", "Ngày giao dịch (bảng giá ngày)", "yyyy-mm-dd",
      f"VNDirect stock_prices, từ {config.PRICE_FROM} đến {config.PRICE_TO}. Các phiên ngoài "
@@ -52,12 +51,9 @@ DICTIONARY = [
      "khi vẽ biểu đồ nên lọc theo giai đoạn nghiên cứu"),
     ("gia_dong_cua", "Giá đóng cửa chưa điều chỉnh (bảng giá ngày)", "nghìn đồng", "close"),
     ("gia_dong_cua_dieu_chinh", "Giá đóng cửa đã điều chỉnh (bảng giá ngày)", "nghìn đồng", "adClose"),
-    ("gia_mo_cua_dieu_chinh", "Giá mở cửa đã điều chỉnh (bảng giá ngày)", "nghìn đồng", "adOpen"),
     ("gia_cao_nhat_dieu_chinh", "Giá cao nhất trong phiên, đã điều chỉnh (bảng giá ngày)", "nghìn đồng", "adHigh"),
     ("gia_thap_nhat_dieu_chinh", "Giá thấp nhất trong phiên, đã điều chỉnh (bảng giá ngày)", "nghìn đồng", "adLow"),
     ("khoi_luong_gd", "Khối lượng khớp lệnh (bảng giá ngày)", "cổ phiếu", "nmVolume"),
-    ("khoi_luong_thoa_thuan", "Khối lượng giao dịch thỏa thuận (bảng giá ngày)", "cổ phiếu", "ptVolume"),
-    ("gia_tri_gd_ty", "Giá trị giao dịch khớp lệnh (bảng giá ngày)", "tỷ đồng", "nmValue / 1e9"),
     ("ngay_dau", "Phiên giao dịch đầu tiên của quý", "yyyy-mm-dd", ""),
     ("ngay_cuoi", "Phiên giao dịch cuối cùng của quý", "yyyy-mm-dd", ""),
     ("so_phien_gd", "Số phiên giao dịch trong quý", "phiên", ""),
@@ -144,13 +140,13 @@ ROLES = {
     "thu_nhap_lai_thuan": ("Thành phần tính toán", "Tử số của NIM", _RAW_NOTE),
     "tien_gui_khach_hang": ("Thành phần tính toán", "Mẫu số của LDR", _RAW_NOTE),
     "earning_assets": ("Thành phần tính toán", "Mẫu số của NIM", ""),
-    **{c: _CHECK for c in ["roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd", "ldr_vnd"]},
+    **{c: _CHECK for c in ["roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd"]},
     "ngay_bctc": _TRACE,
     "car_nguon": ("Mô tả / truy vết", "CH2 (lọc số CAR thật: cong_bo, tra_thu_cong)", ""),
     "gia_dong_cua": ("Chỉ để đối chiếu", "Giá thực tế trên bảng điện",
                      "Giá bị 'rơi' ở ngày GDKHQ khi chia cổ tức bằng cổ phiếu – tính lợi suất phải dùng giá điều chỉnh"),
-    **{c: _PRICE for c in ["gia_dong_cua_dieu_chinh", "gia_mo_cua_dieu_chinh", "gia_cao_nhat_dieu_chinh",
-                           "gia_thap_nhat_dieu_chinh", "khoi_luong_gd", "khoi_luong_thoa_thuan", "gia_tri_gd_ty"]},
+    **{c: _PRICE for c in ["gia_dong_cua_dieu_chinh", "gia_cao_nhat_dieu_chinh", "gia_thap_nhat_dieu_chinh",
+                           "khoi_luong_gd"]},
     **{c: _TRACE for c in ["ngay_dau", "ngay_cuoi", "so_phien_gd"]},
     "gia_dau_quy": ("Thành phần tính toán", "Tính ty_suat_sinh_loi_quy", ""),
     "gia_cuoi_quy": ("Thành phần tính toán", "Tính ty_suat_sinh_loi_quy", ""),
@@ -290,7 +286,7 @@ def write_dictionary(tables: dict[str, tuple[str, pd.DataFrame]]) -> None:
              "**Lưu ý khi dùng cho mô hình (câu hỏi 4):**",
              "- **Nhãn, KHÔNG được dùng làm biến đầu vào:** `xu_huong_quy_sau` (nhãn) và `ty_suat_sinh_loi_quy_sau` "
              "(nhãn được tạo trực tiếp từ cột này; dùng làm đầu vào là rò rỉ dữ liệu 100%).",
-             "- **Chỉ để đối chiếu, trùng thông tin với cột chính:** `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd`, `ldr_vnd`.",
+             "- **Chỉ để đối chiếu, trùng thông tin với cột chính:** `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd`.",
              "- **Cột mô tả, không phải biến số:** `ngay_bctc`, `ngay_dau`, `ngay_cuoi`, `car_nguon`, "
              "`loai_su_kien`, `ngay_cong_bo`, `mo_ta_ngan`, `nguon`.",
              f"- **Nhãn đã căn thời điểm:** nhãn tính từ mốc dự báo (cuối quý + {config.LABEL_LAG_DAYS} ngày), sau "
