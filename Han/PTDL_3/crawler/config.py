@@ -131,7 +131,6 @@ RATIO_CODES = {
     "NET_INTEREST_MARGIN_TR_AVG5Q": "nim_ttm_vnd",   # NIM 4 quý gần nhất (đối chiếu)
     "ROAA_TR_AVG5Q": "roa_ttm_vnd",
     "ROAE_TR_AVG5Q": "roe_ttm_vnd",
-    "LOANS_TO_DEPOSIT_AQ": "ldr_vnd",
 }
 
 # ---------------------------------------------------------------------------

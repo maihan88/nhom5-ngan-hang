@@ -21,17 +21,13 @@ bang1_tai_chinh_quy,earning_assets,float64,0
 bang1_tai_chinh_quy,roa_ttm_vnd,float64,0
 bang1_tai_chinh_quy,roe_ttm_vnd,float64,0
 bang1_tai_chinh_quy,nim_ttm_vnd,float64,0
-bang1_tai_chinh_quy,ldr_vnd,float64,0
 bang2a_gia_ngay,ma_nh,str,0
 bang2a_gia_ngay,ngay,str,0
 bang2a_gia_ngay,gia_dong_cua,float64,0
 bang2a_gia_ngay,gia_dong_cua_dieu_chinh,float64,0
-bang2a_gia_ngay,gia_mo_cua_dieu_chinh,float64,0
 bang2a_gia_ngay,gia_cao_nhat_dieu_chinh,float64,0
 bang2a_gia_ngay,gia_thap_nhat_dieu_chinh,float64,0
 bang2a_gia_ngay,khoi_luong_gd,float64,0
-bang2a_gia_ngay,khoi_luong_thoa_thuan,float64,0
-bang2a_gia_ngay,gia_tri_gd_ty,float64,0
 bang2b_gia_quy,ma_nh,str,0
 bang2b_gia_quy,quy,str,0
 bang2b_gia_quy,nam,int64,0
@@ -92,7 +88,6 @@ bang4_tong_hop,earning_assets,float64,0
 bang4_tong_hop,roa_ttm_vnd,float64,0
 bang4_tong_hop,roe_ttm_vnd,float64,0
 bang4_tong_hop,nim_ttm_vnd,float64,0
-bang4_tong_hop,ldr_vnd,float64,0
 bang4_tong_hop,ngay_dau,str,0
 bang4_tong_hop,ngay_cuoi,str,0
 bang4_tong_hop,so_phien_gd,int64,0
