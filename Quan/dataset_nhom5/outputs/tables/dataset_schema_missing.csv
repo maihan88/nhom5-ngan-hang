@@ -18,9 +18,6 @@ bang1_tai_chinh_quy,ldr,float64,0
 bang1_tai_chinh_quy,thu_nhap_lai_thuan,float64,0
 bang1_tai_chinh_quy,tien_gui_khach_hang,float64,0
 bang1_tai_chinh_quy,tai_san_sinh_lai,float64,0
-bang1_tai_chinh_quy,roa_ttm_vnd,float64,0
-bang1_tai_chinh_quy,roe_ttm_vnd,float64,0
-bang1_tai_chinh_quy,nim_ttm_vnd,float64,0
 bang2a_gia_ngay,ma_nh,str,0
 bang2a_gia_ngay,ngay,str,0
 bang2a_gia_ngay,gia_dong_cua,float64,0
@@ -85,9 +82,6 @@ bang4_tong_hop,ldr,float64,0
 bang4_tong_hop,thu_nhap_lai_thuan,float64,0
 bang4_tong_hop,tien_gui_khach_hang,float64,0
 bang4_tong_hop,tai_san_sinh_lai,float64,0
-bang4_tong_hop,roa_ttm_vnd,float64,0
-bang4_tong_hop,roe_ttm_vnd,float64,0
-bang4_tong_hop,nim_ttm_vnd,float64,0
 bang4_tong_hop,ngay_dau,str,0
 bang4_tong_hop,ngay_cuoi,str,0
 bang4_tong_hop,so_phien_gd,int64,0

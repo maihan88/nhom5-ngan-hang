@@ -24,12 +24,12 @@ Phạm vi: 8 ngân hàng, từ Q1/2021 đến Q2/2026 (176 ngân hàng × quý).
 
 | File | Mỗi dòng là | Số dòng × cột | Dùng để |
 |---|---|---|---|
-| `bang1_tai_chinh_quy.csv` | 1 ngân hàng × 1 quý | 176 × 22 | Xem sức khỏe tài chính |
+| `bang1_tai_chinh_quy.csv` | 1 ngân hàng × 1 quý | 176 × 19 | Xem sức khỏe tài chính |
 | `bang2a_gia_ngay.csv` | 1 cổ phiếu × 1 phiên giao dịch | 11.771 × 7 | Vẽ biểu đồ giá |
 | `bang2b_gia_quy.csv` | 1 cổ phiếu × 1 quý | 176 × 12 | Xem giá tăng/giảm trong quý, nhãn dự báo |
 | `bang3a_su_kien_chi_tiet.csv` | 1 sự kiện | 146 × 11 | Xem từng sự kiện kèm link tin |
 | `bang3b_su_kien_quy.csv` | 1 ngân hàng × 1 quý | 176 × 15 | Đếm sự kiện theo quý |
-| `bang4_tong_hop.csv` | 1 ngân hàng × 1 quý | 176 × 43 | **File bàn giao chính**: ghép bảng 1 + 2b + 3b |
+| `bang4_tong_hop.csv` | 1 ngân hàng × 1 quý | 176 × 40 | **File bàn giao chính**: ghép bảng 1 + 2b + 3b |
 
 ---
 
@@ -72,13 +72,7 @@ Mỗi dòng là kết quả tài chính của 1 ngân hàng trong 1 quý, lấy 
 
 `roa`, `roe`, `nim` là số **năm hóa**: lấy số của 1 quý nhân 4 để quy ra cả năm.
 
-**Đối chiếu** (chỉ để kiểm tra chéo, không dùng cùng lúc với cột chính)
-
-| Cột | Ý nghĩa |
-|---|---|
-| `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd` | ROA, ROE, NIM do VNDirect tính theo 4 quý gần nhất |
-
-Không giữ LDR của VNDirect: số này trùng với `ldr` tự tính (lệch tối đa 0,026 điểm %), không thêm thông tin.
+**Đối chiếu với VNDirect:** số ROA, ROE, NIM do VNDirect công bố (tính theo 4 quý gần nhất) không nằm trong bảng. Pipeline chỉ dùng chúng để kiểm tra chéo: tính lại chỉ số của nhóm theo cùng cách 4 quý rồi so, kết quả ở mục 5 của `bao_cao_kiem_tra.md`. LDR của VNDirect cũng không giữ vì trùng với `ldr` tự tính (lệch tối đa 0,026 điểm %).
 
 ---
 
@@ -173,7 +167,7 @@ Mỗi dòng là 1 ngân hàng × 1 quý, **kể cả quý không có sự kiện
 Mỗi dòng là 1 ngân hàng × 1 quý. Bảng này ghép 3 bảng lại, ý nghĩa từng cột giống ở bảng gốc:
 
 - **Khóa:** `ma_nh`, `quy`, `nam`
-- **Từ Bảng 1 (tài chính, 19 cột):** từ `ngay_bctc` đến `nim_ttm_vnd`
+- **Từ Bảng 1 (tài chính, 16 cột):** từ `ngay_bctc` đến `tai_san_sinh_lai`
 - **Từ Bảng 2b (giá quý, 9 cột):** từ `ngay_dau` đến `xu_huong_quy_sau`
 - **Từ Bảng 3b (sự kiện, 12 cột):** từ `co_su_kien` đến `nguon`
 

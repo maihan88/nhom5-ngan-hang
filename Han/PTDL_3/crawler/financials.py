@@ -149,8 +149,30 @@ def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop(columns=["_ta_avg", "_eq_avg", "_ea_avg"])
 
 
-def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Trả về (bang1, annual_check, ngay_nhap_bctc) – hai bảng sau chỉ dùng cho báo cáo kiểm tra."""
+# Đối chiếu với số VNDirect công bố: chỉ số -> (tử số, mẫu số, cột VNDirect). Số VNDirect là số 4 quý gần nhất
+# (tổng 4 quý / bình quân 5 thời điểm cuối quý), nên tính lại theo đúng cách đó rồi mới so.
+DOI_CHIEU_VND = {
+    "roa": ("loi_nhuan_sau_thue", "tong_tai_san", "roa_ttm_vnd"),
+    "roe": ("loi_nhuan_sau_thue", "von_chu_so_huu", "roe_ttm_vnd"),
+    "nim": ("thu_nhap_lai_thuan", "tai_san_sinh_lai", "nim_ttm_vnd"),
+}
+
+
+def _doi_chieu_vnd(df: pd.DataFrame) -> pd.DataFrame:
+    """ROA, ROE, NIM tính lại theo cách 4 quý gần nhất cạnh số VNDirect – chỉ cho báo cáo kiểm tra."""
+    df = df.sort_values(["ma_nh", "nam", "quy"])
+    g = df.groupby("ma_nh")
+    out = df[["ma_nh", "quy", "nam"]].copy()
+    for cs, (tu, mau, vnd) in DOI_CHIEU_VND.items():
+        tong_4_quy = g[tu].transform(lambda s: s.rolling(4).sum())
+        bq_5_diem = g[mau].transform(lambda s: s.rolling(5).mean())
+        out[f"{cs}_ttm_tu_tinh"] = tong_4_quy / bq_5_diem * 100
+        out[f"{cs}_ttm_vnd"] = df[vnd]
+    return out
+
+
+def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Trả về (bang1, annual_check, ngay_nhap_bctc, doi_chieu_vnd) – ba bảng sau chỉ dùng cho báo cáo kiểm tra."""
     frames, annual_frames, entry_frames = [], [], []
     for code in config.BANKS:
         log.info("[Bảng 1] BCTC quý %s", code)
@@ -177,13 +199,14 @@ def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
 
     df = compute_indicators(df)
     df["loai_hinh_so_huu"] = df["ma_nh"].map(config.BANKS)
+    doi_chieu = _doi_chieu_vnd(df)  # trước khi lọc năm: cần cả Q4/2020 cho bình quân 5 điểm
+    doi_chieu = doi_chieu[doi_chieu["nam"].between(config.START_YEAR, config.END_YEAR)].reset_index(drop=True)
     df = df[df["nam"].between(config.START_YEAR, config.END_YEAR)]
 
     cols = ["ma_nh", "quy", "nam", "ngay_bctc", "loai_hinh_so_huu",
             "tong_tai_san", "von_chu_so_huu", "loi_nhuan_sau_thue", "tong_du_no",
             "roa", "roe", "nim", "npl", "car", "car_nguon", "ldr",
-            "thu_nhap_lai_thuan", "tien_gui_khach_hang", "tai_san_sinh_lai",
-            "roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd"]
+            "thu_nhap_lai_thuan", "tien_gui_khach_hang", "tai_san_sinh_lai"]
     bang1 = df[cols].sort_values(["ma_nh", "nam", "quy"]).reset_index(drop=True)
 
     annual = pd.concat(annual_frames, ignore_index=True) if annual_frames else pd.DataFrame()
@@ -197,4 +220,4 @@ def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
     entry = _add_quarter_keys(entry, "fiscalDate").rename(columns={"code": "ma_nh"})
     entry["tre_ngay"] = (pd.to_datetime(entry["createdDate"]) - pd.to_datetime(entry["fiscalDate"])).dt.days
     entry = entry[entry["nam"].between(config.START_YEAR, config.END_YEAR)]
-    return bang1, annual, entry[["ma_nh", "quy", "nam", "fiscalDate", "createdDate", "tre_ngay"]]
+    return bang1, annual, entry[["ma_nh", "quy", "nam", "fiscalDate", "createdDate", "tre_ngay"]], doi_chieu

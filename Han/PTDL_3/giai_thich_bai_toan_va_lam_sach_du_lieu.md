@@ -2,7 +2,7 @@
 
 > Tài liệu này dựa trên bản đề xuất `Nhóm 5_PTDL 6.docx` và **code + dữ liệu thực tế** trong thư mục `PTDL_3` (pipeline `run_pipeline.py`, thư mục `crawler/`, kết quả trong `data/output/`). Mọi con số dưới đây lấy từ lần chạy pipeline gần nhất.
 >
-> **Lưu ý về phạm vi:** các con số thống kê trong tài liệu này (160 quan sát, 10.851 phiên giá, 5.636 tin thô, 121 sự kiện, phân bố nhãn…) là **số liệu bản Q1/2021 – Q4/2025**. Bộ dữ liệu dùng cho báo cáo hiện là Q1/2021 – Q2/2026: 176 quan sát, 11.771 phiên giá (đến 28/10/2026), 6.160 tin thô, 146 sự kiện; kích thước bảng xem `data/output/mo_ta_du_lieu.md`. Quy trình làm sạch mô tả bên dưới không đổi. Mỗi bảng chỉ giữ cột phục vụ 5 câu hỏi nghiên cứu, nguyên liệu tính chỉ số, cột đối chiếu hoặc truy vết; Bảng 4 hiện có 43 cột.
+> **Lưu ý về phạm vi:** các con số thống kê trong tài liệu này (160 quan sát, 10.851 phiên giá, 5.636 tin thô, 121 sự kiện, phân bố nhãn…) là **số liệu bản Q1/2021 – Q4/2025**. Bộ dữ liệu dùng cho báo cáo hiện là Q1/2021 – Q2/2026: 176 quan sát, 11.771 phiên giá (đến 28/10/2026), 6.160 tin thô, 146 sự kiện; kích thước bảng xem `data/output/mo_ta_du_lieu.md`. Quy trình làm sạch mô tả bên dưới không đổi. Mỗi bảng chỉ giữ cột phục vụ 5 câu hỏi nghiên cứu, nguyên liệu tính chỉ số, cột đối chiếu hoặc truy vết; Bảng 4 hiện có 40 cột.
 
 ---
 
@@ -136,7 +136,7 @@ Vì sao lấy thêm dữ liệu Q4/2020? → Để có "số dư đầu kỳ" ch
 - **Không dùng giá trị tương lai** (không backward-fill, không nội suy) → tránh rò rỉ thông tin cho mô hình dự báo.
 - Thêm cột **`car_nguon`** = `cong_bo` (26 dòng), `tra_thu_cong` (6 dòng) hoặc `dien_tiep_ky_truoc` (128 dòng) để người phân tích biết ô nào là số thật. Với CH2 (kiểm định), nên **chỉ dùng dòng `cong_bo` và `tra_thu_cong`**.
 
-**Bước 7 – Giữ cột đối chiếu.** Các cột `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd` (số VNDirect tự tính) được giữ lại để **kiểm tra chéo**, nhưng không đưa vào mô hình (tránh đa cộng tuyến). LDR của VNDirect không giữ: so với `ldr` tự tính thì lệch tối đa 0,026 điểm %, tức trùng nhau, không cần cột riêng.
+**Bước 7 – Đối chiếu với số VNDirect.** Số ROA, ROE, NIM do VNDirect công bố (tính theo 4 quý gần nhất) chỉ dùng để **kiểm tra chéo**, không xuất ra bảng dữ liệu. Pipeline tính lại chỉ số của nhóm theo cùng cách 4 quý rồi so (mục 5 của `bao_cao_kiem_tra.md`): ROA lệch trung vị khoảng 0,01 điểm %, ROE khoảng 0,15, NIM khoảng 0,36 và lệch đều ở mọi ngân hàng do khác định nghĩa tài sản sinh lãi. LDR của VNDirect không dùng vì trùng `ldr` tự tính (lệch tối đa 0,026 điểm %).
 
 ### 4.2. Bảng 2 – Giá cổ phiếu (file `prices.py`)
 
@@ -239,7 +239,7 @@ Phân bố 121 sự kiện: tăng vốn 61, đổi lãnh đạo 33, hợp tác/t
 - Lấy lưới 160 dòng làm khung, **left join** Bảng 1 + Bảng 2b + Bảng 3b theo khóa `ma_nh + quy + nam` → không mất dòng nào kể cả khi một nguồn thiếu.
 - Sắp xếp đúng thứ tự thời gian (Q1 < Q2 < Q3 < Q4).
 - Làm tròn 4 chữ số, xuất CSV mã hóa **UTF-8-BOM** (Excel hiển thị đúng tiếng Việt) và file `.xlsx`.
-- Kết quả: **176 dòng × 43 cột** (Q1/2021 – Q2/2026).
+- Kết quả: **176 dòng × 40 cột** (Q1/2021 – Q2/2026).
 
 ### 4.5. Quy ước dữ liệu thiếu (áp dụng toàn bộ)
 
@@ -262,7 +262,7 @@ Pipeline tự sinh báo cáo kiểm tra mỗi lần chạy:
 | Độ phủ: mỗi NH có BCTC, giá, NPL | **20/20 quý** cho cả 8 NH ✔ |
 | Ô thiếu ở biến số (tài chính, giá, sự kiện, nhãn) | **0** ✔ |
 | Tổng LNST 4 quý so với BCTC năm | **Tất cả lệch ≤ 2%** ✔ (chứng tỏ số quý không bị lũy kế nhầm) |
-| NIM tự tính vs NIM VNDirect | Lệch trung vị 0,33 điểm % (do khác phương pháp: 1 quý năm hóa vs 4 quý) ✔ |
+| ROA, ROE, NIM tính lại theo 4 quý vs số VNDirect | Lệch trung vị ≈ 0,01 / 0,15 / 0,36 điểm %; NIM lệch đều do khác định nghĩa tài sản sinh lãi ✔ |
 | Quý có ít phiên giao dịch (< 50) | Không có ✔ |
 | BCTC công bố sau mốc dự báo 45 ngày | **0 kỳ** ✔ |
 | Dòng thiếu nhãn | **0** ✔ |
@@ -298,7 +298,6 @@ Pipeline tự sinh báo cáo kiểm tra mỗi lần chạy:
 - **Chia train/test theo thời gian**, không chia ngẫu nhiên.
 - Nếu dùng `car` làm đầu vào dự báo: dòng Q4 nên lấy `car` của Q3 cùng năm (CAR năm công bố sau mốc dự báo Q4).
 - Các biến `sk_chuyen_doi_so`, `sk_chinh_sach_nhnn`, `sk_khac` rất hiếm (≤ 6 lần) → nên dùng `co_su_kien` / `so_luong_su_kien` thay vì ước lượng hệ số riêng.
-- Không đưa các cột `*_ttm_vnd` cùng lúc với cột tự tính vào mô hình.
 - Chuẩn hóa (StandardScaler) trước K-Means/PCA vì quy mô các ngân hàng chênh nhau nhiều.
 
 ---

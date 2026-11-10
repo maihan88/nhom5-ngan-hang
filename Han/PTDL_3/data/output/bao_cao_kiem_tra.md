@@ -63,10 +63,31 @@ Kiểm tra theo khoảng ở mục 4 không bắt được số "tròn đẹp b�
 - Không còn số CAR công bố nào đúng 8,00.
 - Số tra thủ công đang dùng (Q4 từng năm): BID 2022 = 8.92, BID 2023 = 9.18, BID 2024 = 9.03, CTG 2022 = 8.90, CTG 2023 = 9.30, CTG 2024 = 9.60
 
-## 5. Đối chiếu NIM tự tính với NIM VNDirect (TTM)
+## 5. Đối chiếu ROA, ROE, NIM tự tính với số VNDirect công bố
 
-- Chênh lệch tuyệt đối trung vị: 0.327 điểm %; lớn nhất: 1.750 điểm %
-- NIM tự tính là năm hóa từ 1 quý nên dao động hơn NIM TTM – đây là khác biệt phương pháp.
+Số VNDirect là số 4 quý gần nhất (TTM): tổng 4 quý / bình quân 5 thời điểm cuối quý. Để so cùng cách, pipeline tính lại ROA, ROE, NIM theo đúng cách đó từ số liệu gốc của nhóm. Số VNDirect chỉ dùng ở mục này, không xuất ra bảng dữ liệu; biến phân tích vẫn là `roa`, `roe`, `nim` năm hóa từ 1 quý.
+
+| Chỉ số | Số quý so được | Lệch trung vị (điểm %) | 90% số quý lệch dưới | Lệch lớn nhất | Quý lệch nhiều nhất |
+|---|---|---|---|---|---|
+| ROA | 152 | 0.013 | 0.075 | 0.432 | VPB Q2/2023 |
+| ROE | 152 | 0.149 | 0.542 | 2.716 | VPB Q2/2023 |
+| NIM | 152 | 0.357 | 0.514 | 0.659 | VPB Q3/2025 |
+
+Lệch trung vị theo ngân hàng (điểm %):
+
+| ma_nh | ROA | ROE | NIM |
+|---|---|---|---|
+| ACB | 0.000 | 0.000 | 0.426 |
+| BID | 0.018 | 0.340 | 0.216 |
+| CTG | 0.008 | 0.116 | 0.335 |
+| MBB | 0.049 | 0.506 | 0.255 |
+| STB | 0.000 | 0.000 | 0.251 |
+| TCB | 0.032 | 0.199 | 0.377 |
+| VCB | 0.001 | 0.059 | 0.421 |
+| VPB | 0.060 | 0.416 | 0.546 |
+
+- Lệch nhỏ nghĩa là số liệu gốc (LNST, tổng tài sản, vốn chủ sở hữu, thu nhập lãi thuần) lấy đúng.
+- Lệch đều ở mọi ngân hàng thường do khác định nghĩa (vd tài sản sinh lãi của NIM; VNDirect không công bố chi tiết), không phải lỗi dữ liệu. Chỉ lệch bất thường ở vài quý mới cần tra lại.
 
 ## 6. Quý có ít phiên giao dịch (< 50)
 

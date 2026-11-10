@@ -35,7 +35,7 @@ def main() -> int:
 
     client = HttpClient(refresh=args.refresh, offline=args.offline)
 
-    bang1, annual, ngay_nhap_bctc = financials.build_bang1(client)
+    bang1, annual, ngay_nhap_bctc, doi_chieu_vnd = financials.build_bang1(client)
     bang2_ngay, bang2_quy = prices.build_bang2(client)
     tin_tho, su_kien, bang3_quy = events.build_bang3(client, use_vnd_news=not args.no_vnd_news)
     bang4 = build.build_bang4(bang1, bang2_quy, bang3_quy)
@@ -56,7 +56,7 @@ def main() -> int:
         "bang3b_su_kien_quy": ("Bảng 3b – Sự kiện quý", bang3_quy),
         "bang4_tong_hop": ("Bảng 4 – Tổng hợp (bàn giao)", bang4),
     })
-    report = build.validation_report(bang4, annual, su_kien, ngay_nhap_bctc)
+    report = build.validation_report(bang4, annual, su_kien, ngay_nhap_bctc, doi_chieu_vnd)
     (config.OUTPUT_DIR / "bao_cao_kiem_tra.md").write_text(report, encoding="utf-8")
     logging.info("Hoàn tất. Kết quả trong %s – đọc bao_cao_kiem_tra.md trước khi bàn giao.", config.OUTPUT_DIR)
     return 0
