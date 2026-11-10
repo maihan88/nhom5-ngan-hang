@@ -17,7 +17,7 @@ bang1_tai_chinh_quy,car_nguon,str,0
 bang1_tai_chinh_quy,ldr,float64,0
 bang1_tai_chinh_quy,thu_nhap_lai_thuan,float64,0
 bang1_tai_chinh_quy,tien_gui_khach_hang,float64,0
-bang1_tai_chinh_quy,earning_assets,float64,0
+bang1_tai_chinh_quy,tai_san_sinh_lai,float64,0
 bang1_tai_chinh_quy,roa_ttm_vnd,float64,0
 bang1_tai_chinh_quy,roe_ttm_vnd,float64,0
 bang1_tai_chinh_quy,nim_ttm_vnd,float64,0
@@ -84,7 +84,7 @@ bang4_tong_hop,car_nguon,str,0
 bang4_tong_hop,ldr,float64,0
 bang4_tong_hop,thu_nhap_lai_thuan,float64,0
 bang4_tong_hop,tien_gui_khach_hang,float64,0
-bang4_tong_hop,earning_assets,float64,0
+bang4_tong_hop,tai_san_sinh_lai,float64,0
 bang4_tong_hop,roa_ttm_vnd,float64,0
 bang4_tong_hop,roe_ttm_vnd,float64,0
 bang4_tong_hop,nim_ttm_vnd,float64,0

@@ -56,7 +56,7 @@ Mỗi dòng là kết quả tài chính của 1 ngân hàng trong 1 quý, lấy 
 | `tien_gui_khach_hang` | Tổng tiền khách hàng đang gửi tại ngân hàng, mẫu số của LDR |
 | `loi_nhuan_sau_thue` | Lãi ròng trong quý, sau thuế, gồm cả công ty con. Tử số của ROA, ROE; dùng đối chiếu với LNST năm trên BCTC |
 | `thu_nhap_lai_thuan` | Lãi thu từ cho vay và đầu tư, trừ đi lãi trả cho người gửi. Tử số của NIM |
-| `earning_assets` | Tài sản sinh lãi (cho vay, tiền gửi ở ngân hàng khác, chứng khoán…), dùng để tính NIM |
+| `tai_san_sinh_lai` | Tài sản sinh lãi (cho vay, tiền gửi ở ngân hàng khác, chứng khoán…), dùng để tính NIM |
 
 **Chỉ số tài chính** (%)
 
