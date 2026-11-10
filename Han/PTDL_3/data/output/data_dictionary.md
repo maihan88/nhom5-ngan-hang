@@ -39,7 +39,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `ldr` | Tỷ lệ cho vay / tiền gửi KH (hệ số thanh khoản) | % | tong_du_no / tien_gui_khach_hang × 100 | Biến phân tích chính |
 | `thu_nhap_lai_thuan` | Thu nhập lãi thuần trong quý | tỷ đồng | KQKD mã 421900 | Thành phần tính toán |
 | `tien_gui_khach_hang` | Tiền gửi của khách hàng | tỷ đồng | BCĐKT mã 413300 | Thành phần tính toán |
-| `earning_assets` | Tài sản sinh lãi cuối quý | tỷ đồng | Tiền gửi NHNN + Tiền gửi & cho vay TCTD + CK kinh doanh + Cho vay KH + CK đầu tư + Mua nợ | Thành phần tính toán |
+| `tai_san_sinh_lai` | Tài sản sinh lãi cuối quý | tỷ đồng | Tiền gửi NHNN + Tiền gửi & cho vay TCTD + CK kinh doanh + Cho vay KH + CK đầu tư + Mua nợ | Thành phần tính toán |
 | `roa_ttm_vnd` | ROAA 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAA_TR_AVG5Q | Chỉ để đối chiếu |
 | `roe_ttm_vnd` | ROAE 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAE_TR_AVG5Q | Chỉ để đối chiếu |
 | `nim_ttm_vnd` | NIM 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect NET_INTEREST_MARGIN_TR_AVG5Q | Chỉ để đối chiếu |

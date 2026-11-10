@@ -124,10 +124,10 @@ def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df = df.sort_values(["ma_nh", "nam", "quy"]).copy()
     g = df.groupby("ma_nh", group_keys=False)
 
-    df["earning_assets"] = df[config.EARNING_ASSET_COLS].sum(axis=1, min_count=3)
+    df["tai_san_sinh_lai"] = df[config.EARNING_ASSET_COLS].sum(axis=1, min_count=3)
     df["_ta_avg"] = g["tong_tai_san"].apply(_avg_with_prev)
     df["_eq_avg"] = g["von_chu_so_huu"].apply(_avg_with_prev)
-    df["_ea_avg"] = g["earning_assets"].apply(_avg_with_prev)
+    df["_ea_avg"] = g["tai_san_sinh_lai"].apply(_avg_with_prev)
 
     # Chỉ số năm hóa (x4) từ số liệu quý, đơn vị %
     df["roa"] = df["loi_nhuan_sau_thue"] * 4 / df["_ta_avg"] * 100
@@ -182,7 +182,7 @@ def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
     cols = ["ma_nh", "quy", "nam", "ngay_bctc", "loai_hinh_so_huu",
             "tong_tai_san", "von_chu_so_huu", "loi_nhuan_sau_thue", "tong_du_no",
             "roa", "roe", "nim", "npl", "car", "car_nguon", "ldr",
-            "thu_nhap_lai_thuan", "tien_gui_khach_hang", "earning_assets",
+            "thu_nhap_lai_thuan", "tien_gui_khach_hang", "tai_san_sinh_lai",
             "roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd"]
     bang1 = df[cols].sort_values(["ma_nh", "nam", "quy"]).reset_index(drop=True)
 
