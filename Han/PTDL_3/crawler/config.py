@@ -128,7 +128,7 @@ EARNING_ASSET_COLS = [
 RATIO_CODES = {
     "BAD_LOANS_RATIO_AQ": "npl",                     # Tỷ lệ nợ xấu – theo quý
     "BANK_CAR_AQ": "car",                            # Hệ số an toàn vốn – thường chỉ công bố cuối năm
-    "NET_INTEREST_MARGIN_TR_AVG5Q": "nim_ttm_vnd",   # NIM 4 quý gần nhất (đối chiếu)
+    "NET_INTEREST_MARGIN_TR_AVG5Q": "nim_ttm_vnd",   # 4 quý gần nhất – chỉ đối chiếu trong báo cáo kiểm tra
     "ROAA_TR_AVG5Q": "roa_ttm_vnd",
     "ROAE_TR_AVG5Q": "roe_ttm_vnd",
 }

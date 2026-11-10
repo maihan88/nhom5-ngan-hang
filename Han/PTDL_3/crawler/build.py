@@ -41,9 +41,6 @@ DICTIONARY = [
      "cong_bo = số VNDirect đúng kỳ; tra_thu_cong = số nhóm tự tra từ nguồn ngân hàng / công ty chứng khoán "
      "(xem data/manual/car_tra_thu_cong.csv); dien_tiep_ky_truoc = điền tiếp số thật gần nhất"),
     ("ldr", "Tỷ lệ cho vay / tiền gửi KH (hệ số thanh khoản)", "%", "tong_du_no / tien_gui_khach_hang × 100"),
-    ("roa_ttm_vnd", "ROAA 4 quý gần nhất (VNDirect, đối chiếu)", "%", "VNDirect ROAA_TR_AVG5Q"),
-    ("roe_ttm_vnd", "ROAE 4 quý gần nhất (VNDirect, đối chiếu)", "%", "VNDirect ROAE_TR_AVG5Q"),
-    ("nim_ttm_vnd", "NIM 4 quý gần nhất (VNDirect, đối chiếu)", "%", "VNDirect NET_INTEREST_MARGIN_TR_AVG5Q"),
     # --- Bảng 2
     ("ngay", "Ngày giao dịch (bảng giá ngày)", "yyyy-mm-dd",
      f"VNDirect stock_prices, từ {config.PRICE_FROM} đến {config.PRICE_TO}. Các phiên ngoài "
@@ -107,8 +104,6 @@ DICTIONARY_3A = [
 # CH1..CH5 = 5 câu hỏi nghiên cứu trong đề xuất của nhóm.
 _KEY = ("Khóa nối bảng", "Mọi bảng", "Nối các bảng theo ma_nh + quy + nam")
 _RAW_NOTE = "Số tuyệt đối, quy mô các NH chênh nhau nhiều – không đưa trực tiếp vào mô hình"
-_CHECK = ("Chỉ để đối chiếu", "Kiểm tra chéo với cột tự tính",
-          "Trùng thông tin với cột chính – không đưa cùng vào mô hình (đa cộng tuyến)")
 _TRACE = ("Mô tả / truy vết", "Dashboard, rà soát", "")
 _EVENT_TEXT = ("Mô tả / truy vết", "Dashboard (xem tin), rà soát",
                "Để trống khi co_su_kien = 0 – ô trống hợp lệ, không phải thiếu dữ liệu")
@@ -140,7 +135,6 @@ ROLES = {
     "thu_nhap_lai_thuan": ("Thành phần tính toán", "Tử số của NIM", _RAW_NOTE),
     "tien_gui_khach_hang": ("Thành phần tính toán", "Mẫu số của LDR", _RAW_NOTE),
     "tai_san_sinh_lai": ("Thành phần tính toán", "Mẫu số của NIM", ""),
-    **{c: _CHECK for c in ["roa_ttm_vnd", "roe_ttm_vnd", "nim_ttm_vnd"]},
     "ngay_bctc": _TRACE,
     "car_nguon": ("Mô tả / truy vết", "CH2 (lọc số CAR thật: cong_bo, tra_thu_cong)", ""),
     "gia_dong_cua": ("Chỉ để đối chiếu", "Giá thực tế trên bảng điện",
@@ -286,7 +280,6 @@ def write_dictionary(tables: dict[str, tuple[str, pd.DataFrame]]) -> None:
              "**Lưu ý khi dùng cho mô hình (câu hỏi 4):**",
              "- **Nhãn, KHÔNG được dùng làm biến đầu vào:** `xu_huong_quy_sau` (nhãn) và `ty_suat_sinh_loi_quy_sau` "
              "(nhãn được tạo trực tiếp từ cột này; dùng làm đầu vào là rò rỉ dữ liệu 100%).",
-             "- **Chỉ để đối chiếu, trùng thông tin với cột chính:** `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd`.",
              "- **Cột mô tả, không phải biến số:** `ngay_bctc`, `ngay_dau`, `ngay_cuoi`, `car_nguon`, "
              "`loai_su_kien`, `ngay_cong_bo`, `mo_ta_ngan`, `nguon`.",
              f"- **Nhãn đã căn thời điểm:** nhãn tính từ mốc dự báo (cuối quý + {config.LABEL_LAG_DAYS} ngày), sau "
@@ -322,7 +315,7 @@ RANGES = {  # khoảng hợp lý để phát hiện số liệu bất thường 
 
 
 def validation_report(bang4: pd.DataFrame, annual: pd.DataFrame, events_detail: pd.DataFrame,
-                      entry: pd.DataFrame | None = None) -> str:
+                      entry: pd.DataFrame | None = None, doi_chieu: pd.DataFrame | None = None) -> str:
     L = ["# Báo cáo kiểm tra chất lượng dữ liệu", ""]
     n_exp = len(config.BANKS) * ((config.END_YEAR - config.START_YEAR) * 4 + config.END_QUARTER)
     L += [f"- Số dòng Bảng 4: **{len(bang4)}** (kỳ vọng {n_exp})", ""]
@@ -391,11 +384,28 @@ def validation_report(bang4: pd.DataFrame, annual: pd.DataFrame, events_detail: 
                  + ", ".join(f"{r.ma_nh} {r.nam} = {r.car:.2f}" for r in tay.itertuples()))
     L.append("")
 
-    if {"nim", "nim_ttm_vnd"} <= set(bang4.columns):
-        d = (bang4["nim"] - bang4["nim_ttm_vnd"]).abs()
-        L += ["## 5. Đối chiếu NIM tự tính với NIM VNDirect (TTM)", "",
-              f"- Chênh lệch tuyệt đối trung vị: {d.median():.3f} điểm %; lớn nhất: {d.max():.3f} điểm %",
-              "- NIM tự tính là năm hóa từ 1 quý nên dao động hơn NIM TTM – đây là khác biệt phương pháp.", ""]
+    if doi_chieu is not None and not doi_chieu.empty:
+        chi_so = ["roa", "roe", "nim"]
+        lech = pd.DataFrame({cs: (doi_chieu[f"{cs}_ttm_tu_tinh"] - doi_chieu[f"{cs}_ttm_vnd"]).abs() for cs in chi_so})
+        L += ["## 5. Đối chiếu ROA, ROE, NIM tự tính với số VNDirect công bố", "",
+              "Số VNDirect là số 4 quý gần nhất (TTM): tổng 4 quý / bình quân 5 thời điểm cuối quý. Để so cùng cách, "
+              "pipeline tính lại ROA, ROE, NIM theo đúng cách đó từ số liệu gốc của nhóm. Số VNDirect chỉ dùng ở mục "
+              "này, không xuất ra bảng dữ liệu; biến phân tích vẫn là `roa`, `roe`, `nim` năm hóa từ 1 quý.", "",
+              "| Chỉ số | Số quý so được | Lệch trung vị (điểm %) | 90% số quý lệch dưới | Lệch lớn nhất | Quý lệch nhiều nhất |",
+              "|---|---|---|---|---|---|"]
+        for cs in chi_so:
+            d = lech[cs]
+            if d.notna().any():
+                r = doi_chieu.loc[d.idxmax()]
+                L.append(f"| {cs.upper()} | {d.notna().sum()} | {d.median():.3f} | {d.quantile(0.9):.3f} | "
+                         f"{d.max():.3f} | {r.ma_nh} {r.quy}/{r.nam} |")
+        tb = lech.assign(ma_nh=doi_chieu["ma_nh"]).groupby("ma_nh")[chi_so].median()
+        L += ["", "Lệch trung vị theo ngân hàng (điểm %):", "",
+              "| ma_nh | ROA | ROE | NIM |", "|---|---|---|---|"]
+        L += [f"| {nh} | {r.roa:.3f} | {r.roe:.3f} | {r.nim:.3f} |" for nh, r in tb.iterrows()]
+        L += ["", "- Lệch nhỏ nghĩa là số liệu gốc (LNST, tổng tài sản, vốn chủ sở hữu, thu nhập lãi thuần) lấy đúng.",
+              "- Lệch đều ở mọi ngân hàng thường do khác định nghĩa (vd tài sản sinh lãi của NIM; VNDirect không công "
+              "bố chi tiết), không phải lỗi dữ liệu. Chỉ lệch bất thường ở vài quý mới cần tra lại.", ""]
 
     thin = bang4[bang4["so_phien_gd"] < 50]
     L += ["## 6. Quý có ít phiên giao dịch (< 50)", ""]

@@ -10,7 +10,6 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 
 **Lưu ý khi dùng cho mô hình (câu hỏi 4):**
 - **Nhãn, KHÔNG được dùng làm biến đầu vào:** `xu_huong_quy_sau` (nhãn) và `ty_suat_sinh_loi_quy_sau` (nhãn được tạo trực tiếp từ cột này; dùng làm đầu vào là rò rỉ dữ liệu 100%).
-- **Chỉ để đối chiếu, trùng thông tin với cột chính:** `roa_ttm_vnd`, `roe_ttm_vnd`, `nim_ttm_vnd`.
 - **Cột mô tả, không phải biến số:** `ngay_bctc`, `ngay_dau`, `ngay_cuoi`, `car_nguon`, `loai_su_kien`, `ngay_cong_bo`, `mo_ta_ngan`, `nguon`.
 - **Nhãn đã căn thời điểm:** nhãn tính từ mốc dự báo (cuối quý + 45 ngày), sau khi BCTC quý đã công bố, nên các biến tài chính và sự kiện của quý t đều đã biết tại mốc dự báo.
 - **Riêng `car`:** CAR năm Y chỉ công bố cùng báo cáo năm, sau mốc dự báo của Q4/Y. Nếu dùng `car` làm biến đầu vào dự báo, dòng Q4 phải lấy giá trị `car` của dòng Q3 cùng năm.
@@ -40,9 +39,6 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `thu_nhap_lai_thuan` | Thu nhập lãi thuần trong quý | tỷ đồng | KQKD mã 421900 | Thành phần tính toán |
 | `tien_gui_khach_hang` | Tiền gửi của khách hàng | tỷ đồng | BCĐKT mã 413300 | Thành phần tính toán |
 | `tai_san_sinh_lai` | Tài sản sinh lãi cuối quý | tỷ đồng | Tiền gửi NHNN + Tiền gửi & cho vay TCTD + CK kinh doanh + Cho vay KH + CK đầu tư + Mua nợ | Thành phần tính toán |
-| `roa_ttm_vnd` | ROAA 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAA_TR_AVG5Q | Chỉ để đối chiếu |
-| `roe_ttm_vnd` | ROAE 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect ROAE_TR_AVG5Q | Chỉ để đối chiếu |
-| `nim_ttm_vnd` | NIM 4 quý gần nhất (VNDirect, đối chiếu) | % | VNDirect NET_INTEREST_MARGIN_TR_AVG5Q | Chỉ để đối chiếu |
 
 ## Bảng 2a – Giá ngày (`bang2a_gia_ngay.csv`)
 
@@ -111,4 +107,4 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 
 ## Bảng 4 – Tổng hợp (bàn giao) (`bang4_tong_hop.csv`)
 
-Ghép Bảng 1 + Bảng 2b + Bảng 3b theo `ma_nh` + `quy` + `nam`: 43 cột, mỗi dòng = 1 ngân hàng × 1 quý. Ý nghĩa từng cột giống ở bảng gốc phía trên; cột `lay_tu_bang` trong `data_dictionary.csv` cho biết cột lấy từ bảng nào.
+Ghép Bảng 1 + Bảng 2b + Bảng 3b theo `ma_nh` + `quy` + `nam`: 40 cột, mỗi dòng = 1 ngân hàng × 1 quý. Ý nghĩa từng cột giống ở bảng gốc phía trên; cột `lay_tu_bang` trong `data_dictionary.csv` cho biết cột lấy từ bảng nào.

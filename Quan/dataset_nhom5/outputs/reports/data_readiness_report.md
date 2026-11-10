@@ -6,12 +6,12 @@
 
 | file | rows | columns | banks | years | quarters | exact_duplicates |
 |---|---|---|---|---|---|---|
-| bang1_tai_chinh_quy.csv | 176 | 22 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang1_tai_chinh_quy.csv | 176 | 19 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
 | bang2a_gia_ngay.csv | 11771 | 7 | 8 |  |  | 0 |
 | bang2b_gia_quy.csv | 176 | 12 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
 | bang3a_su_kien_chi_tiet.csv | 146 | 11 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
 | bang3b_su_kien_quy.csv | 176 | 15 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
-| bang4_tong_hop.csv | 176 | 43 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang4_tong_hop.csv | 176 | 40 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
 
 Ngân hàng: ACB, BID, CTG, MBB, STB, TCB, VCB, VPB; Q1/2021–Q2/2026 (các quý sau 2025 chỉ dùng để dự báo). Mỗi mẫu là ngân hàng × quý.
 
@@ -69,7 +69,7 @@ Hiếm: dưới 5 quan sát khác 0 trong Train, chỉ là ngưỡng cảnh báo
 
 ## 6. Leakage Check
 
-Cấm xu_huong_quy_sau và ty_suat_sinh_loi_quy_sau. Đối chiếu: roa_ttm_vnd, roe_ttm_vnd, nim_ttm_vnd. Các ngày, nguồn, URL, tiêu đề, car_nguon là mô tả, không làm input. Chỉ whitelist 6 financial và event được chọn. Train 2021–2024; Test 2025; mọi scaler dự báo fit Train. Nhãn theo mốc +45 ngày, không phải quý lịch. Không dùng Test chọn feature/hyperparameter.
+Cấm xu_huong_quy_sau và ty_suat_sinh_loi_quy_sau. Các ngày, nguồn, URL, tiêu đề, car_nguon là mô tả, không làm input. Chỉ whitelist 6 financial và event được chọn. Train 2021–2024; Test 2025; mọi scaler dự báo fit Train. Nhãn theo mốc +45 ngày, không phải quý lịch. Không dùng Test chọn feature/hyperparameter.
 
 ## 7. CAR Check và giới hạn thời điểm
 
