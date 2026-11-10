@@ -95,19 +95,33 @@ with gd.the("bump"):
 with gd.the("co-phieu"):
     ky_gia = st.session_state.get("bt_kygia") or "Trong quý"
     tot, kem = q["thay_doi_12t"].idxmax(), q["thay_doi_12t"].idxmin()
-    gd.tieu_the("Giá cổ phiếu",
-                f"Bình quân {so(tb.loc[ky, 'ty_suat_sinh_loi_quy'], dau=True)} trong quý {quy}/{nam}" if ky_gia == "Trong quý"
-                else f"12 tháng qua: {tot} {so(q.loc[tot, 'thay_doi_12t'], 0, dau=True)}, "
-                     f"{kem} {so(q.loc[kem, 'thay_doi_12t'], 0, dau=True)}",
-                "Đã điều chỉnh cổ tức, chia tách")
-    st.segmented_control("Kỳ", ["Trong quý", "12 tháng"], default="Trong quý", key="bt_kygia",
+    if ky_gia == "Từ 2021":
+        # Giá chuẩn hóa từ phiên đầu năm 2021 – như Hình 4.2 của báo cáo (ở đây ghi % thay đổi thay cho mốc 100)
+        g21 = ds["gia_ngay"][ds["gia_ngay"]["ngay"] >= "2021-01-01"].sort_values(["ma_nh", "ngay"]).copy()
+        g21["thay_doi"] = (g21["gia_dong_cua_dieu_chinh"]
+                           / g21.groupby("ma_nh")["gia_dong_cua_dieu_chinh"].transform("first") - 1) * 100
+        cuoi21 = g21.groupby("ma_nh")["thay_doi"].last()
+        tot21, kem21 = cuoi21.idxmax(), cuoi21.idxmin()
+    phu_gia = {
+        "Trong quý": f"Bình quân {so(tb.loc[ky, 'ty_suat_sinh_loi_quy'], dau=True)} trong quý {quy}/{nam}",
+        "12 tháng": f"12 tháng qua: {tot} {so(q.loc[tot, 'thay_doi_12t'], 0, dau=True)}, "
+                    f"{kem} {so(q.loc[kem, 'thay_doi_12t'], 0, dau=True)}",
+    }
+    if ky_gia == "Từ 2021":
+        phu_gia["Từ 2021"] = (f"Từ phiên {g21['ngay'].min():%d/%m/%Y}: {tot21} {so(cuoi21[tot21], 0, dau=True)}, "
+                              f"{kem21} {so(cuoi21[kem21], 0, dau=True)}")
+    gd.tieu_the("Giá cổ phiếu", phu_gia[ky_gia], "Đã điều chỉnh cổ tức, chia tách")
+    st.segmented_control("Kỳ", ["Trong quý", "12 tháng", "Từ 2021"], default="Trong quý", key="bt_kygia",
                          label_visibility="collapsed")
     if ky_gia == "Trong quý":
         bd.ve(bd.loi_suat_quy(ac, cao=360), key="bt_quy")
-    else:
+    elif ky_gia == "12 tháng":
         gia = dl.gia_12_thang(ds["gia_ngay"])
         bd.ve(bd.duong(gia, "ngay", "thay_doi", [tot, kem], trung_vi=False, le=0, nhan_tat_ca=True, dau=True, cao=440),
               key="bt_gia")
+    else:
+        bd.ve(bd.duong(g21, "ngay", "thay_doi", [tot21, kem21], trung_vi=False, le=0, nhan_tat_ca=True, dau=True,
+                       cao=440), key="bt_gia21")
 
 # ---- Tin doanh nghiệp --------------------------------------------------------------------------------------
 sk = ds["su_kien_chi_tiet"]

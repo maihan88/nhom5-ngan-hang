@@ -87,6 +87,16 @@ dashboard/
 
 ## Triển khai Streamlit Community Cloud
 
-1. Chạy `py dong_bo_du_lieu.py`, rồi đẩy thư mục `dashboard/` lên một repo GitHub.
-2. Vào https://share.streamlit.io → *Create app* → chọn repo, **Main file path** = `app.py`.
-3. Gói cài từ `requirements.txt`; không cần biến môi trường.
+Triển khai thẳng từ repo của nhóm, không cần tách thư mục:
+
+1. Chạy `py dong_bo_du_lieu.py` (hoặc `py chay_tat_ca.py`), commit và gộp vào nhánh `main`.
+2. Vào https://share.streamlit.io → đăng nhập bằng GitHub → *Create app* → repo `maihan88/nhom5-ngan-hang`,
+   branch `main`, **Main file path** = `dashboard/app.py`. Trong *Advanced settings* chọn Python 3.12 hoặc 3.13.
+3. Gói cài từ `dashboard/requirements.txt` (cùng thư mục với `app.py`); không cần biến môi trường hay secrets.
+4. Giao diện lấy từ `dashboard/.streamlit/config.toml`: Streamlit (từ bản 1.52 trở lên) đọc file cấu hình nằm cạnh
+   `app.py` kể cả khi chạy từ thư mục gốc repo, nên không cần chép ra gốc (đã thử bằng
+   `streamlit run dashboard/app.py` ở thư mục gốc).
+5. Repo đang để riêng tư: app có thể mặc định chỉ người được mời mới xem được; chỉnh quyền xem trong mục *Share*
+   của app nếu muốn ai có link cũng mở được.
+
+Sau đó mỗi lần gộp code/dữ liệu mới vào `main`, Cloud tự cập nhật web.
