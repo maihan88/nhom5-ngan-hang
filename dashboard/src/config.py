@@ -102,11 +102,12 @@ MAU_SU_KIEN = dict(zip(DS_LOAI_SU_KIEN,
 # ----------------------------------------------------------------------------
 DS_CHI_SO = ["roa", "roe", "nim", "npl", "car", "ldr"]
 
-# Giá trị car_nguon được coi là SỐ CAR THẬT (32 giá trị cuối năm 2021–2024):
-#   cong_bo      = số VNDirect đúng kỳ
-#   tra_thu_cong = số nhóm tự tra từ nguồn ngân hàng/CTCK (BID, CTG 2022–2024, thay số 8,00 của VNDirect)
+# Giá trị car_nguon được coi là SỐ CAR THẬT (1 số/năm, quý 4; hiện 40 giá trị 2021–2025):
+#   bao_cao_ngan_hang = số hợp nhất trong báo cáo tỷ lệ an toàn vốn 31/12 của chính ngân hàng
+#   vndirect          = số VNDirect (chỉ dùng khi năm đó chưa có báo cáo ngân hàng)
 # Còn lại (dien_tiep_ky_truoc) là số điền tiếp, không dùng để so sánh/kiểm định.
-CAR_NGUON_SO_THAT = ("cong_bo", "tra_thu_cong")
+# Nguồn và cách lấy: Han/PTDL_3/crawler/car_reports.py
+CAR_NGUON_SO_THAT = ("bao_cao_ngan_hang", "vndirect")
 NHAN_CHI_SO = {
     "roa": "ROA (%)",
     "roe": "ROE (%)",

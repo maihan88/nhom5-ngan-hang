@@ -88,6 +88,16 @@ class HttpClient:
         path.write_text(text, encoding="utf-8")
         return text
 
+    def get_file(self, url: str, path: Path) -> Path:
+        """Tải file nhị phân (PDF) về `path`; đã có file thì dùng lại (trừ khi refresh).
+        Lỗi HTTP (vd 404 khi ngân hàng chưa công bố) được ném ra để nơi gọi xử lý."""
+        if path.exists() and not self.refresh:
+            return path
+        resp = self._request("GET", url)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(resp.content)
+        return path
+
     def get_text_uncached(self, url: str) -> str:
         """Tải trang KHÔNG lưu cache – dùng cho trang chỉ để lấy cookie/token phiên."""
         return self._request("GET", url).text

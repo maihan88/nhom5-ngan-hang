@@ -1,3 +1,3 @@
 ﻿Model,Features,Accuracy,Precision,Recall,F1,ROC-AUC,delta_Accuracy,delta_F1,delta_ROC-AUC
-Financial + General Event,"roa, roe, nim, npl, car, ldr, co_su_kien",0.625,0.6,0.75,0.6666666666666666,0.5703125,0.125,0.01449275362318836,0.03515625
-Financial + Event Categories,"roa, roe, nim, npl, car, ldr, sk_tang_von, sk_chuyen_doi_so, sk_hop_tac_trung_thau, sk_doi_lanh_dao, sk_chinh_sach_nhnn, sk_khac",0.59375,0.5714285714285714,0.75,0.6486486486486487,0.546875,0.09375,-0.003525264394829586,0.01171875
+Financial + General Event,"roa, roe, nim, npl, car, ldr, co_su_kien",0.625,0.6,0.75,0.6666666666666666,0.5546875,0.125,0.01449275362318836,0.0234375
+Financial + Event Categories,"roa, roe, nim, npl, car, ldr, sk_tang_von, sk_chuyen_doi_so, sk_hop_tac_trung_thau, sk_doi_lanh_dao, sk_chinh_sach_nhnn, sk_khac",0.59375,0.5714285714285714,0.75,0.6486486486486487,0.53515625,0.09375,-0.003525264394829586,0.00390625

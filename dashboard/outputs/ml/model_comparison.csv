@@ -1,5 +1,5 @@
 ﻿Model,Features,Accuracy,Precision,Recall,F1,ROC-AUC
 Baseline,-,0.5,0.5,1.0,0.6666666666666666,0.5
-Financial Only,"roa, roe, nim, npl, car, ldr",0.5,0.5,0.9375,0.6521739130434783,0.53515625
-Financial + General Event,"roa, roe, nim, npl, car, ldr, co_su_kien",0.625,0.6,0.75,0.6666666666666666,0.5703125
-Financial + Event Categories,"roa, roe, nim, npl, car, ldr, sk_tang_von, sk_chuyen_doi_so, sk_hop_tac_trung_thau, sk_doi_lanh_dao, sk_chinh_sach_nhnn, sk_khac",0.59375,0.5714285714285714,0.75,0.6486486486486487,0.546875
+Financial Only,"roa, roe, nim, npl, car, ldr",0.5,0.5,0.9375,0.6521739130434783,0.53125
+Financial + General Event,"roa, roe, nim, npl, car, ldr, co_su_kien",0.625,0.6,0.75,0.6666666666666666,0.5546875
+Financial + Event Categories,"roa, roe, nim, npl, car, ldr, sk_tang_von, sk_chuyen_doi_so, sk_hop_tac_trung_thau, sk_doi_lanh_dao, sk_chinh_sach_nhnn, sk_khac",0.59375,0.5714285714285714,0.75,0.6486486486486487,0.53515625

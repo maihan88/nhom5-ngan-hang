@@ -199,7 +199,7 @@ def du_lieu_cau2(b4):
     """Chuẩn bị 3 bộ dữ liệu cho kiểm định câu 2.
 
     nh_nam : NIM, NPL trung bình 4 quý theo ngân hàng–năm (40 quan sát: 15 QD, 25 TN)
-    car    : 32 giá trị CAR thật (12 QD, 20 TN) – số VNDirect công bố + 6 số tra thủ công
+    car    : các giá trị CAR thật – 1 số/ngân hàng/năm (31/12), hiện 40 giá trị (15 QD, 25 TN)
     nh     : trung bình cả giai đoạn theo ngân hàng (8 quan sát: 3 QD, 5 TN) – để kiểm tra lại
     """
     d = _str(b4)

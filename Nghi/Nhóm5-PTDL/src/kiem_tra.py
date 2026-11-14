@@ -86,22 +86,24 @@ def kiem_tra_du_lieu(ds):
     # ---- 3. CAR ---------------------------------------------------------------
     cb = b4[b4["car_nguon"].isin(cf.CAR_NGUON_SO_THAT)]
     dem_nguon = cb["car_nguon"].value_counts().to_dict()
-    sg.ghi("3. CAR", "Có đúng 32 giá trị CAR thật (công bố + tra thủ công)", len(cb) == 32,
-           f"{len(cb)} giá trị: " + ", ".join(f"{k} = {v}" for k, v in dem_nguon.items()))
+    so_q4 = int((b4["quy"] == "Q4").sum())
+    sg.ghi("3. CAR", "Mọi quý 4 đều có CAR thật (1 số/ngân hàng/năm)", len(cb) == so_q4,
+           f"{len(cb)}/{so_q4} giá trị: " + ", ".join(f"{k} = {v}" for k, v in dem_nguon.items()))
     la = set(b4["car_nguon"].unique()) - set(cf.CAR_NGUON_SO_THAT) - {"dien_tiep_ky_truoc"}
     sg.ghi("3. CAR", "car_nguon chỉ gồm các giá trị đã biết", not la, f"giá trị lạ: {la}" if la else "")
-    sg.ghi("3. CAR", "CAR công bố chỉ nằm ở Q4", set(cb["quy"]) == {"Q4"},
+    sg.ghi("3. CAR", "CAR thật chỉ nằm ở Q4", set(cb["quy"]) <= {"Q4"},
            f"quý: {sorted(set(cb['quy']))}")
-    sg.ghi("3. CAR", "Mỗi ngân hàng có 4 năm công bố (2021–2024)",
-           (cb.groupby("ma_nh").size() == 4).all(),
-           f"năm có số công bố: {sorted(int(x) for x in cb['nam'].unique())}")
-    tc = cb[cb["car_nguon"] == "tra_thu_cong"]
-    if len(tc):
-        sg.luu_y("3. CAR", f"{len(tc)} giá trị CAR tra thủ công (không phải số VNDirect)",
-                 "; ".join(f"{r.ma_nh} {r.nam}: {r.car:.2f}" for r in tc.sort_values(["ma_nh", "nam"]).itertuples())
-                 + " – nguồn trong data/manual/car_tra_thu_cong.csv")
-    sg.luu_y("3. CAR", "Năm 2025 chưa có CAR công bố",
-             "CAR cả 4 quý 2025 = số Q4/2024 điền tiếp → không dùng cho so sánh năm 2025")
+    sg.ghi("3. CAR", "Mọi ngân hàng có cùng số năm có CAR thật",
+           cb.groupby("ma_nh").size().nunique() == 1,
+           f"năm có số thật: {sorted(int(x) for x in cb['nam'].unique())}")
+    vnd = cb[cb["car_nguon"] == "vndirect"]
+    if len(vnd):
+        sg.luu_y("3. CAR", f"{len(vnd)} giá trị CAR lấy từ VNDirect (chưa có báo cáo ngân hàng)",
+                 "; ".join(f"{r.ma_nh} {r.nam}: {r.car:.2f}" for r in vnd.sort_values(["ma_nh", "nam"]).itertuples()))
+    if (cb["nam"] >= 2025).any():
+        sg.luu_y("3. CAR", "CAR từ năm 2025 có thể tính theo Thông tư 14/2025",
+                 "TT14 thay cách tính CAR (ngân hàng được chọn TT14 hoặc TT41 tới hết 2029; ACB ghi rõ 2025 tính theo "
+                 "TT14) → so CAR 2025 với các năm trước cần thận trọng; kiểm định CH2 có bản kiểm tra lại chỉ 2021–2024")
     lap = cb.groupby("ma_nh")["car"].agg(lambda s: s.round(2).value_counts().max())
     nghi_van = cb[cb["ma_nh"].isin(lap[lap >= 3].index)]
     if len(nghi_van):

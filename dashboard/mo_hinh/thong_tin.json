@@ -1,8 +1,8 @@
 {
   "mo_ta": "Logistic Regression dự báo giá quý sau tăng/không tăng – thiết kế theo Quan/dataset_nhom5/src/logistic_model.py",
-  "ngay_xuat": "2026-11-09 20:35",
+  "ngay_xuat": "2026-11-14 19:02",
   "scikit_learn": "1.9.1",
-  "van_tay_du_lieu": "ac74af8147bc25b022eedd03b020c2911b06d6351e0bfb00b667fbbab96ffca3",
+  "van_tay_du_lieu": "efc7f6d990dd81baf30d30688786e4798e428b17046c5c60dd5e685f40539082",
   "nam_test": 2025,
   "n_train": 128,
   "n_test": 32,
@@ -20,7 +20,7 @@
         "ldr"
       ],
       "accuracy_test": 0.5,
-      "auc_test": 0.5352
+      "auc_test": 0.5312
     },
     "Financial + General Event": {
       "file": "logistic_tai_chinh_co_su_kien.pkl",
@@ -35,7 +35,7 @@
         "co_su_kien"
       ],
       "accuracy_test": 0.625,
-      "auc_test": 0.5703
+      "auc_test": 0.5547
     },
     "Financial + Event Categories": {
       "file": "logistic_tai_chinh_loai_su_kien.pkl",
@@ -55,7 +55,7 @@
         "sk_khac"
       ],
       "accuracy_test": 0.5938,
-      "auc_test": 0.5469
+      "auc_test": 0.5352
     }
   }
 }

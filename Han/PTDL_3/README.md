@@ -12,7 +12,8 @@ bằng biến môi trường `PTDL_DEN_QUY` và `PTDL_GIA_DEN` (xem mục 2).
 | Dữ liệu | Nguồn | Lý do chọn |
 |---|---|---|
 | BCTC quý (tổng TS, VCSH, LNST, dư nợ, thu nhập lãi…) | API công khai của **dstock (VNDirect)** `api-finfo.vndirect.com.vn/v4/financial_statements` | Trả JSON có cấu trúc, dùng đúng mẫu BCTC ngân hàng (TT49), mã chỉ tiêu cố định. CafeF/Vietstock trả HTML hay đổi giao diện, Vietstock còn cần token đăng nhập. |
-| NPL, CAR | VNDirect `/v4/ratios` | BCTC dạng bảng không có phân loại nợ và vốn tự có (nằm trong thuyết minh PDF). VNDirect đã tổng hợp sẵn. |
+| NPL | VNDirect `/v4/ratios` | BCTC dạng bảng không có phân loại nợ (nằm trong thuyết minh PDF). VNDirect đã tổng hợp sẵn. |
+| CAR (31/12 mỗi năm) | **Báo cáo công bố thông tin tỷ lệ an toàn vốn** của ngân hàng, bản PDF Vietstock lưu theo link cố định (`crawler/car_reports.py`); dự phòng: VNDirect `/v4/ratios` | Số gốc của ngân hàng. VNDirect từng ghi sai (8,00 cho BID, CTG 2022–2024; 10,02 cho MBB 2021) và không cập nhật từ năm 2025. |
 | Giá cổ phiếu ngày | VNDirect `/v4/stock_prices` | Có cả giá **đã điều chỉnh** (adClose). Cần giá này vì ngân hàng chia cổ tức bằng cổ phiếu gần như năm nào cũng có. |
 | Sự kiện tăng vốn | VNDirect `/v4/events` | Dữ liệu sự kiện quyền có cấu trúc, ngày công bố chính xác. |
 | Tin/công bố thông tin doanh nghiệp | **CafeF**, mục tin theo mã (`Events_RelatedNews_New.aspx`) | Có lịch sử đủ từ 2021, mỗi tin có ngày giờ và link gốc. Tin VNDirect **chỉ có từ khoảng 2025** nên chỉ dùng bổ sung. |
@@ -35,7 +36,7 @@ Tái lập đúng bộ dữ liệu của báo cáo, không cần mạng (PowerSh
 có ghi ngày cuối, còn mặc định ngày này trượt theo hôm nay:
 
 ```powershell
-$env:PTDL_DEN_QUY = "2026Q2"; $env:PTDL_GIA_DEN = "2026-10-28"; py run_pipeline.py --offline --xlsx; Remove-Item Env:PTDL_DEN_QUY, Env:PTDL_GIA_DEN
+$env:PTDL_DEN_QUY = "2026Q3"; $env:PTDL_GIA_DEN = "2026-11-14"; py run_pipeline.py --offline --xlsx; Remove-Item Env:PTDL_DEN_QUY, Env:PTDL_GIA_DEN
 ```
 
 ## 3. Kết quả (`data/output/`)
@@ -56,7 +57,7 @@ $env:PTDL_DEN_QUY = "2026Q2"; $env:PTDL_GIA_DEN = "2026-10-28"; py run_pipeline.
 
 ## 4. Rà soát thủ công (nên làm trước khi bàn giao)
 
-**CAR tra thủ công:** `data/manual/car_tra_thu_cong.csv` (cột `ma_nh, nam, car, loai_car, nguon, ngay_tra, ly_do`) thay số CAR cuối năm của VNDirect khi số đó không đáng tin. Hiện có 6 dòng: BID và CTG năm 2022–2024, vì VNDirect ghi đúng 8,00 (ngưỡng tối thiểu) ba năm liền. Ô `car` để trống = bỏ số nguồn, để bước điền tiếp xử lý. Báo cáo kiểm tra (mục 4b) tự cảnh báo nếu còn số CAR công bố đúng 8,00.
+**CAR – mỗi năm cần nhập tay khoảng 4 số:** pipeline tự tải báo cáo tỷ lệ an toàn vốn 31/12 của 8 ngân hàng và tự đọc số hợp nhất với file có lớp text (BID, MBB, TCB, VPB). ACB, CTG, STB, VCB chỉ nộp bản scan nên phải nhập tay vào `data/manual/car_bao_cao_ngan_hang.csv` (cột `ma_nh, nam, car, nguon, ngay_tra, ly_do`; số **hợp nhất**, đơn vị %). Khi có báo cáo mới (thường tháng 3–4), mục 4b của `bao_cao_kiem_tra.md` ghi "Cần nhập tay …" kèm đường dẫn file PDF; nhập xong chạy lại `python run_pipeline.py --offline`. Số nhập tay được ưu tiên hơn số tự đọc, nên cũng dùng file này để sửa khi tự đọc sai. Kết quả đọc lưu ở `data/raw/car_bao_cao/*.json` (có trên Git); PDF nằm trong `data/raw/car_bao_cao/pdf/` (không đưa lên Git, tải lại được). Nếu ngân hàng đổi mẫu báo cáo, số không khớp quy tắc trong `config.CAR_COT_HOP_NHAT` sẽ bị chuyển sang "cần nhập tay" chứ không bị đoán.
 
 **Sự kiện:**
 
@@ -72,7 +73,7 @@ Sự kiện được phân loại bằng từ khóa trên tiêu đề (cấu hì
 
 ## 5. Hạn chế đã biết (nên ghi vào báo cáo)
 
-- **CAR**: VNDirect chỉ có số cuối năm (dù một số ngân hàng tự công bố theo quý/nửa năm). Quý không có số được điền bằng số thật gần nhất trước đó (cột `car_nguon`: `cong_bo`, `tra_thu_cong`, `dien_tiep_ky_truoc`). Cách này không dùng số của tương lai nên không làm rò rỉ thông tin vào mô hình. Số tra thủ công của CTG là nguồn thứ cấp (công ty chứng khoán) vì VietinBank chỉ ghi "tuân thủ"; năm 2025 chưa thay vì một số ngân hàng đã đổi cách tính CAR theo Thông tư 14/2025 nên không so sánh được với các năm trước.
+- **CAR**: chỉ dùng 1 số/năm (31/12). Quý khác điền bằng số thật gần nhất trước đó (cột `car_nguon`: `bao_cao_ngan_hang`, `vndirect`, `dien_tiep_ky_truoc`). Cách này không dùng số của tương lai, nhưng báo cáo 31/12 thường đăng tháng 3–4, nên khi làm biến dự báo, dòng Q4 dùng CAR của Q3 (xem data dictionary). Thông tư 14/2025 (hiệu lực 15/9/2025) đổi cách tính CAR và cho ngân hàng chọn TT14 hoặc TT41 tới hết 2029. ACB ghi rõ năm 2025 tính theo TT14, nên CAR 2025 so với các năm trước cần thận trọng.
 - **ROA/ROE/NIM** được năm hóa từ số liệu một quý (×4) nên dao động hơn số TTM. Số TTM của VNDirect chỉ dùng để đối chiếu trong `bao_cao_kiem_tra.md`, không nằm trong bảng.
 - Tin hợp tác/chuyển đổi số giai đoạn 2021–2024 có thể bị thiếu vì CafeF chủ yếu đăng công bố thông tin chính thức. Nên bổ sung bằng tay qua `su_kien_bo_sung.csv`.
 - API VNDirect là API công khai không có tài liệu chính thức. Nếu cấu trúc thay đổi, chương trình sẽ báo lỗi rõ ràng chứ không âm thầm ghi dữ liệu sai.

@@ -116,7 +116,7 @@ def run():
     for split,sub in [('Train',d[d.nam<year]),('Test',d[d.nam==year])]:
         if sub[TARGET].nunique()!=2:
             issues.append({'file':STEMS[-1],'column':TARGET,'csv_line':'','problem':f'{split} không đủ hai lớp cho phân loại/AUC'})
-    warnings += ['CAR Q4 dùng Q3 cùng năm CHỈ ở bản đầu vào dự báo theo dictionary; CAR gốc dùng cho phân cụm mô tả. Không xử lý lại quy tắc điền CAR của nhóm.', 'Không có ngày công bố BCTC thực tế: mốc +45 ngày là giả định của dictionary, chưa xác minh point-in-time; số VNDirect là bản sau cùng.', 'Thiếu data_dictionary.csv và data/manual/car_tra_thu_cong.csv được dẫn chiếu: chưa thể xác minh nguồn CAR tra thủ công độc lập.']
+    warnings += ['CAR Q4 dùng Q3 cùng năm CHỈ ở bản đầu vào dự báo theo dictionary; CAR gốc dùng cho phân cụm mô tả. Không xử lý lại quy tắc điền CAR của nhóm.', 'Không có ngày công bố BCTC thực tế: mốc +45 ngày là giả định của dictionary, chưa xác minh point-in-time; số VNDirect là bản sau cùng.', 'CAR thật chỉ có ở quý 4 (số 31/12 trong báo cáo tỷ lệ an toàn vốn của ngân hàng, link từng số ở Han/PTDL_3/data/raw/car_bao_cao/ và data/manual/car_bao_cao_ngan_hang.csv); từ 2025 có ngân hàng tính theo Thông tư 14/2025.']
     outliers=[]
     for c in FIN:
         q1,q3=d[c].quantile([.25,.75]); span=q3-q1

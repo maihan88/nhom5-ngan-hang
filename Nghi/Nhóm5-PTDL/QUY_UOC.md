@@ -86,7 +86,7 @@ Cả 4 file ở dạng dài, mã hóa `utf-8-sig`, ghi bằng `xuat_ket_qua(df, 
 
 **`kiem_dinh_nhom.csv`** – kiểm định quốc doanh vs tư nhân (câu 2)
 `chi_so, mau_du_lieu, don_vi_quan_sat, phan_tich, n_quoc_doanh, n_tu_nhan, tb_quoc_doanh, tb_tu_nhan, trung_vi_quoc_doanh, trung_vi_tu_nhan, shapiro_p_quoc_doanh, shapiro_p_tu_nhan, levene_p, kiem_dinh, thong_ke, p_value, muc_y_nghia, bac_bo_H0, gia_thuyet_H0, gia_thuyet_H1, ket_luan, chenh_lech_tb, ten_hieu_ung, do_lon_hieu_ung`
-`phan_tich` ∈ {`chinh`, `kiem_tra_lai`} – dashboard hiển thị dòng `chinh`, các dòng `kiem_tra_lai` để ở phần mở rộng. `mau_du_lieu` ∈ {`chinh`, `khong_VPB`, `car_chi_so_vndirect`, `cap_ngan_hang`}. `chenh_lech_tb` = TB quốc doanh − TB tư nhân; `do_lon_hieu_ung` dương = quốc doanh cao hơn. *(Cập nhật ở Phần 4: thêm `phan_tich` và 3 cột cuối.)*
+`phan_tich` ∈ {`chinh`, `kiem_tra_lai`} – dashboard hiển thị dòng `chinh`, các dòng `kiem_tra_lai` để ở phần mở rộng. `mau_du_lieu` ∈ {`chinh`, `khong_VPB`, `car_2021_2024`, `cap_ngan_hang`}. `chenh_lech_tb` = TB quốc doanh − TB tư nhân; `do_lon_hieu_ung` dương = quốc doanh cao hơn. *(Cập nhật ở Phần 4: thêm `phan_tich` và 3 cột cuối.)*
 
 **`tuong_quan.csv`** – tương quan chỉ số với lợi suất quý (câu 3)
 `chi_so, bien_so_sanh, mau_du_lieu, phan_tich, so_quan_sat, pearson_r, pearson_p, pearson_p_hieu_chinh, spearman_rho, spearman_p, spearman_p_hieu_chinh, phuong_phap_hieu_chinh, xep_hang_do_manh`
@@ -96,7 +96,7 @@ Cả 4 file ở dạng dài, mã hóa `utf-8-sig`, ghi bằng `xuat_ket_qua(df, 
 
 Kết quả kiểm tra dữ liệu bản cập nhật: 30 mục đạt, 0 lỗi, 7 lưu ý. Các lưu ý ảnh hưởng đến phân tích:
 
-- **CAR:** 32 giá trị thật (Q4 các năm 2021–2024) = 26 số VNDirect (`car_nguon = cong_bo`) + 6 số nhóm tra thủ công (`tra_thu_cong`, BID và CTG 2022–2024, thay số 8,00% VNDirect ghi sai). Code coi cả hai là số thật qua `cf.CAR_NGUON_SO_THAT`; cờ `car_cong_bo` trong bảng 4 đã tính cả hai. Năm 2025 chưa có số công bố nên không đưa CAR 2025 vào so sánh.
+- **CAR:** 1 số thật mỗi ngân hàng mỗi năm (Q4, 31/12), hiện 40 giá trị 2021–2025. Số lấy từ báo cáo tỷ lệ an toàn vốn của chính ngân hàng (`car_nguon = bao_cao_ngan_hang`); năm chưa có báo cáo thì dùng VNDirect (`vndirect`). Code coi cả hai là số thật qua `cf.CAR_NGUON_SO_THAT`; cờ `car_cong_bo` trong bảng 4 đã tính cả hai. Từ 2025 có ngân hàng tính CAR theo Thông tư 14/2025 nên kiểm định CH2 có thêm bản kiểm tra lại chỉ 2021–2024 (`car_2021_2024`).
 - **STB Q4/2025:** quý lỗ (LNST −2.752 tỷ, ROE −17,96%, NPL 6,41%). Giữ nguyên, không xóa; ghi chú khi diễn giải xếp hạng 2025 và tương quan.
 - **VPB:** NPL cao hơn hẳn phần còn lại gần như suốt giai đoạn (4–6,5%), do hợp nhất công ty tài chính tiêu dùng. Đây là lý do có bước kiểm tra lại NPL không có VPB. VPB Q1/2022 có ROA 6,42% (ngoại lai).
 - **ACB** thiếu 5 phiên đầu tháng 12/2020 – ngoài giai đoạn nghiên cứu, không ảnh hưởng. Mốc chuẩn hóa giá = 100 là phiên 04/01/2021, chung cho cả 8 mã.

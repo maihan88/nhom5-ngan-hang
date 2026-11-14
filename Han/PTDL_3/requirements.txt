@@ -2,4 +2,5 @@ requests>=2.31
 pandas>=2.1
 numpy>=1.26
 beautifulsoup4>=4.12
+pymupdf>=1.24  # đọc PDF báo cáo tỷ lệ an toàn vốn (CAR)
 openpyxl>=3.1  # tùy chọn, cho --xlsx
