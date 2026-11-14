@@ -3,8 +3,9 @@
 - Số liệu gốc (tổng tài sản, VCSH, LNST, dư nợ, thu nhập lãi thuần...) lấy từ BCTC quý
   theo mẫu ngân hàng (TT49/2014/TT-NHNN), đơn vị gốc VND -> quy đổi sang tỷ đồng.
 - ROA, ROE, NIM: nhóm TỰ TÍNH từ số liệu gốc (công thức minh bạch, ghi trong Data Dictionary).
-- NPL, CAR: BCTC không có bảng phân loại nợ / vốn tự có ở dạng cấu trúc, nên lấy chỉ số
-  VNDirect đã tổng hợp từ thuyết minh BCTC. CAR thường chỉ công bố cuối năm.
+- NPL: BCTC không có bảng phân loại nợ ở dạng cấu trúc, nên lấy chỉ số VNDirect đã tổng hợp từ thuyết minh BCTC.
+- CAR (1 số/năm, 31/12): ưu tiên số hợp nhất trong báo cáo tỷ lệ an toàn vốn của ngân hàng (car_reports.py),
+  thiếu thì dùng số VNDirect; các quý khác điền tiếp.
 """
 from __future__ import annotations
 
@@ -13,7 +14,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from . import config
+from . import car_reports, config
 from .http_client import HttpClient
 
 log = logging.getLogger(__name__)
@@ -93,34 +94,23 @@ def _avg_with_prev(s: pd.Series) -> pd.Series:
     return pd.concat([s, s.shift(1)], axis=1).mean(axis=1, skipna=True)
 
 
-def _apply_car_manual(df: pd.DataFrame) -> pd.DataFrame:
-    """Ghi đè CAR cuối năm bằng số tra thủ công trong data/manual/car_tra_thu_cong.csv.
+def _apply_car_bao_cao(df: pd.DataFrame, car_bc: pd.DataFrame | None) -> pd.DataFrame:
+    """Thay CAR quý 4 bằng số trong báo cáo tỷ lệ an toàn vốn 31/12 của ngân hàng (tự đọc hoặc nhập tay).
 
-    Dùng khi số VNDirect không đáng tin: BID và CTG có CAR = 8,00 đúng ba năm 2022-2024 (đúng ngưỡng
-    tối thiểu), trong khi ngân hàng chỉ ghi "tuân thủ" hoặc công bố số khác. Mỗi dòng trong file có link
-    nguồn và lý do. Ô `car` để trống = bỏ số của nguồn (không có số thật) và để bước điền tiếp xử lý.
+    Thứ tự ưu tiên: báo cáo ngân hàng > VNDirect > điền tiếp. Năm chưa có số báo cáo thì giữ số VNDirect (nếu có).
+    Lý do: VNDirect từng ghi sai (8,00 cho BID, CTG 2022–2024; 10,02 cho MBB 2021) và không cập nhật từ 2025.
     """
-    path = config.MANUAL_DIR / "car_tra_thu_cong.csv"
-    if not path.exists():
+    if car_bc is None or car_bc.empty:
         return df
-    manual = pd.read_csv(path, encoding="utf-8-sig", dtype={"ma_nh": str})
-    df = df.copy()
-    for r in manual.itertuples():
-        hit = (df["ma_nh"] == r.ma_nh.strip()) & (df["nam"] == int(r.nam)) & (df["quy"] == "Q4")
-        if not hit.any():
-            log.warning("car_tra_thu_cong.csv: không có dòng %s Q4/%s trong dữ liệu", r.ma_nh, r.nam)
-            continue
-        if pd.isna(r.car):
-            df.loc[hit, "car"] = np.nan
-            df.loc[hit, "car_nguon"] = None
-        else:
-            df.loc[hit, "car"] = float(r.car)
-            df.loc[hit, "car_nguon"] = "tra_thu_cong"
-    log.info("CAR: áp dụng %d dòng tra thủ công (car_tra_thu_cong.csv)", len(manual))
-    return df
+    co_so = car_bc.dropna(subset=["car"])[["ma_nh", "nam", "car"]].rename(columns={"car": "_car_bc"})
+    df = df.merge(co_so.assign(quy="Q4"), on=["ma_nh", "nam", "quy"], how="left")
+    hit = df["_car_bc"].notna()
+    df.loc[hit, "car"] = df.loc[hit, "_car_bc"]
+    df.loc[hit, "car_nguon"] = "bao_cao_ngan_hang"
+    return df.drop(columns="_car_bc")
 
 
-def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
+def compute_indicators(df: pd.DataFrame, car_bc: pd.DataFrame | None = None) -> pd.DataFrame:
     df = df.sort_values(["ma_nh", "nam", "quy"]).copy()
     g = df.groupby("ma_nh", group_keys=False)
 
@@ -139,10 +129,11 @@ def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     for col in ["npl", "car", "nim_ttm_vnd", "roa_ttm_vnd", "roe_ttm_vnd"]:
         df[col] = df[col] * 100
 
-    # CAR: phần lớn ngân hàng chỉ công bố cuối năm -> điền tiếp giá trị gần nhất ĐÃ công bố
+    # CAR: chỉ lấy số 31/12 (1 số/năm); quý khác điền tiếp giá trị gần nhất ĐÃ có
     # (không dùng giá trị tương lai để tránh rò rỉ thông tin cho mô hình dự báo)
-    df["car_nguon"] = np.where(df["car"].notna(), "cong_bo", None)
-    df = _apply_car_manual(df)  # sửa số CAR sai bằng số tra thủ công, TRƯỚC khi điền tiếp
+    df["car_vnd"] = df["car"]  # giữ số VNDirect để đối chiếu trong báo cáo kiểm tra
+    df["car_nguon"] = np.where(df["car"].notna(), "vndirect", None)
+    df = _apply_car_bao_cao(df, car_bc)  # TRƯỚC khi điền tiếp
     df["car"] = df.groupby("ma_nh")["car"].ffill()
     df.loc[df["car_nguon"].isna() & df["car"].notna(), "car_nguon"] = "dien_tiep_ky_truoc"
 
@@ -171,8 +162,9 @@ def _doi_chieu_vnd(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Trả về (bang1, annual_check, ngay_nhap_bctc, doi_chieu_vnd) – ba bảng sau chỉ dùng cho báo cáo kiểm tra."""
+def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Trả về (bang1, annual_check, ngay_nhap_bctc, doi_chieu_vnd, car_bao_cao) – bốn bảng sau chỉ dùng cho
+    báo cáo kiểm tra."""
     frames, annual_frames, entry_frames = [], [], []
     for code in config.BANKS:
         log.info("[Bảng 1] BCTC quý %s", code)
@@ -197,7 +189,10 @@ def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
     money_cols = list(config.BS_ITEMS.values()) + list(config.IS_ITEMS.values())
     df[money_cols] = df[money_cols] / 1e9  # VND -> tỷ đồng
 
-    df = compute_indicators(df)
+    car_bc = car_reports.build_car_bao_cao(client)
+    df = compute_indicators(df, car_bc)
+    q4 = df[df["quy"] == "Q4"][["ma_nh", "nam", "car_vnd"]]
+    car_bc = car_bc.merge(q4, on=["ma_nh", "nam"], how="left")
     df["loai_hinh_so_huu"] = df["ma_nh"].map(config.BANKS)
     doi_chieu = _doi_chieu_vnd(df)  # trước khi lọc năm: cần cả Q4/2020 cho bình quân 5 điểm
     doi_chieu = doi_chieu[doi_chieu["nam"].between(config.START_YEAR, config.END_YEAR)].reset_index(drop=True)
@@ -220,4 +215,4 @@ def build_bang1(client: HttpClient) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
     entry = _add_quarter_keys(entry, "fiscalDate").rename(columns={"code": "ma_nh"})
     entry["tre_ngay"] = (pd.to_datetime(entry["createdDate"]) - pd.to_datetime(entry["fiscalDate"])).dt.days
     entry = entry[entry["nam"].between(config.START_YEAR, config.END_YEAR)]
-    return bang1, annual, entry[["ma_nh", "quy", "nam", "fiscalDate", "createdDate", "tre_ngay"]], doi_chieu
+    return bang1, annual, entry[["ma_nh", "quy", "nam", "fiscalDate", "createdDate", "tre_ngay"]], doi_chieu, car_bc

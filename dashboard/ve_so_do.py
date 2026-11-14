@@ -28,13 +28,14 @@ CHU_SANG = {"so": "#E9A08A", "cong_cu": "#CFC8BA"}   # chữ trên khối nền 
 
 # Khối giai đoạn: khóa -> (x, y, rộng, cao, số, tên, công cụ)
 KHOI = {
-    "thu_thap": (330, 205, 230, 110, "02", "Thu thập", "requests · BeautifulSoup"),
+    "thu_thap": (330, 205, 230, 110, "02", "Thu thập", "requests · bs4 · PyMuPDF"),
     "lam_sach": (640, 205, 230, 110, "03", "Làm sạch", "pandas · NumPy"),
     "thong_ke": (960, 150, 240, 95, "04a", "Thống kê", "SciPy · statsmodels"),
     "hoc_may": (960, 275, 240, 95, "04b", "Học máy", "scikit-learn"),
     "ban_tin": (1290, 205, 180, 110, "05", "Bản tin", "Streamlit · Plotly"),
 }
-NGUON = [("VNDirect API", "JSON", 185), ("CafeF", "HTML", 275)]   # (tên, định dạng, y)
+NGUON = [("VNDirect API", "JSON", 150), ("CafeF", "HTML", 230),
+         ("Vietstock", "PDF báo cáo CAR", 310)]   # (tên, định dạng, y)
 X_NGUON, RONG_NGUON, CAO_NGUON = 60, 180, 60
 
 
@@ -84,15 +85,16 @@ def than():
           f'<tspan font-family="{MONO}" font-weight="600" fill="{MAU["muc"]}">py chay_tat_ca.py</tspan></text>']
 
     # 01 Nguồn
-    s.append(_t(X_NGUON, 168, "01 · NGUỒN", 12, MAU["nhan"], dam=600, gian=1.5))
+    s.append(_t(X_NGUON, 136, "01 · NGUỒN", 12, MAU["nhan"], dam=600, gian=1.5))
     for ten, dinh_dang, y in NGUON:
         s += [f'<rect x="{X_NGUON}" y="{y}" width="{RONG_NGUON}" height="{CAO_NGUON}" rx="3" fill="none" '
               f'stroke="{MAU["nhat"]}" stroke-width="1.3"/>',
               _t(X_NGUON + 16, y + 27, ten, 16, dam=600), _t(X_NGUON + 16, y + 47, dinh_dang, 12.5, MAU["nhat"])]
     x_tt, y_tt = KHOI["thu_thap"][0], KHOI["thu_thap"][1]
     xr = X_NGUON + RONG_NGUON
-    s += [_duong([(xr, 215), (285, 215), (285, y_tt + 40), (x_tt - 8, y_tt + 40)]),
-          _duong([(xr, 305), (285, 305), (285, y_tt + 70), (x_tt - 8, y_tt + 70)])]
+    for (_, _, y), dy in zip(NGUON, (30, 55, 80)):
+        ym = y + CAO_NGUON / 2
+        s.append(_duong([(xr, ym), (285, ym), (285, y_tt + dy), (x_tt - 8, y_tt + dy)]))
 
     # 02–05
     for k, (x, y, w, h, so, ten, cc) in KHOI.items():
@@ -123,7 +125,7 @@ def than():
     s += [f'<rect x="{xm}" y="{ym}" width="{ls[2] - 20}" height="58" rx="3" fill="none" stroke="{MAU["nhan"]}" '
           f'stroke-width="1.3" stroke-dasharray="5 4"/>',
           _t(xm + 16, ym + 25, "Rà soát thủ công", 15, MAU["nhan"], dam=600),
-          _t(xm + 16, ym + 44, "file CSV nhóm nhập tay", 12.5, MAU["muc2"]),
+          _t(xm + 16, ym + 44, "sự kiện; CAR bản scan", 12.5, MAU["muc2"]),
           _duong([(xls, ym + 58), (xls, ls[1] - 8)], MAU["nhan"])]
     # Bản tin <-> Người dùng
     xu = bt[0] + bt[2] + 76

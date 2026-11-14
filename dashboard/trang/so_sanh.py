@@ -109,7 +109,7 @@ if kd is not None:
     with c2, gd.the("qd-tn"):
         chinh = kd[kd["phan_tich"] == "chinh"].set_index("chi_so")
         ten = {"nim": "Biên lãi NIM", "npl": "Nợ xấu", "car": "Vốn đệm CAR"}
-        nam_car = sorted(b4.loc[b4["car_nguon"].isin(["cong_bo", "tra_thu_cong"]), "nam"].unique())
+        nam_car = sorted(b4.loc[b4["car_nguon"].isin(cf.CAR_NGUON_SO_THAT), "nam"].unique())
         gd.tieu_the("Quốc doanh và tư nhân", f"Bình quân {dl.giai_doan()}")
         st.html("<div style='display:flex;gap:16px;flex-wrap:wrap;font-size:.78rem;color:var(--nhat);margin-bottom:4px'>"
                 f"<span><span class='chip'><i style='background:{gd.mau_nhom('A')};border-radius:50%'></i></span> Quốc doanh (QD): VCB, BID, CTG</span>"
@@ -125,7 +125,7 @@ if kd is not None:
             dong_kd.append({"ten": ten[c], "qd": r["tb_quoc_doanh"], "tn": r["tb_tu_nhan"], "y_nghia": bool(r["bac_bo_H0"]), "ghi": ghi})
         gd.dumbbell(dong_kd, gd.mau_nhom("A"), gd.mau_nhom("B"))
         with st.expander("Chi tiết thống kê"):
-            TEN_MAU = {"chinh": "Mẫu chính", "khong_VPB": "Bỏ VPB", "car_chi_so_vndirect": "CAR theo VNDirect",
+            TEN_MAU = {"chinh": "Mẫu chính", "khong_VPB": "Bỏ VPB", "car_2021_2024": "CAR 2021–2024 (trước Thông tư 14)",
                        "cap_ngan_hang": "Trung bình từng ngân hàng (8 quan sát)"}
             x = kd.copy()
             x["Chỉ số"] = x["chi_so"].map(ten)
@@ -138,6 +138,6 @@ if kd is not None:
                 "kiem_dinh": "Kiểm định", "p_value": st.column_config.NumberColumn("p-value", format="%.4f"),
                 "bac_bo_H0": st.column_config.CheckboxColumn("Khác biệt rõ")})
             st.caption("“Khác biệt rõ” khi p-value dưới 0,05, tức khả năng chênh lệch chỉ do ngẫu nhiên dưới 5%. "
-                       "Kết luận đáng tin hơn khi vẫn giữ nguyên lúc bỏ VPB hoặc đổi nguồn CAR.")
+                       "Kết luận đáng tin hơn khi vẫn giữ nguyên lúc bỏ VPB hoặc bỏ CAR năm 2025 (đổi cách tính theo Thông tư 14).")
 
 gd.chan_trang()

@@ -48,7 +48,7 @@ def _kiem_chi_so(chi_so):
 
 
 def _chi_lay_car_cong_bo(d, chi_so):
-    """CAR chỉ dùng 32 số thật cuối năm 2021–2024 (công bố + tra thủ công); các chỉ số khác giữ nguyên."""
+    """CAR chỉ dùng số thật cuối năm (cf.CAR_NGUON_SO_THAT); các chỉ số khác giữ nguyên."""
     return d[d["car_nguon"].isin(cf.CAR_NGUON_SO_THAT)] if chi_so == "car" else d
 
 

@@ -104,7 +104,7 @@ def doc_bang(ten_bang, loc_giai_doan=True, thu_muc=None):
 def doc_tong_hop(**kw):
     """Bảng 4 – bảng phân tích chính cho câu 1, 2, 3 (8 NH × số quý, hiện 176 dòng)."""
     df = doc_bang("tong_hop", **kw)
-    # Cờ lọc 32 giá trị CAR thật (số VNDirect công bố + số nhóm tra thủ công), xem cf.CAR_NGUON_SO_THAT
+    # Cờ lọc các giá trị CAR thật (số 31/12 mỗi năm), xem cf.CAR_NGUON_SO_THAT
     df["car_cong_bo"] = df["car_nguon"].isin(cf.CAR_NGUON_SO_THAT)
     return df
 

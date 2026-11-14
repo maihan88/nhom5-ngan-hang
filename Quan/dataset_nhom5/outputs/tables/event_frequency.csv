@@ -1,9 +1,9 @@
 ﻿feature,sum_all,nonzero_all,sum_train,nonzero_train,rare_train_lt5
-co_su_kien,102,102,70,70,False
-so_luong_su_kien,146,102,94,70,False
-sk_tang_von,69,69,49,49,False
+co_su_kien,108,108,70,70,False
+so_luong_su_kien,155,108,94,70,False
+sk_tang_von,74,74,49,49,False
 sk_chuyen_doi_so,7,7,2,2,True
-sk_hop_tac_trung_thau,22,21,10,10,False
-sk_doi_lanh_dao,40,35,26,24,False
+sk_hop_tac_trung_thau,23,22,10,10,False
+sk_doi_lanh_dao,43,37,26,24,False
 sk_chinh_sach_nhnn,2,2,2,2,True
 sk_khac,6,6,5,5,False

@@ -6,14 +6,14 @@
 
 | file | rows | columns | banks | years | quarters | exact_duplicates |
 |---|---|---|---|---|---|---|
-| bang1_tai_chinh_quy.csv | 176 | 19 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
-| bang2a_gia_ngay.csv | 11771 | 7 | 8 |  |  | 0 |
-| bang2b_gia_quy.csv | 176 | 12 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
-| bang3a_su_kien_chi_tiet.csv | 146 | 11 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
-| bang3b_su_kien_quy.csv | 176 | 15 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
-| bang4_tong_hop.csv | 176 | 40 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang1_tai_chinh_quy.csv | 184 | 19 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang2a_gia_ngay.csv | 11867 | 7 | 8 |  |  | 0 |
+| bang2b_gia_quy.csv | 184 | 12 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang3a_su_kien_chi_tiet.csv | 155 | 11 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang3b_su_kien_quy.csv | 184 | 15 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
+| bang4_tong_hop.csv | 184 | 40 | 8 | 2021,2022,2023,2024,2025,2026 | Q1,Q2,Q3,Q4 | 0 |
 
-Ngân hàng: ACB, BID, CTG, MBB, STB, TCB, VCB, VPB; Q1/2021–Q2/2026 (các quý sau 2025 chỉ dùng để dự báo). Mỗi mẫu là ngân hàng × quý.
+Ngân hàng: ACB, BID, CTG, MBB, STB, TCB, VCB, VPB; Q1/2021–Q3/2026 (các quý sau 2025 chỉ dùng để dự báo). Mỗi mẫu là ngân hàng × quý.
 
 ## 2. Missing Data
 
@@ -33,7 +33,7 @@ Ngân hàng: ACB, BID, CTG, MBB, STB, TCB, VCB, VPB; Q1/2021–Q2/2026 (các qu�
 | sk_doi_lanh_dao | 0 |
 | sk_chinh_sach_nhnn | 0 |
 | sk_khac | 0 |
-| xu_huong_quy_sau | 8 |
+| xu_huong_quy_sau | 16 |
 
 Các ô trống mô tả sự kiện khi không có sự kiện là hợp lệ. Toàn bộ cột/kiểu/missing nằm trong dataset_schema_missing.csv.
 
@@ -56,12 +56,12 @@ Các ô trống mô tả sự kiện khi không có sự kiện là hợp lệ. 
 
 | feature | sum_all | nonzero_all | sum_train | nonzero_train | rare_train_lt5 |
 |---|---|---|---|---|---|
-| co_su_kien | 102 | 102 | 70 | 70 | False |
-| so_luong_su_kien | 146 | 102 | 94 | 70 | False |
-| sk_tang_von | 69 | 69 | 49 | 49 | False |
+| co_su_kien | 108 | 108 | 70 | 70 | False |
+| so_luong_su_kien | 155 | 108 | 94 | 70 | False |
+| sk_tang_von | 74 | 74 | 49 | 49 | False |
 | sk_chuyen_doi_so | 7 | 7 | 2 | 2 | True |
-| sk_hop_tac_trung_thau | 22 | 21 | 10 | 10 | False |
-| sk_doi_lanh_dao | 40 | 35 | 26 | 24 | False |
+| sk_hop_tac_trung_thau | 23 | 22 | 10 | 10 | False |
+| sk_doi_lanh_dao | 43 | 37 | 26 | 24 | False |
 | sk_chinh_sach_nhnn | 2 | 2 | 2 | 2 | True |
 | sk_khac | 6 | 6 | 5 | 5 | False |
 
@@ -75,9 +75,9 @@ Cấm xu_huong_quy_sau và ty_suat_sinh_loi_quy_sau. Các ngày, nguồn, URL, t
 
 - CAR Q4 dùng Q3 cùng năm CHỈ ở bản đầu vào dự báo theo dictionary; CAR gốc dùng cho phân cụm mô tả. Không xử lý lại quy tắc điền CAR của nhóm.
 - Không có ngày công bố BCTC thực tế: mốc +45 ngày là giả định của dictionary, chưa xác minh point-in-time; số VNDirect là bản sau cùng.
-- Thiếu data_dictionary.csv và data/manual/car_tra_thu_cong.csv được dẫn chiếu: chưa thể xác minh nguồn CAR tra thủ công độc lập.
+- CAR thật chỉ có ở quý 4 (số 31/12 trong báo cáo tỷ lệ an toàn vốn của ngân hàng, link từng số ở Han/PTDL_3/data/raw/car_bao_cao/ và data/manual/car_bao_cao_ngan_hang.csv); từ 2025 có ngân hàng tính theo Thông tư 14/2025.
 
-32 dòng Q4 có CAR đầu vào dự báo khác CAR gốc; xem car_audit.csv.
+40 dòng Q4 có CAR đầu vào dự báo khác CAR gốc; xem car_audit.csv.
 
 ## 8. Kết luận
 
@@ -87,8 +87,8 @@ READY FOR ML — điều kiện: dùng bản CAR dự báo theo dictionary, ch�
 
 | model | columns_including_intercept | rank | condition_number_standardized |
 |---|---|---|---|
-| Financial | 7 | 7 | 8.204 |
-| Financial + general | 8 | 8 | 8.308 |
-| Financial + categories | 13 | 13 | 9.012 |
+| Financial | 7 | 7 | 8.139 |
+| Financial + general | 8 | 8 | 8.237 |
+| Financial + categories | 13 | 13 | 8.932 |
 
 Rank và condition number được kiểm tra trước train. Correlation ở train_feature_correlations.csv. Các financial giữ theo câu hỏi nghiên cứu; regularization L2 hỗ trợ khi tương quan lớn, nhưng hệ số cần diễn giải có điều kiện. Tổng count bằng tổng category nên không đưa đồng thời vào Model 2B.

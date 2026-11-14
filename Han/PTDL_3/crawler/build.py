@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import date
 
 import numpy as np
 import pandas as pd
@@ -34,12 +35,13 @@ DICTIONARY = [
     ("nim", "NIM năm hóa", "%", "Thu nhập lãi thuần quý × 4 / bình quân(TS sinh lãi đầu, cuối quý) × 100"),
     ("npl", "Tỷ lệ nợ xấu (nhóm 3–5 / tổng dư nợ)", "%", "VNDirect ratio BAD_LOANS_RATIO_AQ (tổng hợp từ thuyết minh BCTC)"),
     ("car", "Hệ số an toàn vốn", "%",
-     "VNDirect ratio BANK_CAR_AQ. **VNDirect chỉ có 1 số/năm (cuối năm)**; riêng BID, CTG 2022–2024 (VNDirect ghi "
-     "đúng 8,00) được thay bằng số tra thủ công có link nguồn trong `data/manual/car_tra_thu_cong.csv`. Các quý khác "
-     "(kể cả năm chưa có số) được điền bằng số thật gần nhất trước đó. Xem cột `car_nguon` và báo cáo kiểm tra"),
+     "**1 số/năm (31/12)**, số HỢP NHẤT trong báo cáo công bố thông tin tỷ lệ an toàn vốn của ngân hàng (Vietstock; "
+     "tự đọc PDF có lớp text, bản scan nhập tay vào `data/manual/car_bao_cao_ngan_hang.csv`); năm chưa có báo cáo thì "
+     "dùng VNDirect BANK_CAR_AQ. Quý khác điền bằng số thật gần nhất trước đó. Từ cuối 2025 có ngân hàng tính theo "
+     "TT14/2025 thay cho TT41/2016. Xem cột `car_nguon` và báo cáo kiểm tra mục 4b"),
     ("car_nguon", "Cách có giá trị CAR", "-",
-     "cong_bo = số VNDirect đúng kỳ; tra_thu_cong = số nhóm tự tra từ nguồn ngân hàng / công ty chứng khoán "
-     "(xem data/manual/car_tra_thu_cong.csv); dien_tiep_ky_truoc = điền tiếp số thật gần nhất"),
+     "bao_cao_ngan_hang = số trong báo cáo tỷ lệ an toàn vốn của ngân hàng; vndirect = số VNDirect đúng kỳ; "
+     "dien_tiep_ky_truoc = điền tiếp số thật gần nhất"),
     ("ldr", "Tỷ lệ cho vay / tiền gửi KH (hệ số thanh khoản)", "%", "tong_du_no / tien_gui_khach_hang × 100"),
     # --- Bảng 2
     ("ngay", "Ngày giao dịch (bảng giá ngày)", "yyyy-mm-dd",
@@ -123,7 +125,7 @@ ROLES = {
             "Năm hóa từ 1 quý; VPB 2021 > 8% do hợp nhất FE Credit (cho vay tiêu dùng lãi cao)"),
     "npl": ("Biến phân tích chính", "CH2, CH3, CH4–5", ""),
     "car": ("Biến phân tích chính", "CH2, CH3, CH4–5",
-            "Chỉ dòng car_nguon = cong_bo hoặc tra_thu_cong là số thật (1 số/năm) – kiểm định CH2 nên chỉ dùng "
+            "Chỉ dòng car_nguon = bao_cao_ngan_hang hoặc vndirect là số thật (1 số/năm) – kiểm định CH2 nên chỉ dùng "
             "các dòng này. "
             "Làm biến đầu vào dự báo: dòng Q4 lấy car của Q3 cùng năm"),
     "ldr": ("Biến phân tích chính", "CH3, CH4–5",
@@ -136,7 +138,7 @@ ROLES = {
     "tien_gui_khach_hang": ("Thành phần tính toán", "Mẫu số của LDR", _RAW_NOTE),
     "tai_san_sinh_lai": ("Thành phần tính toán", "Mẫu số của NIM", ""),
     "ngay_bctc": _TRACE,
-    "car_nguon": ("Mô tả / truy vết", "CH2 (lọc số CAR thật: cong_bo, tra_thu_cong)", ""),
+    "car_nguon": ("Mô tả / truy vết", "CH2 (lọc số CAR thật: bao_cao_ngan_hang, vndirect)", ""),
     "gia_dong_cua": ("Chỉ để đối chiếu", "Giá thực tế trên bảng điện",
                      "Giá bị 'rơi' ở ngày GDKHQ khi chia cổ tức bằng cổ phiếu – tính lợi suất phải dùng giá điều chỉnh"),
     **{c: _PRICE for c in ["gia_dong_cua_dieu_chinh", "gia_cao_nhat_dieu_chinh", "gia_thap_nhat_dieu_chinh",
@@ -306,7 +308,7 @@ def write_dictionary(tables: dict[str, tuple[str, pd.DataFrame]]) -> None:
 
 
 # ---------------------------------------------------------------------------
-CAR_THAT = ("cong_bo", "tra_thu_cong")  # car_nguon của các ô là số CAR thật (không phải điền tiếp)
+CAR_THAT = ("bao_cao_ngan_hang", "vndirect")  # car_nguon của các ô là số CAR thật (không phải điền tiếp)
 
 RANGES = {  # khoảng hợp lý để phát hiện số liệu bất thường (không tự sửa, chỉ cảnh báo)
     "roa": (-3, 5), "roe": (-30, 45), "nim": (0.5, 8), "npl": (0, 10), "car": (7, 25),
@@ -314,14 +316,67 @@ RANGES = {  # khoảng hợp lý để phát hiện số liệu bất thường 
 }
 
 
+def _muc_car(bang4: pd.DataFrame, car_bc: pd.DataFrame | None) -> list[str]:
+    """Mục 4b: nguồn CAR 31/12 từng ngân hàng × năm, việc cần nhập tay, đối chiếu với VNDirect."""
+    L = ["## 4b. CAR 31/12: nguồn từng năm và việc cần làm", "",
+         "Ưu tiên số hợp nhất trong báo cáo tỷ lệ an toàn vốn của ngân hàng (tự đọc từ PDF có lớp text, hoặc nhập tay "
+         "vào `data/manual/car_bao_cao_ngan_hang.csv` với bản scan); chưa có thì dùng số VNDirect; quý khác điền tiếp.", ""]
+    if car_bc is None or car_bc.empty:
+        return L + ["- Không có bảng CAR báo cáo ngân hàng (chưa chạy car_reports).", ""]
+    q4 = bang4[bang4["quy"] == "Q4"].set_index(["ma_nh", "nam"])
+    viec, canh_bao = [], []
+    nam_list = sorted(car_bc["nam"].unique())
+    L += ["Ký hiệu: **T** tự đọc · **N** nhập tay · **V** VNDirect · **–** chưa có số (đang điền tiếp từ năm trước).", "",
+          "| ma_nh | " + " | ".join(map(str, nam_list)) + " |", "|---" * (len(nam_list) + 1) + "|"]
+    ky = {"tu_doc": "T", "nhap_tay": "N"}
+    for ma, g in car_bc.groupby("ma_nh"):
+        o = []
+        for r in g.sort_values("nam").itertuples():
+            dong = q4.loc[(ma, r.nam)] if (ma, r.nam) in q4.index else None
+            if pd.notna(r.car):
+                o.append(f"{r.car:.2f} {ky.get(r.cach_lay, '')}")
+            elif dong is not None and dong["car_nguon"] == "vndirect":
+                o.append(f"{dong['car']:.2f} V")
+            else:
+                o.append("–")
+            # việc cần làm / cảnh báo
+            han = date(r.nam + 1, *config.CAR_HAN_CONG_BO)
+            if pd.isna(r.car):
+                if r.trang_thai in ("ban_scan", "khong_doc_duoc", "khong_co_quy_tac", "ngoai_khoang"):
+                    ly_do = {"ban_scan": "bản scan", "khong_doc_duoc": "không tìm thấy dòng CAR khớp mẫu",
+                             "khong_co_quy_tac": "chưa có quy tắc đọc cho ngân hàng này",
+                             "ngoai_khoang": "số đọc được nằm ngoài 5–25%"}[r.trang_thai]
+                    viec.append(f"- **Cần nhập tay** {ma} 31/12/{r.nam} ({ly_do}): mở `{r.file_pdf}` hoặc {r.nguon}, "
+                                "ghi số HỢP NHẤT vào `data/manual/car_bao_cao_ngan_hang.csv`.")
+                elif r.trang_thai == "khong_co_file" and date.today() > han:
+                    viec.append(f"- **Chưa có báo cáo** {ma} 31/12/{r.nam} trên Vietstock dù đã qua {han:%d/%m/%Y} "
+                                f"(link thử: {r.nguon}). Tìm trên web ngân hàng rồi nhập tay, hoặc chờ.")
+                elif r.trang_thai in ("chua_tai", "loi_tai", "khong_phai_pdf"):
+                    viec.append(f"- {ma} 31/12/{r.nam}: chưa tải được báo cáo ({r.trang_thai}) – chạy lại khi có mạng.")
+            if pd.notna(r.car) and pd.notna(r.car_vnd) and abs(r.car - r.car_vnd) > 0.3:
+                canh_bao.append(f"- {ma} 31/12/{r.nam}: báo cáo ngân hàng {r.car:.2f} khác VNDirect {r.car_vnd:.2f} "
+                                "(đang dùng số báo cáo ngân hàng).")
+            if r.cach_lay == "nhap_tay" and pd.notna(r.lech_tu_doc_nhap_tay) and abs(r.lech_tu_doc_nhap_tay) > 0.005:
+                canh_bao.append(f"- {ma} 31/12/{r.nam}: số nhập tay khác số tự đọc từ PDF "
+                                f"({r.lech_tu_doc_nhap_tay:+.2f}) – kiểm tra lại.")
+        L.append(f"| {ma} | " + " | ".join(o) + " |")
+    L += ["", "**Việc cần làm:**", ""] + (viec or ["- Không có. Mọi năm đã có số từ báo cáo của ngân hàng."])
+    L += ["", "**Đối chiếu với VNDirect** (lệch > 0,3 điểm %):", ""] + (canh_bao or ["- Không có."])
+    nghi = bang4[(bang4["car_nguon"] == "vndirect") & (bang4["car"].round(4) == 8.0)]
+    L += [f"- Cảnh báo: {r.ma_nh} {r.quy}/{r.nam} dùng số VNDirect đúng 8,00 (thường là ngưỡng tối thiểu, không phải "
+          "số thật) -> nhập số từ báo cáo ngân hàng." for r in nghi.itertuples()]
+    return L + [""]
+
+
 def validation_report(bang4: pd.DataFrame, annual: pd.DataFrame, events_detail: pd.DataFrame,
-                      entry: pd.DataFrame | None = None, doi_chieu: pd.DataFrame | None = None) -> str:
+                      entry: pd.DataFrame | None = None, doi_chieu: pd.DataFrame | None = None,
+                      car_bc: pd.DataFrame | None = None) -> str:
     L = ["# Báo cáo kiểm tra chất lượng dữ liệu", ""]
     n_exp = len(config.BANKS) * ((config.END_YEAR - config.START_YEAR) * 4 + config.END_QUARTER)
     L += [f"- Số dòng Bảng 4: **{len(bang4)}** (kỳ vọng {n_exp})", ""]
 
     L += ["## 1. Số quý có dữ liệu theo ngân hàng", "",
-          "| ma_nh | có BCTC | có giá | có NPL | có CAR thật (công bố / tra thủ công) |", "|---|---|---|---|---|"]
+          "| ma_nh | có BCTC | có giá | có NPL | có CAR thật (báo cáo ngân hàng / VNDirect) |", "|---|---|---|---|---|"]
     for code, g in bang4.groupby("ma_nh"):
         L.append(f"| {code} | {g['tong_tai_san'].notna().sum()} | {g['gia_cuoi_quy'].notna().sum()} | "
                  f"{g['npl'].notna().sum()} | {g['car_nguon'].isin(CAR_THAT).sum()} |")
@@ -338,10 +393,10 @@ def validation_report(bang4: pd.DataFrame, annual: pd.DataFrame, events_detail: 
     L.append(f"- `{'`, `'.join(event_meta)}`: mỗi cột trống {no_event} ô, đúng bằng {no_event} quý không có "
              "sự kiện (`co_su_kien = 0`). Đây là ô trống hợp lệ, không phải thiếu dữ liệu.")
     that = bang4["car_nguon"].isin(CAR_THAT)
-    n_cb, n_tay = int((bang4["car_nguon"] == "cong_bo").sum()), int((bang4["car_nguon"] == "tra_thu_cong").sum())
+    n_bc, n_vnd = int((bang4["car_nguon"] == "bao_cao_ngan_hang").sum()), int((bang4["car_nguon"] == "vndirect").sum())
     years_car = sorted(bang4.loc[that, "nam"].unique())
     L.append(f"- `car`: {bang4['car'].notna().sum()} ô có giá trị, nhưng chỉ {int(that.sum())} ô là số thật "
-             f"({n_cb} số VNDirect công bố, {n_tay} số tra thủ công; năm {', '.join(map(str, years_car))}); "
+             f"({n_bc} số từ báo cáo tỷ lệ an toàn vốn của ngân hàng, {n_vnd} số VNDirect; năm {', '.join(map(str, years_car))}); "
              "còn lại được điền từ số thật gần nhất trước đó (xem `car_nguon`).")
     L.append(f"- `ty_suat_sinh_loi_quy_sau`, `xu_huong_quy_sau`: tính từ mốc dự báo, dùng giá đến "
              f"{config.PRICE_TO} (VNDirect); xem mục 8.")
@@ -371,18 +426,7 @@ def validation_report(bang4: pd.DataFrame, annual: pd.DataFrame, events_detail: 
         L.append("- Không phát hiện.")
     L.append("")
 
-    L += ["## 4b. CAR: số nghi bị gán và số tra thủ công", "",
-          "Kiểm tra theo khoảng ở mục 4 không bắt được số \"tròn đẹp bất thường\". CAR công bố đúng 8,00 (ngưỡng "
-          "tối thiểu của NHNN) thường là do nguồn ghi ngưỡng khi ngân hàng chỉ công bố \"tuân thủ\".", ""]
-    nghi = bang4[(bang4["car_nguon"] == "cong_bo") & (bang4["car"].round(4) == 8.0)]
-    L += ([f"- Cảnh báo: {r.ma_nh} {r.quy}/{r.nam} có `car` = 8,00 -> nên tra thủ công "
-           "(ghi vào data/manual/car_tra_thu_cong.csv)" for r in nghi.itertuples()]
-          or ["- Không còn số CAR công bố nào đúng 8,00."])
-    tay = bang4[bang4["car_nguon"] == "tra_thu_cong"]
-    if len(tay):
-        L.append("- Số tra thủ công đang dùng (Q4 từng năm): "
-                 + ", ".join(f"{r.ma_nh} {r.nam} = {r.car:.2f}" for r in tay.itertuples()))
-    L.append("")
+    L += _muc_car(bang4, car_bc)
 
     if doi_chieu is not None and not doi_chieu.empty:
         chi_so = ["roa", "roe", "nim"]

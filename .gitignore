@@ -8,3 +8,6 @@ __pycache__/
 
 # Cấu hình Claude Code cá nhân trên máy từng người
 .claude/settings.local.json
+
+# PDF báo cáo tỷ lệ an toàn vốn (nặng, tải lại được từ link trong data/raw/car_bao_cao/*.json)
+Han/PTDL_3/data/raw/car_bao_cao/pdf/

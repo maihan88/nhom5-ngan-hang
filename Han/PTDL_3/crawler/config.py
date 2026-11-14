@@ -133,6 +133,24 @@ RATIO_CODES = {
     "ROAE_TR_AVG5Q": "roe_ttm_vnd",
 }
 
+# CAR cuối năm từ báo cáo công bố thông tin tỷ lệ an toàn vốn của ngân hàng (bản lưu trên Vietstock,
+# mục Tài liệu -> "Tỷ lệ an toàn vốn"). Ưu tiên hơn số VNDirect; xem crawler/car_reports.py.
+CAR_REPORT_URL = "https://static2.vietstock.vn/data/HOSE/{nam}/BCTLATV/VN/NAM/{ma}_BaocaoTyleAnToanVon_{nam}.{duoi}"
+# Dòng "Tỷ lệ an toàn vốn" có n số % -> vị trí (0-based) của số HỢP NHẤT kỳ 31/12, theo mẫu báo cáo 2021–2026:
+#   BID: [riêng lẻ, hợp nhất]; từ 2025: [riêng lẻ năm trước, riêng lẻ, hợp nhất năm trước, hợp nhất]
+#   TCB, VPB: [riêng lẻ, hợp nhất] hoặc [riêng lẻ, hợp nhất, riêng lẻ kỳ trước, hợp nhất kỳ trước]
+#   MBB: [hợp nhất, riêng lẻ]
+# ACB, CTG, STB, VCB nộp bản scan (không có lớp text) -> nhập tay vào data/manual/car_bao_cao_ngan_hang.csv.
+# Ngân hàng đổi mẫu báo cáo thì số lượng số % thường đổi theo -> không khớp quy tắc -> báo "cần nhập tay".
+CAR_COT_HOP_NHAT = {
+    "BID": {2: 1, 4: 3},
+    "TCB": {2: 1, 4: 1},
+    "VPB": {2: 1, 4: 1},
+    "MBB": {2: 0},
+}
+# Sau ngày này của năm sau mà vẫn chưa có báo cáo 31/12 thì cảnh báo (thường đăng tháng 3–4)
+CAR_HAN_CONG_BO = (5, 31)
+
 # ---------------------------------------------------------------------------
 # Sự kiện phi tài chính
 # ---------------------------------------------------------------------------

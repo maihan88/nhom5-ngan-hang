@@ -16,7 +16,7 @@ CAU_TRUC = {
         "chi_so",            # roa, roe, nim, npl, car, ldr, ty_suat_sinh_loi_quy
         "cap_do",            # 'ma_nh' | 'nam' | 'loai_hinh_so_huu' | 'ma_nh_nam' | 'toan_bo'
         "ma_nh", "nam", "loai_hinh_so_huu",   # trống nếu cấp độ không dùng cột đó
-        "mau_du_lieu",       # 'quy' (160 dòng) | 'car_cong_bo' (32 số CAR thật)
+        "mau_du_lieu",       # 'quy' (160 dòng) | 'car_cong_bo' (số CAR thật 31/12)
         "so_quan_sat", "trung_binh", "trung_vi", "do_lech_chuan", "nho_nhat", "lon_nhat",
         "don_vi",            # '%'
     ],
@@ -31,7 +31,7 @@ CAU_TRUC = {
     # ---- Câu 2: kiểm định nhóm --------------------------------------------------
     "kiem_dinh_nhom": [
         "chi_so",            # nim, npl, car
-        "mau_du_lieu",       # 'chinh' | 'khong_VPB' | 'car_chi_so_vndirect' | 'cap_ngan_hang'
+        "mau_du_lieu",       # 'chinh' | 'khong_VPB' | 'car_2021_2024' | 'cap_ngan_hang'
         "don_vi_quan_sat",   # 'ngan_hang_nam' | 'ngan_hang_nam_cong_bo' | 'ngan_hang'
         "phan_tich",         # 'chinh' | 'kiem_tra_lai'
         "n_quoc_doanh", "n_tu_nhan",

@@ -2,7 +2,7 @@
 chay_tat_ca.py – Một lệnh chạy lại toàn bộ dự án Nhóm 5, từ thu thập dữ liệu đến web.
 
     py chay_tat_ca.py                  # thu thập tới quý mới nhất -> thống kê -> ML -> đồng bộ dashboard
-    py chay_tat_ca.py --den-quy 2026Q2 --gia-den 2026-10-28 --offline   # tái lập đúng bộ dữ liệu của báo cáo, không cần mạng
+    py chay_tat_ca.py --den-quy 2026Q3 --gia-den 2026-11-14 --offline   # tái lập đúng bộ dữ liệu của báo cáo, không cần mạng
     py chay_tat_ca.py --refresh        # bỏ cache, tải lại toàn bộ dữ liệu mới từ nguồn
     py chay_tat_ca.py --offline        # chỉ dùng cache (vd sau khi sửa tay data/manual/ của Hân)
     py chay_tat_ca.py --bo-thu-thap    # không crawl, dùng luôn data/output hiện có của Hân

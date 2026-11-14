@@ -53,10 +53,10 @@ with gd.the("cau-hoi"):
             + "</tbody></table></div>")
 
 # ---- Quy trình -------------------------------------------------------------------------------------------------
-nam_car = sorted(b4.loc[b4["car_nguon"].isin(["cong_bo", "tra_thu_cong"]), "nam"].unique())
+nam_car = sorted(b4.loc[b4["car_nguon"].isin(cf.CAR_NGUON_SO_THAT), "nam"].unique())
 nam_cuoi = int(b4["nam"].max())
 BUOC = [
-    ("01", "Thu thập", "Mai Hân", "Báo cáo tài chính quý, nợ xấu, CAR, giá cổ phiếu và sự kiện quyền từ VNDirect; "
+    ("01", "Thu thập", "Mai Hân", "Báo cáo tài chính quý, nợ xấu, giá cổ phiếu và sự kiện quyền từ VNDirect; CAR từ báo cáo tỷ lệ an toàn vốn của ngân hàng (PDF); "
      "tin công bố thông tin từ CafeF. Lưu bản gốc để đối chiếu."),
     ("02", "Làm sạch", "Mai Hân", "Thống nhất đơn vị; tính ROA, ROE, NIM, LDR; quý chưa có CAR công bố dùng số cuối năm gần nhất; "
      "xếp tin vào 6 loại sự kiện, có rà soát tay."),

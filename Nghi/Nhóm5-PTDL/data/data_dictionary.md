@@ -33,8 +33,8 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `roe` | ROE năm hóa | % | LNST quý × 4 / bình quân(VCSH đầu quý, cuối quý) × 100 | Biến phân tích chính |
 | `nim` | NIM năm hóa | % | Thu nhập lãi thuần quý × 4 / bình quân(TS sinh lãi đầu, cuối quý) × 100 | Biến phân tích chính |
 | `npl` | Tỷ lệ nợ xấu (nhóm 3–5 / tổng dư nợ) | % | VNDirect ratio BAD_LOANS_RATIO_AQ (tổng hợp từ thuyết minh BCTC) | Biến phân tích chính |
-| `car` | Hệ số an toàn vốn | % | VNDirect ratio BANK_CAR_AQ. **VNDirect chỉ có 1 số/năm (cuối năm)**; riêng BID, CTG 2022–2024 (VNDirect ghi đúng 8,00) được thay bằng số tra thủ công có link nguồn trong `data/manual/car_tra_thu_cong.csv`. Các quý khác (kể cả năm chưa có số) được điền bằng số thật gần nhất trước đó. Xem cột `car_nguon` và báo cáo kiểm tra | Biến phân tích chính |
-| `car_nguon` | Cách có giá trị CAR | - | cong_bo = số VNDirect đúng kỳ; tra_thu_cong = số nhóm tự tra từ nguồn ngân hàng / công ty chứng khoán (xem data/manual/car_tra_thu_cong.csv); dien_tiep_ky_truoc = điền tiếp số thật gần nhất | Mô tả / truy vết |
+| `car` | Hệ số an toàn vốn | % | **1 số/năm (31/12)**, số HỢP NHẤT trong báo cáo công bố thông tin tỷ lệ an toàn vốn của ngân hàng (Vietstock; tự đọc PDF có lớp text, bản scan nhập tay vào `data/manual/car_bao_cao_ngan_hang.csv`); năm chưa có báo cáo thì dùng VNDirect BANK_CAR_AQ. Quý khác điền bằng số thật gần nhất trước đó. Từ cuối 2025 có ngân hàng tính theo TT14/2025 thay cho TT41/2016. Xem cột `car_nguon` và báo cáo kiểm tra mục 4b | Biến phân tích chính |
+| `car_nguon` | Cách có giá trị CAR | - | bao_cao_ngan_hang = số trong báo cáo tỷ lệ an toàn vốn của ngân hàng; vndirect = số VNDirect đúng kỳ; dien_tiep_ky_truoc = điền tiếp số thật gần nhất | Mô tả / truy vết |
 | `ldr` | Tỷ lệ cho vay / tiền gửi KH (hệ số thanh khoản) | % | tong_du_no / tien_gui_khach_hang × 100 | Biến phân tích chính |
 | `thu_nhap_lai_thuan` | Thu nhập lãi thuần trong quý | tỷ đồng | KQKD mã 421900 | Thành phần tính toán |
 | `tien_gui_khach_hang` | Tiền gửi của khách hàng | tỷ đồng | BCĐKT mã 413300 | Thành phần tính toán |
@@ -45,7 +45,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | Cột | Mô tả | Đơn vị | Nguồn / Công thức | Vai trò |
 |---|---|---|---|---|
 | `ma_nh` | Mã cổ phiếu ngân hàng | - | VCB, BID, CTG, TCB, MBB, ACB, STB, VPB | Khóa nối bảng |
-| `ngay` | Ngày giao dịch (bảng giá ngày) | yyyy-mm-dd | VNDirect stock_prices, từ 2020-12-01 đến 2026-10-28. Các phiên ngoài 2021–2026 chỉ dùng để tính giá đầu quý Q1/2021 và nhãn quý sau; khi vẽ biểu đồ nên lọc theo giai đoạn nghiên cứu | Khóa nối bảng |
+| `ngay` | Ngày giao dịch (bảng giá ngày) | yyyy-mm-dd | VNDirect stock_prices, từ 2020-12-01 đến 2026-11-14. Các phiên ngoài 2021–2026 chỉ dùng để tính giá đầu quý Q1/2021 và nhãn quý sau; khi vẽ biểu đồ nên lọc theo giai đoạn nghiên cứu | Khóa nối bảng |
 | `gia_dong_cua` | Giá đóng cửa chưa điều chỉnh (bảng giá ngày) | nghìn đồng | close | Chỉ để đối chiếu |
 | `gia_dong_cua_dieu_chinh` | Giá đóng cửa đã điều chỉnh (bảng giá ngày) | nghìn đồng | adClose | Dữ liệu giá |
 | `gia_cao_nhat_dieu_chinh` | Giá cao nhất trong phiên, đã điều chỉnh (bảng giá ngày) | nghìn đồng | adHigh | Dữ liệu giá |
@@ -66,7 +66,7 @@ Bản đầy đủ (mọi cột của mọi file, kèm vai trò, dùng cho câu 
 | `gia_cuoi_quy` | Giá cuối quý (điều chỉnh) | nghìn đồng | Giá đóng cửa điều chỉnh phiên cuối của quý | Thành phần tính toán |
 | `ty_suat_sinh_loi_quy` | Tỷ suất sinh lời cổ phiếu trong quý | % | (gia_cuoi_quy / gia_dau_quy − 1) × 100 | Biến phân tích chính |
 | `bien_dong_gia_max_min` | Biên độ dao động giá trong quý | % | (giá cao nhất − giá thấp nhất) / giá thấp nhất × 100, giá điều chỉnh | Biến mô tả |
-| `ty_suat_sinh_loi_quy_sau` | Tỷ suất sinh lời kỳ tiếp theo, tính từ MỐC DỰ BÁO | % | Mốc dự báo của quý t = ngày cuối quý t + 45 ngày (khi BCTC quý t đã công bố). Lợi suất = giá tại mốc của quý t+1 / giá tại mốc của quý t − 1, × 100; giá tại mốc = giá đóng cửa điều chỉnh của phiên cuối cùng trước hoặc đúng ngày mốc. KHÁC `ty_suat_sinh_loi_quy` của quý sau (tính theo quý lịch). Giá dùng tính nhãn có đủ trong `bang2a_gia_ngay` (đến 2026-10-28). **Không dùng làm biến đầu vào** | Nguồn của nhãn |
+| `ty_suat_sinh_loi_quy_sau` | Tỷ suất sinh lời kỳ tiếp theo, tính từ MỐC DỰ BÁO | % | Mốc dự báo của quý t = ngày cuối quý t + 45 ngày (khi BCTC quý t đã công bố). Lợi suất = giá tại mốc của quý t+1 / giá tại mốc của quý t − 1, × 100; giá tại mốc = giá đóng cửa điều chỉnh của phiên cuối cùng trước hoặc đúng ngày mốc. KHÁC `ty_suat_sinh_loi_quy` của quý sau (tính theo quý lịch). Giá dùng tính nhãn có đủ trong `bang2a_gia_ngay` (đến 2026-11-14). **Không dùng làm biến đầu vào** | Nguồn của nhãn |
 | `xu_huong_quy_sau` | Biến mục tiêu: giá kỳ tiếp theo (từ mốc dự báo) tăng? | 0/1 | 1 nếu ty_suat_sinh_loi_quy_sau > 0, ngược lại 0 | Biến mục tiêu (nhãn) |
 
 ## Bảng 3a – Sự kiện chi tiết (`bang3a_su_kien_chi_tiet.csv`)

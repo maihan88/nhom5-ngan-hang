@@ -27,7 +27,7 @@ py -m pip install -r requirements.txt
 ```powershell
 py chay_tat_ca.py --mo-web                     # thu thập tới quý mới nhất -> thống kê -> ML -> cập nhật web, rồi mở web
 py chay_tat_ca.py --offline                    # không tải lại, dùng cache trong Han/PTDL_3/data/raw (vd sau khi sửa data/manual)
-py chay_tat_ca.py --den-quy 2026Q2 --gia-den 2026-10-28 --offline   # tái lập đúng bộ dữ liệu của báo cáo (Q1/2021–Q2/2026, giá đến 28/10/2026)
+py chay_tat_ca.py --den-quy 2026Q3 --gia-den 2026-11-14 --offline   # tái lập đúng bộ dữ liệu hiện tại (Q1/2021–Q3/2026, giá đến 14/11/2026)
 ```
 
 Chỉ mở web, không chạy lại gì:
